@@ -14,8 +14,13 @@ class ExceptionsTest : FunSpec({
         ex.shouldBeInstanceOf<DomainException>()
     }
 
-    test("ValidationException is a DomainException") {
-        val ex = ValidationException(Problems.validation(ErrorCode("V"), "invalid"))
+    test("ValidationException carries problem and message") {
+        val problem = Problems.validation(ErrorCode("INVALID_EMAIL"), "must be valid")
+        val ex = ValidationException(problem)
+
+        ex.problem shouldBe problem
+        ex.message shouldBe "must be valid"
+        ex.problem.category shouldBe ErrorCategory.VALIDATION
         ex.shouldBeInstanceOf<DomainException>()
     }
 

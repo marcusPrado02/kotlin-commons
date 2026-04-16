@@ -6,7 +6,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.collections.shouldHaveSize
 
 class ProblemTest : FunSpec({
-    test("Problem factory creates validation problem") {
+    test("Problems.notFound creates a NOT_FOUND problem") {
         val code = ErrorCode("USER_NOT_FOUND")
         val p = Problems.notFound(code, "User not found")
 
