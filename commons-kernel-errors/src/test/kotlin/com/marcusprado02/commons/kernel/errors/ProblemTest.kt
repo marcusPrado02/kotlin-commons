@@ -26,6 +26,7 @@ class ProblemTest : FunSpec({
 
     test("ErrorCode rejects blank value") {
         shouldThrow<IllegalArgumentException> { ErrorCode("") }
+        shouldThrow<IllegalArgumentException> { ErrorCode("   ") }
     }
 
     test("StandardErrorCodes provides NOT_FOUND") {
