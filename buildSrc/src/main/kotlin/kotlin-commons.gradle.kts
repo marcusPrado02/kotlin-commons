@@ -1,3 +1,5 @@
+import kotlinx.kover.gradle.plugin.dsl.CoverageUnit
+
 plugins {
     kotlin("jvm")
     id("org.jetbrains.kotlinx.kover")
@@ -13,10 +15,6 @@ kotlin {
     }
 }
 
-repositories {
-    mavenCentral()
-}
-
 tasks.withType<Test> {
     useJUnitPlatform()
 }
@@ -27,11 +25,11 @@ kover {
             rule {
                 bound {
                     minValue = 60
-                    coverageUnits = kotlinx.kover.gradle.plugin.dsl.CoverageUnit.LINE
+                    coverageUnits = CoverageUnit.LINE
                 }
                 bound {
                     minValue = 55
-                    coverageUnits = kotlinx.kover.gradle.plugin.dsl.CoverageUnit.BRANCH
+                    coverageUnits = CoverageUnit.BRANCH
                 }
             }
         }

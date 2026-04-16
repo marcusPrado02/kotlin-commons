@@ -1,2 +1,4 @@
-// Root project build file.
-// Plugins are applied per-module via the kotlin-commons convention plugin (buildSrc).
+allprojects {
+    group = "com.marcusprado02.commons"
+    version = "0.1.0-SNAPSHOT"
+}

@@ -1,5 +1,13 @@
 rootProject.name = "kotlin-commons"
 
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+
 include(
     "commons-kernel-core",
     "commons-kernel-errors",
