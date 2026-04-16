@@ -10,5 +10,6 @@ public data class EmailAttachment(
         if (other !is EmailAttachment) return false
         return filename == other.filename && content.contentEquals(other.content) && mimeType == other.mimeType
     }
+
     override fun hashCode(): Int = 31 * filename.hashCode() + content.contentHashCode() + mimeType.hashCode()
 }
