@@ -14,9 +14,11 @@ class InvariantTest : FunSpec({
     }
 
     test("check throws ValidationException when condition is false") {
+        val code = ErrorCode("ERR")
         val ex = shouldThrow<ValidationException> {
-            Invariant.check(false) { Problems.validation(ErrorCode("ERR"), "invariant violated") }
+            Invariant.check(false) { Problems.validation(code, "invariant violated") }
         }
         ex.message shouldBe "invariant violated"
+        ex.problem.code shouldBe code
     }
 })

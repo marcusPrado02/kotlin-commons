@@ -59,6 +59,13 @@ class EntityTest : FunSpec({
         entity.deletion.shouldBeNull()
     }
 
+    test("restore throws if entity is not deleted") {
+        val entity = TestEntity("id-1", TENANT, TRAIL)
+        shouldThrow<IllegalStateException> {
+            entity.publicRestore(STAMP)
+        }
+    }
+
     test("softDelete throws if already deleted") {
         val entity = TestEntity("id-1", TENANT, TRAIL)
         entity.publicSoftDelete(DeletionStamp(ACTOR, NOW), STAMP)
