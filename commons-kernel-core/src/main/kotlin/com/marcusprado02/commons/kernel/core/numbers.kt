@@ -4,7 +4,7 @@ import java.math.BigDecimal
 import java.math.RoundingMode
 
 public fun Double.roundTo(scale: Int, mode: RoundingMode = RoundingMode.HALF_UP): Double =
-    BigDecimal(this).setScale(scale, mode).toDouble()
+    BigDecimal.valueOf(this).setScale(scale, mode).toDouble()
 
 public fun Int.isPositive(): Boolean = this > 0
 public fun Long.isPositive(): Boolean = this > 0L

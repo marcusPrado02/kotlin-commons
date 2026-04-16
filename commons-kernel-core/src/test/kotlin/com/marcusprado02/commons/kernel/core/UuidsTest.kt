@@ -1,5 +1,6 @@
 package com.marcusprado02.commons.kernel.core
 
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.nulls.shouldBeNull
@@ -24,5 +25,9 @@ class UuidsTest : FunSpec({
     test("String.toUuidOrNull returns UUID for valid input") {
         val id = "550e8400-e29b-41d4-a716-446655440000"
         id.toUuidOrNull().shouldNotBeNull()
+    }
+
+    test("String.toUuid throws for invalid UUID") {
+        shouldThrow<IllegalArgumentException> { "not-a-uuid".toUuid() }
     }
 })
