@@ -45,4 +45,28 @@ class OptionTest : FunSpec({
     test("filter returns None when predicate is false") {
         Option.some(3).filter { it % 2 == 0 } shouldBe Option.none()
     }
+
+    test("flatMap chains some values") {
+        Option.some(3).flatMap { Option.some(it * 2) } shouldBe Option.some(6)
+    }
+
+    test("flatMap returns none when some maps to none") {
+        Option.some(3).flatMap { Option.none<Int>() } shouldBe Option.none()
+    }
+
+    test("ifSome executes action for some") {
+        var called = false
+        Option.some("x").ifSome { called = true }
+        called shouldBe true
+    }
+
+    test("ifSome skips action for none") {
+        var called = false
+        Option.none<String>().ifSome { called = true }
+        called shouldBe false
+    }
+
+    test("getOrElse with lambda returns default for none") {
+        Option.none<String>().getOrElse { "lazy-default" } shouldBe "lazy-default"
+    }
 })

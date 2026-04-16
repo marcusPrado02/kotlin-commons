@@ -33,4 +33,21 @@ class EitherTest : FunSpec({
         Either.left("error").fold(onLeft = { "L:$it" }, onRight = { "R:$it" }) shouldBe "L:error"
         Either.right(99).fold(onLeft = { "L:$it" }, onRight = { "R:$it" }) shouldBe "R:99"
     }
+
+    test("mapLeft transforms left value") {
+        Either.left("err").mapLeft { it.uppercase() } shouldBe Either.left("ERR")
+    }
+
+    test("mapLeft preserves right") {
+        Either.right(42).mapLeft { it: String -> it.uppercase() } shouldBe Either.right(42)
+    }
+
+    test("flatMapRight chains right values") {
+        Either.right(5).flatMapRight { Either.right(it * 2) } shouldBe Either.right(10)
+    }
+
+    test("flatMapRight preserves left on Either") {
+        val e: Either<String, Int> = Either.left("err")
+        e.flatMapRight { Either.right(it * 2) } shouldBe Either.left("err")
+    }
 })

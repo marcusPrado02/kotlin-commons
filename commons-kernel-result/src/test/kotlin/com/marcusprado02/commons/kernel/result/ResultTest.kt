@@ -5,6 +5,7 @@ import com.marcusprado02.commons.kernel.errors.Problems
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.shouldBe
+import kotlinx.coroutines.test.runTest
 
 class ResultTest : FunSpec({
     val problem = Problems.notFound(ErrorCode("NOT_FOUND"), "not found")
@@ -70,19 +71,42 @@ class ResultTest : FunSpec({
     }
 
     test("mapAsync transforms ok value in suspend context") {
-        val r = Result.ok(10).mapAsync { it * 2 }
-        r shouldBe Result.ok(20)
+        runTest {
+            val r = Result.ok(10).mapAsync { it * 2 }
+            r shouldBe Result.ok(20)
+        }
     }
 
     test("mapAsync preserves fail") {
-        val r = Result.fail<Int>(problem).mapAsync { it * 2 }
-        r shouldBe Result.fail(problem)
+        runTest {
+            val r = Result.fail<Int>(problem).mapAsync { it * 2 }
+            r shouldBe Result.fail(problem)
+        }
+    }
+
+    test("flatMapAsync chains ok results") {
+        runTest {
+            val r = Result.ok(5).flatMapAsync { Result.ok(it * 3) }
+            r shouldBe Result.ok(15)
+        }
+    }
+
+    test("flatMapAsync short-circuits on fail") {
+        runTest {
+            val r = Result.fail<Int>(problem).flatMapAsync { Result.ok(it * 3) }
+            r shouldBe Result.fail(problem)
+        }
     }
 
     test("mapError transforms problem in fail") {
         val newCode = ErrorCode("NEW_CODE")
         val r = Result.fail<String>(problem).mapError { it.copy(code = newCode) }
-        (r as Result.Fail).problem.code shouldBe newCode
+        r.problemOrNull()?.code shouldBe newCode
+    }
+
+    test("recoverWith converts fail to ok via Result") {
+        val r = Result.fail<String>(problem).recoverWith { Result.ok("recovered") }
+        r shouldBe Result.ok("recovered")
     }
 
     test("recover converts fail to ok") {
