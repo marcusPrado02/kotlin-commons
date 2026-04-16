@@ -6,6 +6,8 @@ public fun interface ActorProvider {
     public fun currentActor(): ActorId
 }
 
-public class FixedActorProvider(private val actorId: ActorId) : ActorProvider {
+public class FixedActorProvider(
+    private val actorId: ActorId,
+) : ActorProvider {
     override fun currentActor(): ActorId = actorId
 }

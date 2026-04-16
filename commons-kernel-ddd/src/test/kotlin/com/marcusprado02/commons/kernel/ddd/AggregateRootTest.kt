@@ -1,7 +1,6 @@
 package com.marcusprado02.commons.kernel.ddd
 
 import com.marcusprado02.commons.kernel.ddd.aggregate.AggregateRoot
-import com.marcusprado02.commons.kernel.ddd.aggregate.AggregateSnapshot
 import com.marcusprado02.commons.kernel.ddd.audit.AuditStamp
 import com.marcusprado02.commons.kernel.ddd.audit.AuditTrail
 import com.marcusprado02.commons.kernel.ddd.audit.DeletionStamp
@@ -33,10 +32,17 @@ private data class NameChanged(
     val newName: String,
 ) : DomainEvent
 
-private class OrderAggregate(id: String, tenantId: TenantId, audit: AuditTrail, var name: String) :
-    AggregateRoot<String>(id, tenantId, EntityVersion.INITIAL, audit) {
-
-    fun rename(newName: String, stamp: AuditStamp, meta: EventMetadata) {
+private class OrderAggregate(
+    id: String,
+    tenantId: TenantId,
+    audit: AuditTrail,
+    var name: String,
+) : AggregateRoot<String>(id, tenantId, EntityVersion.INITIAL, audit) {
+    fun rename(
+        newName: String,
+        stamp: AuditStamp,
+        meta: EventMetadata,
+    ) {
         recordChange(stamp, mutation = { name = newName }) { snapshot ->
             NameChanged(
                 eventId = EventId.generate(),
@@ -50,7 +56,11 @@ private class OrderAggregate(id: String, tenantId: TenantId, audit: AuditTrail, 
         }
     }
 
-    fun softDeleteOrder(stamp: DeletionStamp, updated: AuditStamp, meta: EventMetadata) {
+    fun softDeleteOrder(
+        stamp: DeletionStamp,
+        updated: AuditStamp,
+        meta: EventMetadata,
+    ) {
         recordSoftDelete(stamp, updated) { snapshot ->
             NameChanged(
                 eventId = EventId.generate(),
@@ -64,7 +74,10 @@ private class OrderAggregate(id: String, tenantId: TenantId, audit: AuditTrail, 
         }
     }
 
-    fun restoreOrder(updated: AuditStamp, meta: EventMetadata) {
+    fun restoreOrder(
+        updated: AuditStamp,
+        meta: EventMetadata,
+    ) {
         recordRestore(updated) { snapshot ->
             NameChanged(
                 eventId = EventId.generate(),
@@ -79,66 +92,68 @@ private class OrderAggregate(id: String, tenantId: TenantId, audit: AuditTrail, 
     }
 }
 
-class AggregateRootTest : FunSpec({
-    val meta = EventMetadata(
-        correlationId = CorrelationId.generate(),
-        tenantId = TENANT,
-        actorId = ACTOR,
-    )
+class AggregateRootTest :
+    FunSpec({
+        val meta =
+            EventMetadata(
+                correlationId = CorrelationId.generate(),
+                tenantId = TENANT,
+                actorId = ACTOR,
+            )
 
-    test("recordChange mutates state and records event") {
-        val order = OrderAggregate("o-1", TENANT, TRAIL, "Order 1")
-        order.rename("Order Renamed", STAMP, meta)
+        test("recordChange mutates state and records event") {
+            val order = OrderAggregate("o-1", TENANT, TRAIL, "Order 1")
+            order.rename("Order Renamed", STAMP, meta)
 
-        order.name shouldBe "Order Renamed"
-        order.version shouldBe EntityVersion(1L)
-        order.peekDomainEvents() shouldHaveSize 1
-    }
+            order.name shouldBe "Order Renamed"
+            order.version shouldBe EntityVersion(1L)
+            order.peekDomainEvents() shouldHaveSize 1
+        }
 
-    test("pullDomainEvents returns and clears events") {
-        val order = OrderAggregate("o-1", TENANT, TRAIL, "Order 1")
-        order.rename("Renamed", STAMP, meta)
+        test("pullDomainEvents returns and clears events") {
+            val order = OrderAggregate("o-1", TENANT, TRAIL, "Order 1")
+            order.rename("Renamed", STAMP, meta)
 
-        val events = order.pullDomainEvents()
-        events shouldHaveSize 1
-        (events[0] as NameChanged).newName shouldBe "Renamed"
-        order.peekDomainEvents() shouldHaveSize 0
-    }
+            val events = order.pullDomainEvents()
+            events shouldHaveSize 1
+            (events[0] as NameChanged).newName shouldBe "Renamed"
+            order.peekDomainEvents() shouldHaveSize 0
+        }
 
-    test("snapshot returns current aggregate state") {
-        val order = OrderAggregate("o-1", TENANT, TRAIL, "Order 1")
-        val snap = order.snapshot()
+        test("snapshot returns current aggregate state") {
+            val order = OrderAggregate("o-1", TENANT, TRAIL, "Order 1")
+            val snap = order.snapshot()
 
-        snap.aggregateId shouldBe "o-1"
-        snap.tenantId shouldBe TENANT
-        snap.version shouldBe EntityVersion.INITIAL
-        snap.aggregateType shouldBe "OrderAggregate"
-    }
+            snap.aggregateId shouldBe "o-1"
+            snap.tenantId shouldBe TENANT
+            snap.version shouldBe EntityVersion.INITIAL
+            snap.aggregateType shouldBe "OrderAggregate"
+        }
 
-    test("multiple changes accumulate events") {
-        val order = OrderAggregate("o-1", TENANT, TRAIL, "Order 1")
-        order.rename("Second", STAMP, meta)
-        order.rename("Third", STAMP, meta)
-        order.peekDomainEvents() shouldHaveSize 2
-    }
+        test("multiple changes accumulate events") {
+            val order = OrderAggregate("o-1", TENANT, TRAIL, "Order 1")
+            order.rename("Second", STAMP, meta)
+            order.rename("Third", STAMP, meta)
+            order.peekDomainEvents() shouldHaveSize 2
+        }
 
-    test("recordSoftDelete marks deleted and records event") {
-        val order = OrderAggregate("o-1", TENANT, TRAIL, "Order 1")
-        val delStamp = DeletionStamp(ACTOR, NOW)
-        order.softDeleteOrder(delStamp, STAMP, meta)
+        test("recordSoftDelete marks deleted and records event") {
+            val order = OrderAggregate("o-1", TENANT, TRAIL, "Order 1")
+            val delStamp = DeletionStamp(ACTOR, NOW)
+            order.softDeleteOrder(delStamp, STAMP, meta)
 
-        order.isDeleted shouldBe true
-        order.peekDomainEvents() shouldHaveSize 1
-    }
+            order.isDeleted shouldBe true
+            order.peekDomainEvents() shouldHaveSize 1
+        }
 
-    test("recordRestore unmarks deleted and records event") {
-        val order = OrderAggregate("o-1", TENANT, TRAIL, "Order 1")
-        val delStamp = DeletionStamp(ACTOR, NOW)
-        order.softDeleteOrder(delStamp, STAMP, meta)
-        order.pullDomainEvents() // clear
+        test("recordRestore unmarks deleted and records event") {
+            val order = OrderAggregate("o-1", TENANT, TRAIL, "Order 1")
+            val delStamp = DeletionStamp(ACTOR, NOW)
+            order.softDeleteOrder(delStamp, STAMP, meta)
+            order.pullDomainEvents() // clear
 
-        order.restoreOrder(STAMP, meta)
-        order.isDeleted shouldBe false
-        order.peekDomainEvents() shouldHaveSize 1
-    }
-})
+            order.restoreOrder(STAMP, meta)
+            order.isDeleted shouldBe false
+            order.peekDomainEvents() shouldHaveSize 1
+        }
+    })

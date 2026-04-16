@@ -16,8 +16,7 @@ public abstract class AggregateRoot<I : Any>(
     initialDeleted: Boolean = false,
     initialDeletion: DeletionStamp? = null,
 ) : Entity<I>(id, tenantId, initialVersion, initialAudit, initialDeleted, initialDeletion) {
-
-    private val _domainEvents = mutableListOf<DomainEvent>()
+    private val pendingEvents = mutableListOf<DomainEvent>()
 
     protected fun recordChange(
         updated: AuditStamp,
@@ -26,7 +25,7 @@ public abstract class AggregateRoot<I : Any>(
     ) {
         mutation()
         touch(updated)
-        _domainEvents += event(snapshot())
+        pendingEvents += event(snapshot())
     }
 
     protected fun recordSoftDelete(
@@ -35,7 +34,7 @@ public abstract class AggregateRoot<I : Any>(
         event: (AggregateSnapshot<I>) -> DomainEvent,
     ) {
         softDelete(stamp, updated)
-        _domainEvents += event(snapshot())
+        pendingEvents += event(snapshot())
     }
 
     protected fun recordRestore(
@@ -43,21 +42,22 @@ public abstract class AggregateRoot<I : Any>(
         event: (AggregateSnapshot<I>) -> DomainEvent,
     ) {
         restore(updated)
-        _domainEvents += event(snapshot())
+        pendingEvents += event(snapshot())
     }
 
     public fun pullDomainEvents(): List<DomainEvent> {
-        val events = _domainEvents.toList()
-        _domainEvents.clear()
+        val events = pendingEvents.toList()
+        pendingEvents.clear()
         return events
     }
 
-    public fun peekDomainEvents(): List<DomainEvent> = _domainEvents.toList()
+    public fun peekDomainEvents(): List<DomainEvent> = pendingEvents.toList()
 
-    public fun snapshot(): AggregateSnapshot<I> = AggregateSnapshot(
-        aggregateId = id,
-        tenantId = tenantId,
-        version = version,
-        aggregateType = this::class.simpleName ?: "Unknown",
-    )
+    public fun snapshot(): AggregateSnapshot<I> =
+        AggregateSnapshot(
+            aggregateId = id,
+            tenantId = tenantId,
+            version = version,
+            aggregateType = this::class.simpleName ?: "Unknown",
+        )
 }

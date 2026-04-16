@@ -27,7 +27,10 @@ public abstract class Entity<I : Any>(
         version = version.increment()
     }
 
-    protected fun softDelete(stamp: DeletionStamp, updated: AuditStamp) {
+    protected fun softDelete(
+        stamp: DeletionStamp,
+        updated: AuditStamp,
+    ) {
         check(!isDeleted) { "Entity $id is already deleted" }
         isDeleted = true
         deletion = stamp

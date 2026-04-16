@@ -8,17 +8,19 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 
-class InvariantTest : FunSpec({
-    test("check does not throw when condition is true") {
-        Invariant.check(true) { Problems.validation(ErrorCode("ERR"), "fail") }
-    }
-
-    test("check throws ValidationException when condition is false") {
-        val code = ErrorCode("ERR")
-        val ex = shouldThrow<ValidationException> {
-            Invariant.check(false) { Problems.validation(code, "invariant violated") }
+class InvariantTest :
+    FunSpec({
+        test("check does not throw when condition is true") {
+            Invariant.check(true) { Problems.validation(ErrorCode("ERR"), "fail") }
         }
-        ex.message shouldBe "invariant violated"
-        ex.problem.code shouldBe code
-    }
-})
+
+        test("check throws ValidationException when condition is false") {
+            val code = ErrorCode("ERR")
+            val ex =
+                shouldThrow<ValidationException> {
+                    Invariant.check(false) { Problems.validation(code, "invariant violated") }
+                }
+            ex.message shouldBe "invariant violated"
+            ex.problem.code shouldBe code
+        }
+    })

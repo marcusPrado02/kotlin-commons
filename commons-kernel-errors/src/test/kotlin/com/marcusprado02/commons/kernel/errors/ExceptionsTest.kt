@@ -4,29 +4,30 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 
-class ExceptionsTest : FunSpec({
-    test("NotFoundException carries problem") {
-        val problem = Problems.notFound(StandardErrorCodes.NOT_FOUND, "not found")
-        val ex = NotFoundException(problem)
+class ExceptionsTest :
+    FunSpec({
+        test("NotFoundException carries problem") {
+            val problem = Problems.notFound(StandardErrorCodes.NOT_FOUND, "not found")
+            val ex = NotFoundException(problem)
 
-        ex.problem shouldBe problem
-        ex.message shouldBe "not found"
-        ex.shouldBeInstanceOf<DomainException>()
-    }
+            ex.problem shouldBe problem
+            ex.message shouldBe "not found"
+            ex.shouldBeInstanceOf<DomainException>()
+        }
 
-    test("ValidationException carries problem and message") {
-        val problem = Problems.validation(ErrorCode("INVALID_EMAIL"), "must be valid")
-        val ex = ValidationException(problem)
+        test("ValidationException carries problem and message") {
+            val problem = Problems.validation(ErrorCode("INVALID_EMAIL"), "must be valid")
+            val ex = ValidationException(problem)
 
-        ex.problem shouldBe problem
-        ex.message shouldBe "must be valid"
-        ex.problem.category shouldBe ErrorCategory.VALIDATION
-        ex.shouldBeInstanceOf<DomainException>()
-    }
+            ex.problem shouldBe problem
+            ex.message shouldBe "must be valid"
+            ex.problem.category shouldBe ErrorCategory.VALIDATION
+            ex.shouldBeInstanceOf<DomainException>()
+        }
 
-    test("TechnicalException wraps a cause") {
-        val cause = RuntimeException("db down")
-        val ex = TechnicalException(Problems.technical(StandardErrorCodes.TECHNICAL_ERROR, "db down"), cause)
-        ex.cause shouldBe cause
-    }
-})
+        test("TechnicalException wraps a cause") {
+            val cause = RuntimeException("db down")
+            val ex = TechnicalException(Problems.technical(StandardErrorCodes.TECHNICAL_ERROR, "db down"), cause)
+            ex.cause shouldBe cause
+        }
+    })

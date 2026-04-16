@@ -7,6 +7,11 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint")
 }
 
+detekt {
+    config.setFrom(rootProject.file("detekt.yml"))
+    buildUponDefaultConfig = true
+}
+
 kotlin {
     jvmToolchain(21)
     explicitApi()

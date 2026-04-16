@@ -17,8 +17,7 @@ public interface Specification<T> {
 
     public operator fun not(): Specification<T> =
         object : Specification<T> {
-            override fun isSatisfiedBy(candidate: T): Boolean =
-                !this@Specification.isSatisfiedBy(candidate)
+            override fun isSatisfiedBy(candidate: T): Boolean = !this@Specification.isSatisfiedBy(candidate)
         }
 }
 

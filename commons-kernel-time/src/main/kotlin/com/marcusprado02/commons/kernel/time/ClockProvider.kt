@@ -5,5 +5,6 @@ import java.time.Instant
 
 public fun interface ClockProvider {
     public fun clock(): Clock
+
     public fun now(): Instant = clock().instant()
 }

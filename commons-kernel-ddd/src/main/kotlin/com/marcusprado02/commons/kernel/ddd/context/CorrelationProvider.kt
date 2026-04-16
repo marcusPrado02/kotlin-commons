@@ -6,6 +6,8 @@ public fun interface CorrelationProvider {
     public fun currentCorrelation(): CorrelationId
 }
 
-public class FixedCorrelationProvider(private val correlationId: CorrelationId) : CorrelationProvider {
+public class FixedCorrelationProvider(
+    private val correlationId: CorrelationId,
+) : CorrelationProvider {
     override fun currentCorrelation(): CorrelationId = correlationId
 }
