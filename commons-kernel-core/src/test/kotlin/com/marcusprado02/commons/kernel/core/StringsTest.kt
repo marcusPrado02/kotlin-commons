@@ -31,4 +31,20 @@ class StringsTest :
             val s: String? = null
             s.nullIfBlank().shouldBeNull()
         }
+
+        test("capitalizeWords capitalizes each word") {
+            "hello world".capitalizeWords() shouldBe "Hello World"
+        }
+
+        test("capitalizeWords single word") {
+            "kotlin".capitalizeWords() shouldBe "Kotlin"
+        }
+
+        test("capitalizeWords empty string") {
+            "".capitalizeWords() shouldBe ""
+        }
+
+        test("capitalizeWords already capitalized is idempotent") {
+            "Hello World".capitalizeWords() shouldBe "Hello World"
+        }
     })

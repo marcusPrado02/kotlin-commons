@@ -6,6 +6,10 @@ public data class PageResult<E>(
     val size: Int,
     val totalElements: Long,
 ) {
+    init {
+        require(totalElements >= 0) { "totalElements must be non-negative, was $totalElements" }
+    }
+
     public val totalPages: Int = if (size == 0) 0 else ((totalElements + size - 1) / size).toInt()
     public val isFirst: Boolean = page == 0
     public val isLast: Boolean = page >= totalPages - 1

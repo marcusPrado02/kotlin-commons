@@ -5,10 +5,6 @@ plugins {
 group = "com.marcusprado02.commons"
 version = "0.1.0-SNAPSHOT"
 
-javaPlatform {
-    allowDependencies()
-}
-
 dependencies {
     constraints {
         api(project(":commons-kernel-core"))

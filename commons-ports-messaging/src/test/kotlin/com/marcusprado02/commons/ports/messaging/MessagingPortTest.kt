@@ -2,8 +2,10 @@ package com.marcusprado02.commons.ports.messaging
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
+import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
+import kotlinx.coroutines.test.runTest
 import java.time.Instant
 
 class MessagingPortTest :
@@ -17,6 +19,15 @@ class MessagingPortTest :
         test("TopicName rejects blank value") {
             val ex = runCatching { TopicName("") }.exceptionOrNull()
             (ex is IllegalArgumentException) shouldBe true
+        }
+
+        test("ConsumerGroup rejects blank value") {
+            val ex = runCatching { ConsumerGroup("") }.exceptionOrNull()
+            (ex is IllegalArgumentException) shouldBe true
+        }
+
+        test("ConsumerGroup accepts non-blank value") {
+            ConsumerGroup("my-group").value shouldBe "my-group"
         }
 
         test("publish is called with correct envelope") {
@@ -33,5 +44,23 @@ class MessagingPortTest :
                 )
             publisher.publish(envelope)
             coVerify(exactly = 1) { publisher.publish(envelope) }
+        }
+
+        test("receive returns null when no message") {
+            runTest {
+                val consumer = mockk<MessageConsumerPort>()
+                coEvery { consumer.receive(any(), any()) } returns null
+                val result = consumer.receive(TopicName("t"), ConsumerGroup("g"))
+                result shouldBe null
+            }
+        }
+
+        test("acknowledge is invoked on consumer") {
+            runTest {
+                val consumer = mockk<MessageConsumerPort>(relaxed = true)
+                val id = MessageId.generate()
+                consumer.acknowledge(id)
+                coVerify(exactly = 1) { consumer.acknowledge(id) }
+            }
         }
     })

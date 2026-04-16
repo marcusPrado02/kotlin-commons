@@ -3,7 +3,11 @@ package com.marcusprado02.commons.ports.messaging
 @JvmInline
 public value class ConsumerGroup(
     public val value: String,
-)
+) {
+    init {
+        require(value.isNotBlank()) { "ConsumerGroup must not be blank" }
+    }
+}
 
 public interface MessageConsumerPort {
     public suspend fun receive(
