@@ -25,7 +25,7 @@ testcontainers-bom = { module = "org.testcontainers:testcontainers-bom", version
 testcontainers-core = { module = "org.testcontainers:testcontainers" }
 testcontainers-postgresql = { module = "org.testcontainers:postgresql" }
 testcontainers-kafka = { module = "org.testcontainers:kafka" }
-greenmail-testcontainers = { module = "com.icegreen:greenmail-testcontainers", version.ref = "greenmail" }
+greenmail = { module = "com.icegreen:greenmail", version.ref = "greenmail" }
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 okhttp-mockwebserver = { module = "com.squareup.okhttp3:mockwebserver", version.ref = "okhttp" }
 kafka-clients = { module = "org.apache.kafka:kafka-clients", version.ref = "kafka-clients" }
