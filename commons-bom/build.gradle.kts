@@ -17,5 +17,11 @@ dependencies {
         api(project(":commons-ports-http"))
         api(project(":commons-ports-cache"))
         api(project(":commons-ports-email"))
+        api(project(":commons-testkit-testcontainers"))
+        api(project(":commons-adapters-persistence-jpa"))
+        api(project(":commons-adapters-cache-redis"))
+        api(project(":commons-adapters-messaging-kafka"))
+        api(project(":commons-adapters-http-okhttp"))
+        api(project(":commons-adapters-email-smtp"))
     }
 }

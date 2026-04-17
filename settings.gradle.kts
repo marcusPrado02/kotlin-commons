@@ -20,4 +20,10 @@ include(
     "commons-ports-cache",
     "commons-ports-email",
     "commons-bom",
+    "commons-testkit-testcontainers",
+    "commons-adapters-persistence-jpa",
+    "commons-adapters-cache-redis",
+    "commons-adapters-messaging-kafka",
+    "commons-adapters-http-okhttp",
+    "commons-adapters-email-smtp",
 )
