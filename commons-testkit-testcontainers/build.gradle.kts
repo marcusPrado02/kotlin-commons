@@ -11,5 +11,4 @@ dependencies {
     implementation(libs.testcontainers.core)
     implementation(libs.testcontainers.postgresql)
     implementation(libs.testcontainers.kafka)
-    implementation(libs.greenmail)
 }
