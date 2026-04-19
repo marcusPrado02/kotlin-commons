@@ -10,6 +10,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.apache.kafka.clients.consumer.KafkaConsumer
+import org.apache.kafka.common.TopicPartition
 import java.time.Duration
 import java.time.Instant
 import java.util.UUID
@@ -21,44 +22,59 @@ public class KafkaMessageConsumerAdapter(
     private val groupId: String,
 ) : MessageConsumerPort {
 
+    private val kafkaDispatcher = Dispatchers.IO.limitedParallelism(1)
     private val pending = ConcurrentHashMap<String, TopicPartitionOffset>()
     private val buffer = ConcurrentLinkedQueue<ConsumerRecord<String, ByteArray>>()
+    private var subscribedTopics: Set<String> = emptySet()
 
     override suspend fun receive(topic: TopicName, group: ConsumerGroup): MessageEnvelope<ByteArray>? =
-        withContext(Dispatchers.IO) {
+        withContext(kafkaDispatcher) {
             require(group.value == groupId) {
                 "Consumer group mismatch: adapter configured for '$groupId', received '${group.value}'"
             }
-            consumer.subscribe(listOf(topic.value))
-            val record = buffer.poll() ?: run {
-                val records = consumer.poll(Duration.ofMillis(500))
-                val first = records.firstOrNull()
-                records.drop(1).forEach { buffer.add(it) }
-                first
+            val topicSet = setOf(topic.value)
+            if (subscribedTopics != topicSet) {
+                consumer.subscribe(topicSet)
+                subscribedTopics = topicSet
             }
-            record?.let { r ->
+            // Try to return from buffer first (matching topic)
+            buffer.firstOrNull { it.topic() == topic.value }?.also { buffer.remove(it) }?.let { r ->
+                val id = MessageId(r.key() ?: UUID.randomUUID().toString())
+                pending[id.value] = TopicPartitionOffset(r.topic(), r.partition(), r.offset())
+                return@withContext MessageEnvelope(
+                    topic = TopicName(r.topic()),
+                    body = r.value(),
+                    headers = MessageHeaders(messageId = id, timestamp = Instant.ofEpochMilli(r.timestamp())),
+                )
+            }
+            // Poll Kafka
+            consumer.poll(Duration.ofMillis(500)).forEach { buffer.offer(it) }
+            // Return matching record from freshly-filled buffer
+            buffer.firstOrNull { it.topic() == topic.value }?.also { buffer.remove(it) }?.let { r ->
                 val id = MessageId(r.key() ?: UUID.randomUUID().toString())
                 pending[id.value] = TopicPartitionOffset(r.topic(), r.partition(), r.offset())
                 MessageEnvelope(
-                    topic = topic,
+                    topic = TopicName(r.topic()),
                     body = r.value(),
-                    headers = MessageHeaders(
-                        messageId = id,
-                        timestamp = Instant.ofEpochMilli(r.timestamp()),
-                    ),
+                    headers = MessageHeaders(messageId = id, timestamp = Instant.ofEpochMilli(r.timestamp())),
                 )
             }
         }
 
     override suspend fun acknowledge(messageId: MessageId): Unit =
-        withContext(Dispatchers.IO) {
+        withContext(kafkaDispatcher) {
             pending.remove(messageId.value)?.let { tpo ->
                 consumer.commitSync(tpo.toOffsetMap())
             }
         }
 
-    override suspend fun nack(messageId: MessageId) {
-        pending.remove(messageId.value)
-        // offset not committed — Kafka redelivers on next consumer session (at-least-once)
-    }
+    override suspend fun nack(messageId: MessageId): Unit =
+        withContext(kafkaDispatcher) {
+            pending.remove(messageId.value)?.let { tpo ->
+                consumer.seek(
+                    TopicPartition(tpo.topic, tpo.partition),
+                    tpo.offset,
+                )
+            }
+        }
 }
