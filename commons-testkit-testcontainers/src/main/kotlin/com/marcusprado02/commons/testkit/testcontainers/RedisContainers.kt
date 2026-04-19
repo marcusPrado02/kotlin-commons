@@ -2,10 +2,12 @@ package com.marcusprado02.commons.testkit.testcontainers
 
 import org.testcontainers.containers.GenericContainer
 
-object RedisContainers {
-    val instance: GenericContainer<*> by lazy {
+public object RedisContainers {
+    private const val REDIS_PORT = 6379
+
+    public val instance: GenericContainer<*> by lazy {
         GenericContainer("redis:7-alpine")
-            .withExposedPorts(6379)
+            .withExposedPorts(REDIS_PORT)
             .also { it.start() }
     }
 }
