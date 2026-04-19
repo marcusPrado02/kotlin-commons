@@ -17,3 +17,18 @@ public fun <K, V> Map<K, V>.mergeWith(
     other.forEach { (k, v) -> result[k] = result[k]?.let { mergeValues(it, v) } ?: v }
     return result
 }
+
+public fun <T> List<T>.splitWhen(predicate: (T) -> Boolean): List<List<T>> {
+    if (isEmpty()) return listOf(emptyList())
+    val result = mutableListOf<MutableList<T>>()
+    var current = mutableListOf<T>()
+    for (element in this) {
+        if (predicate(element) && current.isNotEmpty()) {
+            result.add(current)
+            current = mutableListOf()
+        }
+        current.add(element)
+    }
+    result.add(current)
+    return result
+}

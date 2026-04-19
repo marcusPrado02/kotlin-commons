@@ -33,4 +33,20 @@ class CollectionsTest :
             val result = a.mergeWith(b) { v1, v2 -> v1 + v2 }
             result shouldBe mapOf("x" to 1, "y" to 5, "z" to 4)
         }
+
+        test("splitWhen splits list at predicate elements") {
+            listOf(1, 2, 3, 1, 2).splitWhen { it == 1 } shouldBe listOf(listOf(1, 2, 3), listOf(1, 2))
+        }
+
+        test("splitWhen returns single sublist when predicate never true") {
+            listOf(1, 2, 3).splitWhen { it == 9 } shouldBe listOf(listOf(1, 2, 3))
+        }
+
+        test("splitWhen returns list of empty list for empty input") {
+            emptyList<Int>().splitWhen { true } shouldBe listOf(emptyList())
+        }
+
+        test("splitWhen splits at every element when predicate always true") {
+            listOf(1, 2, 3).splitWhen { true } shouldBe listOf(listOf(1), listOf(2), listOf(3))
+        }
     })
