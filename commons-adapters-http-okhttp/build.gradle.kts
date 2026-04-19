@@ -6,6 +6,7 @@ dependencies {
     api(project(":commons-ports-http"))
     api(libs.okhttp)
     api(libs.kotlinx.coroutines.core)
+    implementation("org.slf4j:slf4j-api:2.0.13")
     testImplementation(libs.okhttp.mockwebserver)
     testImplementation(libs.kotest.runner.junit5)
     testImplementation(libs.kotest.assertions.core)
