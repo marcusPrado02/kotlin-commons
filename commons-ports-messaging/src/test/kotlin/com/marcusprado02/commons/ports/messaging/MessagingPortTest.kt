@@ -63,4 +63,94 @@ class MessagingPortTest :
                 coVerify(exactly = 1) { consumer.acknowledge(id) }
             }
         }
+
+        test("poll returns messages up to maxCount") {
+            runTest {
+                val topic = TopicName("orders")
+                val group = ConsumerGroup("grp")
+                val envelope =
+                    MessageEnvelope(
+                        topic = topic,
+                        body = "data".toByteArray(),
+                        headers = MessageHeaders(messageId = MessageId.generate(), timestamp = Instant.now()),
+                    )
+                val responses = ArrayDeque(listOf(envelope, envelope, null))
+                val consumer =
+                    object : MessageConsumerPort {
+                        override suspend fun receive(
+                            topic: TopicName,
+                            group: ConsumerGroup,
+                        ): MessageEnvelope<ByteArray>? = responses.removeFirstOrNull()
+
+                        override suspend fun acknowledge(messageId: MessageId) = Unit
+
+                        override suspend fun nack(messageId: MessageId) = Unit
+                    }
+                val results = consumer.poll(topic, group, maxCount = 5)
+                results.size shouldBe 2
+            }
+        }
+
+        test("poll stops early when receive returns null") {
+            runTest {
+                val topic = TopicName("events")
+                val group = ConsumerGroup("g2")
+                val consumer =
+                    object : MessageConsumerPort {
+                        override suspend fun receive(
+                            topic: TopicName,
+                            group: ConsumerGroup,
+                        ): MessageEnvelope<ByteArray>? = null
+
+                        override suspend fun acknowledge(messageId: MessageId) = Unit
+
+                        override suspend fun nack(messageId: MessageId) = Unit
+                    }
+                val results = consumer.poll(topic, group, maxCount = 10)
+                results shouldBe emptyList()
+            }
+        }
+
+        test("withHeader adds key-value to envelope extra headers") {
+            val envelope =
+                MessageEnvelope(
+                    topic = TopicName("t"),
+                    body = "x".toByteArray(),
+                    headers = MessageHeaders(messageId = MessageId.generate(), timestamp = Instant.now()),
+                )
+            val updated = envelope.withHeader("trace-id", "abc-123")
+            updated.headers.extra["trace-id"] shouldBe "abc-123"
+        }
+
+        test("withHeader preserves existing headers") {
+            val envelope =
+                MessageEnvelope(
+                    topic = TopicName("t"),
+                    body = "x".toByteArray(),
+                    headers =
+                        MessageHeaders(
+                            messageId = MessageId.generate(),
+                            timestamp = Instant.now(),
+                            extra = mapOf("existing" to "value"),
+                        ),
+                )
+            val updated = envelope.withHeader("new-key", "new-val")
+            updated.headers.extra["existing"] shouldBe "value"
+            updated.headers.extra["new-key"] shouldBe "new-val"
+        }
+
+        test("DeadLetterPort send is called with correct arguments") {
+            runTest {
+                val dlq = mockk<DeadLetterPort>(relaxed = true)
+                val topic = TopicName("payments")
+                val envelope =
+                    MessageEnvelope(
+                        topic = topic,
+                        body = "failed".toByteArray(),
+                        headers = MessageHeaders(messageId = MessageId.generate(), timestamp = Instant.now()),
+                    )
+                dlq.send(envelope, "processing error", topic)
+                coVerify(exactly = 1) { dlq.send(envelope, "processing error", topic) }
+            }
+        }
     })

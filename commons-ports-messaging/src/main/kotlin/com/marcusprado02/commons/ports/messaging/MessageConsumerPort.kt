@@ -18,4 +18,17 @@ public interface MessageConsumerPort {
     public suspend fun acknowledge(messageId: MessageId)
 
     public suspend fun nack(messageId: MessageId)
+
+    public suspend fun poll(
+        topic: TopicName,
+        group: ConsumerGroup,
+        maxCount: Int,
+    ): List<MessageEnvelope<ByteArray>> {
+        val results = mutableListOf<MessageEnvelope<ByteArray>>()
+        repeat(maxCount) {
+            val msg = receive(topic, group) ?: return results
+            results += msg
+        }
+        return results
+    }
 }
