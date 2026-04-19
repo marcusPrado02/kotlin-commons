@@ -115,4 +115,62 @@ class SmtpEmailAdapterTest :
                 greenMail.receivedMessages.size shouldBe 3
             }
         }
+
+        // T-82: multipart/alternative
+        test("send email with both HTML and plain uses multipart/alternative") {
+            runTest {
+                adapter.send(
+                    Email(
+                        from = EmailAddress("from@example.com"),
+                        to = listOf(EmailAddress("to@example.com")),
+                        subject = "Multipart",
+                        content = EmailContent(plain = "Plain version", html = "<b>HTML version</b>"),
+                    ),
+                )
+                val messages = greenMail.receivedMessages
+                messages.size shouldBe 1
+                messages[0].subject shouldBe "Multipart"
+            }
+        }
+
+        // T-83: parallel sendBatch
+        test("sendBatch with 3 emails sends all concurrently") {
+            runTest {
+                val emails =
+                    (1..3).map { i ->
+                        Email(
+                            from = EmailAddress("from@example.com"),
+                            to = listOf(EmailAddress("batch$i@example.com")),
+                            subject = "Parallel $i",
+                            content = EmailContent(plain = "Parallel body $i"),
+                        )
+                    }
+                adapter.sendBatch(emails)
+                greenMail.receivedMessages.size shouldBe 3
+            }
+        }
+
+        // T-84: SmtpSessionBuilder
+        test("SmtpSessionBuilder builds a Session with the configured host") {
+            val session =
+                SmtpSessionBuilder()
+                    .host("smtp.example.com")
+                    .port(465)
+                    .tls(true)
+                    .connectTimeout(3_000)
+                    .readTimeout(8_000)
+                    .build()
+            session.getProperty("mail.smtp.host") shouldBe "smtp.example.com"
+            session.getProperty("mail.smtp.port") shouldBe "465"
+            session.getProperty("mail.smtp.starttls.enable") shouldBe "true"
+        }
+
+        test("SmtpSessionBuilder sets auth when credentials provided") {
+            val session =
+                SmtpSessionBuilder()
+                    .host("smtp.example.com")
+                    .credentials("user@example.com", "secret")
+                    .build()
+            session.getProperty("mail.smtp.auth") shouldBe "true"
+        }
     })

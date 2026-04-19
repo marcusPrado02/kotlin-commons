@@ -9,6 +9,9 @@ import jakarta.mail.internet.MimeBodyPart
 import jakarta.mail.internet.MimeMessage
 import jakarta.mail.internet.MimeMultipart
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
 
 public class SmtpEmailAdapter(
@@ -36,5 +39,5 @@ public class SmtpEmailAdapter(
             Transport.send(message)
         }
 
-    override suspend fun sendBatch(emails: List<Email>): Unit = emails.forEach { send(it) }
+    override suspend fun sendBatch(emails: List<Email>): Unit = coroutineScope { emails.map { async { send(it) } }.awaitAll() }
 }
