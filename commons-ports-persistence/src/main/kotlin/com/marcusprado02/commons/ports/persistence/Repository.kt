@@ -5,6 +5,8 @@ public interface Repository<E : Any, I : Any> {
 
     public suspend fun save(entity: E): E
 
+    public suspend fun saveAll(entities: Collection<E>): List<E> = entities.map { save(it) }
+
     public suspend fun delete(entity: E)
 
     public suspend fun deleteById(id: I)

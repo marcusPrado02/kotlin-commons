@@ -139,4 +139,42 @@ class RepositoryContractTest :
             repo.save(TestItem("3", "Item Three"))
             repo.existsById("3") shouldBe true
         }
+
+        test("saveAll persists all entities and returns them") {
+            val repo = InMemoryRepository<TestItem, String> { it.id }
+            val items = listOf(TestItem("10", "Alpha"), TestItem("11", "Beta"))
+            val saved = repo.saveAll(items)
+            saved shouldBe items
+            repo.findById("10") shouldBe items[0]
+            repo.findById("11") shouldBe items[1]
+        }
+
+        test("saveAll with empty collection returns empty list") {
+            val repo = InMemoryRepository<TestItem, String> { it.id }
+            val saved = repo.saveAll(emptyList())
+            saved shouldBe emptyList()
+        }
+
+        test("ProjectionRepository findById returns null for missing id") {
+            val projRepo =
+                object : ProjectionRepository<String, String> {
+                    override suspend fun findById(id: String): String? = null
+
+                    override suspend fun findAll(request: PageRequest): PageResult<String> = PageResult(emptyList(), 0, 20, 0)
+                }
+            projRepo.findById("missing") shouldBe null
+        }
+
+        test("ProjectionRepository findAll returns PageResult with projections") {
+            val projRepo =
+                object : ProjectionRepository<String, String> {
+                    override suspend fun findById(id: String): String? = "projection-$id"
+
+                    override suspend fun findAll(request: PageRequest): PageResult<String> =
+                        PageResult(listOf("proj-a", "proj-b"), 0, 20, 2)
+                }
+            val result = projRepo.findAll(PageRequest())
+            result.totalElements shouldBe 2
+            result.content shouldBe listOf("proj-a", "proj-b")
+        }
     })
