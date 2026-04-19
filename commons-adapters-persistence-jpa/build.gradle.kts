@@ -12,15 +12,6 @@ dependencyManagement {
     }
 }
 
-tasks.withType<Test> {
-    environment("DOCKER_HOST", "unix:///var/run/docker.sock")
-    environment("TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE", "/var/run/docker.sock")
-    environment("DOCKER_API_VERSION", "1.45")
-    systemProperty("DOCKER_API_VERSION", "1.45")
-    systemProperty("DOCKER_HOST", "unix:///var/run/docker.sock")
-    systemProperty("api.version", "1.45")
-}
-
 dependencies {
     api(project(":commons-ports-persistence"))
     api("org.springframework.boot:spring-boot-starter-data-jpa")

@@ -8,7 +8,7 @@ import org.springframework.dao.DataAccessException
 import org.springframework.data.jpa.repository.JpaRepository
 
 public abstract class JpaRepositoryAdapter<E : Any, I : Any>(
-    private val jpa: JpaRepository<E, I>,
+    protected val jpa: JpaRepository<E, I>,
 ) : Repository<E, I> {
     override suspend fun findById(id: I): E? =
         withContext(Dispatchers.IO) {

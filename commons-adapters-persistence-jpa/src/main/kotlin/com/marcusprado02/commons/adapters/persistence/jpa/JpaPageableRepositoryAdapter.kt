@@ -10,7 +10,7 @@ import org.springframework.dao.DataAccessException
 import org.springframework.data.jpa.repository.JpaRepository
 
 public abstract class JpaPageableRepositoryAdapter<E : Any, I : Any>(
-    private val jpa: JpaRepository<E, I>,
+    jpa: JpaRepository<E, I>,
 ) : JpaRepositoryAdapter<E, I>(jpa),
     PageableRepository<E, I> {
     override suspend fun findAll(request: PageRequest): PageResult<E> =

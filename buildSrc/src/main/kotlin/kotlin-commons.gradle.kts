@@ -22,6 +22,12 @@ kotlin {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+    environment("DOCKER_HOST", "unix:///var/run/docker.sock")
+    environment("TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE", "/var/run/docker.sock")
+    environment("DOCKER_API_VERSION", "1.45")
+    systemProperty("DOCKER_HOST", "unix:///var/run/docker.sock")
+    systemProperty("DOCKER_API_VERSION", "1.45")
+    systemProperty("api.version", "1.45")
 }
 
 kover {
