@@ -36,4 +36,16 @@ public object Problems {
         code: ErrorCode,
         message: String,
     ): Problem = Problem(code, ErrorCategory.TECHNICAL, Severity.HIGH, message)
+
+    public fun fromException(e: Throwable): Problem =
+        when (e) {
+            is IllegalArgumentException ->
+                validation(StandardErrorCodes.VALIDATION_ERROR, e.message ?: "Invalid argument")
+            is NoSuchElementException ->
+                notFound(StandardErrorCodes.NOT_FOUND, e.message ?: "Not found")
+            is IllegalStateException ->
+                business(StandardErrorCodes.BUSINESS_ERROR, e.message ?: "Business error")
+            else ->
+                technical(StandardErrorCodes.TECHNICAL_ERROR, e.message ?: "Technical error")
+        }
 }
