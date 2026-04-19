@@ -53,4 +53,29 @@ class EitherTest :
             val e: Either<String, Int> = Either.left("err")
             e.flatMapRight { Either.right(it * 2) } shouldBe Either.left("err")
         }
+
+        // T-23: swap
+        test("swap turns Left into Right") {
+            Either.left("error").swap() shouldBe Either.right("error")
+        }
+
+        test("swap turns Right into Left") {
+            Either.right(42).swap() shouldBe Either.left(42)
+        }
+
+        // T-24: flatMapLeft
+        test("flatMapLeft transforms left value") {
+            val e: Either<String, Int> = Either.left("err")
+            e.flatMapLeft { Either.left(it.length) } shouldBe Either.left(3)
+        }
+
+        test("flatMapLeft preserves right") {
+            val e: Either<String, Int> = Either.right(99)
+            e.flatMapLeft { Either.left(0) } shouldBe Either.right(99)
+        }
+
+        test("flatMapLeft can recover left to right") {
+            val e: Either<String, Int> = Either.left("err")
+            e.flatMapLeft { Either.right(42) } shouldBe Either.right(42)
+        }
     })

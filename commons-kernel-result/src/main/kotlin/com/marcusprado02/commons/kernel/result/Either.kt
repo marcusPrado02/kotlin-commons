@@ -44,6 +44,18 @@ public sealed class Either<out L, out R> {
             is Right -> transform(value)
         }
 
+    public fun swap(): Either<R, L> =
+        when (this) {
+            is Left -> Right(value)
+            is Right -> Left(value)
+        }
+
+    public fun <T> flatMapLeft(transform: (L) -> Either<T, @UnsafeVariance R>): Either<T, R> =
+        when (this) {
+            is Left -> transform(value)
+            is Right -> this
+        }
+
     public companion object {
         public fun <L> left(value: L): Either<L, Nothing> = Left(value)
 

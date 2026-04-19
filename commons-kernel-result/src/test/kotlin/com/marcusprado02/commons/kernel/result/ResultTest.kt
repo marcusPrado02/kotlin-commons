@@ -114,4 +114,57 @@ class ResultTest :
             val r = Result.fail<String>(problem).recover { "recovered" }
             r shouldBe Result.ok("recovered")
         }
+
+        // T-25: zip
+        test("zip combines two ok results into a pair") {
+            Result.ok(1).zip(Result.ok("a")) shouldBe Result.ok(1 to "a")
+        }
+
+        test("zip returns first fail when first is fail") {
+            Result.fail<Int>(problem).zip(Result.ok("a")) shouldBe Result.fail(problem)
+        }
+
+        test("zip returns second fail when second is fail") {
+            Result.ok(1).zip(Result.fail<String>(problem)) shouldBe Result.fail(problem)
+        }
+
+        // T-26: zipWith
+        test("zipWith combines two ok results with transform") {
+            Result.ok(3).zipWith(Result.ok(4)) { a, b -> a * b } shouldBe Result.ok(12)
+        }
+
+        test("zipWith short-circuits on fail") {
+            Result.fail<Int>(problem).zipWith(Result.ok(4)) { a, b -> a * b } shouldBe Result.fail(problem)
+        }
+
+        // T-27: toEither (interop)
+        test("toEither converts ok to Right") {
+            Result.ok(42).toEither() shouldBe Either.right(42)
+        }
+
+        test("toEither converts fail to Left") {
+            Result.fail<Int>(problem).toEither() shouldBe Either.left(problem)
+        }
+
+        test("toResult converts Right to ok") {
+            Either.right(42).toResult() shouldBe Result.ok(42)
+        }
+
+        test("toResult converts Left to fail") {
+            Either.left(problem).toResult() shouldBe Result.fail(problem)
+        }
+
+        // T-30: sequence
+        test("sequence returns ok list when all results are ok") {
+            Result.sequence(listOf(Result.ok(1), Result.ok(2), Result.ok(3))) shouldBe Result.ok(listOf(1, 2, 3))
+        }
+
+        test("sequence short-circuits on first fail") {
+            val result = Result.sequence(listOf(Result.ok(1), Result.fail(problem), Result.ok(3)))
+            result shouldBe Result.fail(problem)
+        }
+
+        test("sequence with empty list returns ok of empty list") {
+            Result.sequence(emptyList<Result<Int>>()) shouldBe Result.ok(emptyList())
+        }
     })

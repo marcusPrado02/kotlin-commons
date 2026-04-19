@@ -1,5 +1,6 @@
 package com.marcusprado02.commons.kernel.result
 
+@Suppress("TooManyFunctions")
 public sealed class Option<out T> {
     public data class Some<out T>(
         public val value: T,
@@ -39,6 +40,14 @@ public sealed class Option<out T> {
         if (this is Some) action(value)
         return this
     }
+
+    public fun orElse(other: Option<@UnsafeVariance T>): Option<T> = if (this is Some) this else other
+
+    public fun toResult(problem: com.marcusprado02.commons.kernel.errors.Problem): Result<T> =
+        when (this) {
+            is Some -> Result.ok(value)
+            is None -> Result.fail(problem)
+        }
 
     public companion object {
         public fun <T> some(value: T): Option<T> = Some(value)

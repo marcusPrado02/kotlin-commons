@@ -1,11 +1,14 @@
 package com.marcusprado02.commons.kernel.result
 
+import com.marcusprado02.commons.kernel.errors.ErrorCode
+import com.marcusprado02.commons.kernel.errors.Problems
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.shouldBe
 
 class OptionTest :
     FunSpec({
+        val problem = Problems.notFound(ErrorCode("NOT_FOUND"), "not found")
         test("Some isSome, not isNone") {
             val o = Option.some("value")
             o.isSome() shouldBe true
@@ -69,5 +72,27 @@ class OptionTest :
 
         test("getOrElse with lambda returns default for none") {
             Option.none<String>().getOrElse { "lazy-default" } shouldBe "lazy-default"
+        }
+
+        // T-28: orElse
+        test("orElse returns itself when Some") {
+            Option.some("first").orElse(Option.some("second")) shouldBe Option.some("first")
+        }
+
+        test("orElse returns other when None") {
+            Option.none<String>().orElse(Option.some("fallback")) shouldBe Option.some("fallback")
+        }
+
+        test("orElse returns None when both are None") {
+            Option.none<String>().orElse(Option.none()) shouldBe Option.none()
+        }
+
+        // T-29: toResult
+        test("toResult converts Some to ok") {
+            Option.some(42).toResult(problem) shouldBe Result.ok(42)
+        }
+
+        test("toResult converts None to fail with given problem") {
+            Option.none<Int>().toResult(problem) shouldBe Result.fail(problem)
         }
     })

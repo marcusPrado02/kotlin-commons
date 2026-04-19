@@ -85,9 +85,32 @@ public sealed class Result<out T> {
             is Fail -> this
         }
 
+    public fun <R> zip(other: Result<R>): Result<Pair<T, R>> =
+        when {
+            this is Ok && other is Ok -> ok(value to other.value)
+            this is Fail -> this
+            else -> other as Fail
+        }
+
+    public fun <R, V> zipWith(
+        other: Result<R>,
+        transform: (T, R) -> V,
+    ): Result<V> = zip(other).map { (a, b) -> transform(a, b) }
+
     public companion object {
         public fun <T> ok(value: T): Result<T> = Ok(value)
 
         public fun <T> fail(problem: Problem): Result<T> = Fail(problem)
+
+        public fun <T> sequence(results: List<Result<T>>): Result<List<T>> {
+            val values = mutableListOf<T>()
+            for (r in results) {
+                when (r) {
+                    is Ok -> values += r.value
+                    is Fail -> return r
+                }
+            }
+            return ok(values)
+        }
     }
 }
