@@ -62,4 +62,53 @@ class TimeWindowTest :
             SystemClockProvider.now() shouldNotBe null
             clock shouldNotBe null
         }
+
+        test("merge of non-overlapping windows takes earliest start and latest end") {
+            val w1 = TimeWindow(start, end)
+            val w2 =
+                TimeWindow(
+                    Instant.parse("2026-02-01T00:00:00Z"),
+                    Instant.parse("2026-02-28T00:00:00Z"),
+                )
+            val merged = w1.merge(w2)
+            merged.start shouldBe start
+            merged.end shouldBe Instant.parse("2026-02-28T00:00:00Z")
+        }
+
+        test("merge of overlapping windows") {
+            val w1 = TimeWindow(start, end)
+            val w2 =
+                TimeWindow(
+                    Instant.parse("2026-01-15T00:00:00Z"),
+                    Instant.parse("2026-02-15T00:00:00Z"),
+                )
+            val merged = w1.merge(w2)
+            merged.start shouldBe start
+            merged.end shouldBe Instant.parse("2026-02-15T00:00:00Z")
+        }
+
+        test("merge with itself returns equal window") {
+            val w1 = TimeWindow(start, end)
+            val merged = w1.merge(w1)
+            merged shouldBe w1
+        }
+
+        test("advance by positive duration returns clock further in time") {
+            val fixed = FixedClockProvider(start)
+            val advanced = fixed.advance(Duration.ofDays(5))
+            advanced.now() shouldBe start.plusSeconds(5L * 24 * 60 * 60)
+        }
+
+        test("advance by zero duration returns clock at same instant") {
+            val fixed = FixedClockProvider(start)
+            val advanced = fixed.advance(Duration.ZERO)
+            advanced.now() shouldBe start
+        }
+
+        test("advance is immutable (original provider unchanged)") {
+            val fixed = FixedClockProvider(start)
+            val advanced = fixed.advance(Duration.ofDays(10))
+            fixed.now() shouldBe start
+            advanced.now() shouldNotBe start
+        }
     })

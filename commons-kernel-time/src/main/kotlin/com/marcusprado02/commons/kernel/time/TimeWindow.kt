@@ -17,6 +17,12 @@ public data class TimeWindow(
 
     public fun overlaps(other: TimeWindow): Boolean = start.isBefore(other.end) && end.isAfter(other.start)
 
+    public fun merge(other: TimeWindow): TimeWindow =
+        TimeWindow(
+            start = if (start.isBefore(other.start)) start else other.start,
+            end = if (end.isAfter(other.end)) end else other.end,
+        )
+
     public companion object {
         public fun of(
             start: Instant,
