@@ -54,4 +54,13 @@ public abstract class JpaRepositoryAdapter<E : Any, I : Any>(
                 throw PersistenceException("existsById failed", ex)
             }
         }
+
+    override suspend fun saveAll(entities: Collection<E>): List<E> =
+        withContext(Dispatchers.IO) {
+            try {
+                jpa.saveAll(entities)
+            } catch (ex: DataAccessException) {
+                throw PersistenceException("saveAll failed", ex)
+            }
+        }
 }

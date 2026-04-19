@@ -1,6 +1,7 @@
 package com.marcusprado02.commons.adapters.persistence.jpa
 
 import com.marcusprado02.commons.testkit.testcontainers.PostgresContainers
+import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -87,5 +88,22 @@ class JpaRepositoryAdapterTest {
             val saved = adapter.save(TestEntity(name = "del2"))
             adapter.delete(saved)
             assertNull(adapter.findById(saved.id!!))
+        }
+
+    @Test
+    fun `saveAll persists all entities and returns them`() =
+        runTest {
+            val entities = listOf(TestEntity(name = "batch1"), TestEntity(name = "batch2"), TestEntity(name = "batch3"))
+            val saved = adapter.saveAll(entities)
+            assertEquals(3, saved.size)
+            saved.forEach { assertNotNull(it.id) }
+            saved.map { it.name }.toSet() shouldBe setOf("batch1", "batch2", "batch3")
+        }
+
+    @Test
+    fun `saveAll with empty list returns empty list`() =
+        runTest {
+            val result = adapter.saveAll(emptyList())
+            assertTrue(result.isEmpty())
         }
 }
