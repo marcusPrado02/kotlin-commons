@@ -13,21 +13,23 @@ import kotlin.coroutines.resumeWithException
 public class KafkaMessagePublisherAdapter(
     private val producer: KafkaProducer<String, ByteArray>,
 ) : MessagePublisherPort {
-
     override suspend fun publish(envelope: MessageEnvelope<*>) {
-        val body = envelope.body as? ByteArray
-            ?: throw IllegalArgumentException(
-                "KafkaMessagePublisherAdapter requires ByteArray body, got ${envelope.body?.javaClass?.name}",
-            )
+        val body =
+            envelope.body as? ByteArray
+                ?: throw IllegalArgumentException(
+                    "KafkaMessagePublisherAdapter requires ByteArray body, got ${envelope.body?.javaClass?.name}",
+                )
         suspendCancellableCoroutine { cont ->
-            val record = ProducerRecord(
-                envelope.topic.value,
-                envelope.headers.messageId.value,
-                body,
-            )
-            val future = producer.send(record) { _, ex ->
-                if (ex != null) cont.resumeWithException(ex) else cont.resume(Unit)
-            }
+            val record =
+                ProducerRecord(
+                    envelope.topic.value,
+                    envelope.headers.messageId.value,
+                    body,
+                )
+            val future =
+                producer.send(record) { _, ex ->
+                    if (ex != null) cont.resumeWithException(ex) else cont.resume(Unit)
+                }
             cont.invokeOnCancellation { future.cancel(true) }
         }
     }

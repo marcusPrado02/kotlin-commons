@@ -16,25 +16,37 @@ import kotlin.coroutines.resumeWithException
 public class OkHttpClientAdapter(
     private val client: OkHttpClient,
 ) : HttpClientPort {
-
     override suspend fun execute(request: HttpRequest): HttpResponse<ByteArray> =
         suspendCancellableCoroutine { cont ->
             val timeout = request.timeout
-            val effectiveClient = if (timeout != null) {
-                client.newBuilder()
-                    .callTimeout(timeout.toMillis(), TimeUnit.MILLISECONDS)
-                    .build()
-            } else {
-                client
-            }
+            val effectiveClient =
+                if (timeout != null) {
+                    client
+                        .newBuilder()
+                        .callTimeout(timeout.toMillis(), TimeUnit.MILLISECONDS)
+                        .build()
+                } else {
+                    client
+                }
             val call = effectiveClient.newCall(request.toOkHttpRequest())
             cont.invokeOnCancellation { call.cancel() }
-            call.enqueue(object : Callback {
-                override fun onFailure(call: Call, e: IOException) = cont.resumeWithException(e)
-                override fun onResponse(call: Call, response: Response) = cont.resume(response.toHttpResponse())
-            })
+            call.enqueue(
+                object : Callback {
+                    override fun onFailure(
+                        call: Call,
+                        e: IOException,
+                    ) = cont.resumeWithException(e)
+
+                    override fun onResponse(
+                        call: Call,
+                        response: Response,
+                    ) = cont.resume(response.toHttpResponse())
+                },
+            )
         }
 
-    override suspend fun <T> execute(request: HttpRequest, mapper: (ByteArray) -> T): HttpResponse<T> =
-        execute(request).map(mapper)
+    override suspend fun <T> execute(
+        request: HttpRequest,
+        mapper: (ByteArray) -> T,
+    ): HttpResponse<T> = execute(request).map(mapper)
 }

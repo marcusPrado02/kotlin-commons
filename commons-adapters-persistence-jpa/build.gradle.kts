@@ -2,14 +2,13 @@ plugins {
     id("kotlin-commons-spring")
 }
 
-dependencyManagement {
-    dependencies {
-        dependencySet("com.github.docker-java:3.7.1") {
-            entry("docker-java-api")
-            entry("docker-java-transport")
-            entry("docker-java-transport-zerodep")
-        }
-    }
+// Pin docker-java to 3.7.1 for Docker Engine 27+ API compatibility.
+configurations.all {
+    resolutionStrategy.force(
+        "com.github.docker-java:docker-java-api:3.7.1",
+        "com.github.docker-java:docker-java-transport:3.7.1",
+        "com.github.docker-java:docker-java-transport-zerodep:3.7.1",
+    )
 }
 
 dependencies {

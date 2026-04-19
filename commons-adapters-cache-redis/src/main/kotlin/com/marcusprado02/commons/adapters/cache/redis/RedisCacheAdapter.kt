@@ -15,8 +15,10 @@ public class RedisCacheAdapter(
     private val redis: RedisTemplate<String, ByteArray>,
     private val objectMapper: ObjectMapper,
 ) : CachePort {
-
-    override suspend fun <T : Any> get(key: CacheKey, type: Class<T>): T? =
+    override suspend fun <T : Any> get(
+        key: CacheKey,
+        type: Class<T>,
+    ): T? =
         withContext(Dispatchers.IO) {
             try {
                 redis.opsForValue().get(key.value)?.let { objectMapper.readValue(it, type) }
@@ -25,7 +27,11 @@ public class RedisCacheAdapter(
             }
         }
 
-    override suspend fun <T : Any> put(key: CacheKey, value: T, ttl: Duration?): Unit =
+    override suspend fun <T : Any> put(
+        key: CacheKey,
+        value: T,
+        ttl: Duration?,
+    ): Unit =
         withContext(Dispatchers.IO) {
             try {
                 val bytes = objectMapper.writeValueAsBytes(value)

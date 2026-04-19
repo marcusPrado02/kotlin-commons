@@ -19,23 +19,26 @@ internal fun HttpRequest.toOkHttpRequest(): Request {
 private fun HttpBody.toRequestBody(): RequestBody? =
     when (this) {
         is HttpBody.Bytes -> content.toRequestBody(contentType.toMediaType())
-        is HttpBody.FormUrlEncoded -> FormBody.Builder()
-            .also { fb -> params.forEach { (k, v) -> fb.add(k, v) } }
-            .build()
-        is HttpBody.Multipart -> MultipartBody.Builder()
-            .setType(MultipartBody.FORM)
-            .also { mb ->
-                parts.forEach { part ->
-                    if (part.filename != null) {
-                        mb.addFormDataPart(
-                            part.name,
-                            part.filename,
-                            part.content.toRequestBody(part.contentType.toMediaType()),
-                        )
-                    } else {
-                        mb.addFormDataPart(part.name, String(part.content))
+        is HttpBody.FormUrlEncoded ->
+            FormBody
+                .Builder()
+                .also { fb -> params.forEach { (k, v) -> fb.add(k, v) } }
+                .build()
+        is HttpBody.Multipart ->
+            MultipartBody
+                .Builder()
+                .setType(MultipartBody.FORM)
+                .also { mb ->
+                    parts.forEach { part ->
+                        if (part.filename != null) {
+                            mb.addFormDataPart(
+                                part.name,
+                                part.filename,
+                                part.content.toRequestBody(part.contentType.toMediaType()),
+                            )
+                        } else {
+                            mb.addFormDataPart(part.name, String(part.content))
+                        }
                     }
-                }
-            }
-            .build()
+                }.build()
     }

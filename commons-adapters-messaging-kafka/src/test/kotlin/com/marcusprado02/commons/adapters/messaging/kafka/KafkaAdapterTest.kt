@@ -1,9 +1,9 @@
 package com.marcusprado02.commons.adapters.messaging.kafka
 
 import com.marcusprado02.commons.ports.messaging.ConsumerGroup
+import com.marcusprado02.commons.ports.messaging.MessageEnvelope
 import com.marcusprado02.commons.ports.messaging.MessageHeaders
 import com.marcusprado02.commons.ports.messaging.MessageId
-import com.marcusprado02.commons.ports.messaging.MessageEnvelope
 import com.marcusprado02.commons.ports.messaging.TopicName
 import com.marcusprado02.commons.testkit.testcontainers.KafkaContainers
 import io.kotest.assertions.throwables.shouldThrow
@@ -21,122 +21,130 @@ import org.apache.kafka.common.serialization.StringDeserializer
 import org.apache.kafka.common.serialization.StringSerializer
 import java.time.Instant
 
-class KafkaAdapterTest : FunSpec({
-    val bootstrap = KafkaContainers.instance.bootstrapServers
-    val topic = TopicName("test-topic")
-    val group = ConsumerGroup("test-group")
+class KafkaAdapterTest :
+    FunSpec({
+        val bootstrap = KafkaContainers.instance.bootstrapServers
+        val topic = TopicName("test-topic")
+        val group = ConsumerGroup("test-group")
 
-    val producer = KafkaProducer<String, ByteArray>(
-        mapOf(
-            ProducerConfig.BOOTSTRAP_SERVERS_CONFIG to bootstrap,
-            ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG to StringSerializer::class.java.name,
-            ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG to ByteArraySerializer::class.java.name,
-        ),
-    )
-    val consumer = KafkaConsumer<String, ByteArray>(
-        mapOf(
-            ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG to bootstrap,
-            ConsumerConfig.GROUP_ID_CONFIG to group.value,
-            ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG to StringDeserializer::class.java.name,
-            ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG to ByteArrayDeserializer::class.java.name,
-            ConsumerConfig.AUTO_OFFSET_RESET_CONFIG to "earliest",
-            ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG to "false",
-        ),
-    )
-
-    val publisher = KafkaMessagePublisherAdapter(producer)
-    val consumerAdapter = KafkaMessageConsumerAdapter(consumer, group.value)
-
-    afterSpec {
-        producer.close()
-        consumer.close()
-    }
-
-    test("publish sends a message that can be received") {
-        runTest {
-            val envelope = MessageEnvelope(
-                topic = topic,
-                body = "hello-kafka".toByteArray(),
-                headers = MessageHeaders(messageId = MessageId.generate(), timestamp = Instant.now()),
+        val producer =
+            KafkaProducer<String, ByteArray>(
+                mapOf(
+                    ProducerConfig.BOOTSTRAP_SERVERS_CONFIG to bootstrap,
+                    ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG to StringSerializer::class.java.name,
+                    ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG to ByteArraySerializer::class.java.name,
+                ),
             )
-            publisher.publish(envelope)
-            val received = consumerAdapter.receive(topic, group)
-            received shouldNotBe null
-            String(received!!.body) shouldBe "hello-kafka"
-        }
-    }
-
-    test("acknowledge commits offset without error") {
-        runTest {
-            val envelope = MessageEnvelope(
-                topic = topic,
-                body = "ack-test".toByteArray(),
-                headers = MessageHeaders(messageId = MessageId.generate(), timestamp = Instant.now()),
+        val consumer =
+            KafkaConsumer<String, ByteArray>(
+                mapOf(
+                    ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG to bootstrap,
+                    ConsumerConfig.GROUP_ID_CONFIG to group.value,
+                    ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG to StringDeserializer::class.java.name,
+                    ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG to ByteArrayDeserializer::class.java.name,
+                    ConsumerConfig.AUTO_OFFSET_RESET_CONFIG to "earliest",
+                    ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG to "false",
+                ),
             )
-            publisher.publish(envelope)
-            val received = consumerAdapter.receive(topic, group)
-            received shouldNotBe null
-            consumerAdapter.acknowledge(received!!.headers.messageId)
-        }
-    }
 
-    test("publishBatch sends all messages") {
-        runTest {
-            val envelopes = (1..3).map { i ->
-                MessageEnvelope(
-                    topic = topic,
-                    body = "batch-$i".toByteArray(),
-                    headers = MessageHeaders(messageId = MessageId.generate(), timestamp = Instant.now()),
-                )
-            }
-            publisher.publishBatch(envelopes)
-            var count = 0
-            repeat(3) {
-                val msg = consumerAdapter.receive(topic, group)
-                if (msg != null) count++
-            }
-            count shouldBe 3
-        }
-    }
+        val publisher = KafkaMessagePublisherAdapter(producer)
+        val consumerAdapter = KafkaMessageConsumerAdapter(consumer, group.value)
 
-    test("publish throws IllegalArgumentException for non-ByteArray body") {
-        runTest {
-            val envelope = MessageEnvelope(
-                topic = topic,
-                body = "not-bytes",
-                headers = MessageHeaders(messageId = MessageId.generate(), timestamp = Instant.now()),
-            )
-            shouldThrow<IllegalArgumentException> {
+        afterSpec {
+            producer.close()
+            consumer.close()
+        }
+
+        test("publish sends a message that can be received") {
+            runTest {
+                val envelope =
+                    MessageEnvelope(
+                        topic = topic,
+                        body = "hello-kafka".toByteArray(),
+                        headers = MessageHeaders(messageId = MessageId.generate(), timestamp = Instant.now()),
+                    )
                 publisher.publish(envelope)
+                val received = consumerAdapter.receive(topic, group)
+                received shouldNotBe null
+                String(received!!.body) shouldBe "hello-kafka"
             }
         }
-    }
 
-    test("nack removes message from pending without error") {
-        runTest {
-            val envelope = MessageEnvelope(
-                topic = topic,
-                body = "nack-test".toByteArray(),
-                headers = MessageHeaders(messageId = MessageId.generate(), timestamp = Instant.now()),
-            )
-            publisher.publish(envelope)
-            val received = consumerAdapter.receive(topic, group)
-            received shouldNotBe null
-            consumerAdapter.nack(received!!.headers.messageId)
+        test("acknowledge commits offset without error") {
+            runTest {
+                val envelope =
+                    MessageEnvelope(
+                        topic = topic,
+                        body = "ack-test".toByteArray(),
+                        headers = MessageHeaders(messageId = MessageId.generate(), timestamp = Instant.now()),
+                    )
+                publisher.publish(envelope)
+                val received = consumerAdapter.receive(topic, group)
+                received shouldNotBe null
+                consumerAdapter.acknowledge(received!!.headers.messageId)
+            }
         }
-    }
 
-    test("acknowledge with unknown messageId does nothing") {
-        runTest {
-            consumerAdapter.acknowledge(MessageId.generate())
+        test("publishBatch sends all messages") {
+            runTest {
+                val envelopes =
+                    (1..3).map { i ->
+                        MessageEnvelope(
+                            topic = topic,
+                            body = "batch-$i".toByteArray(),
+                            headers = MessageHeaders(messageId = MessageId.generate(), timestamp = Instant.now()),
+                        )
+                    }
+                publisher.publishBatch(envelopes)
+                var count = 0
+                repeat(3) {
+                    val msg = consumerAdapter.receive(topic, group)
+                    if (msg != null) count++
+                }
+                count shouldBe 3
+            }
         }
-    }
 
-    test("receive returns null when no messages available") {
-        runTest {
-            val emptyTopic = TopicName("empty-topic-${System.currentTimeMillis()}")
-            val received = consumerAdapter.receive(emptyTopic, group)
-            received shouldBe null
+        test("publish throws IllegalArgumentException for non-ByteArray body") {
+            runTest {
+                val envelope =
+                    MessageEnvelope(
+                        topic = topic,
+                        body = "not-bytes",
+                        headers = MessageHeaders(messageId = MessageId.generate(), timestamp = Instant.now()),
+                    )
+                shouldThrow<IllegalArgumentException> {
+                    publisher.publish(envelope)
+                }
+            }
         }
-    }
-})
+
+        test("nack removes message from pending without error") {
+            runTest {
+                val envelope =
+                    MessageEnvelope(
+                        topic = topic,
+                        body = "nack-test".toByteArray(),
+                        headers = MessageHeaders(messageId = MessageId.generate(), timestamp = Instant.now()),
+                    )
+                publisher.publish(envelope)
+                val received = consumerAdapter.receive(topic, group)
+                received shouldNotBe null
+                consumerAdapter.nack(received!!.headers.messageId)
+            }
+        }
+
+        test("acknowledge with unknown messageId does nothing") {
+            runTest {
+                consumerAdapter.acknowledge(MessageId.generate())
+            }
+        }
+
+        test("receive returns null when no messages available") {
+            runTest {
+                val emptyTopic = TopicName("empty-topic-${System.currentTimeMillis()}")
+                val received = consumerAdapter.receive(emptyTopic, group)
+                received shouldBe null
+            }
+        }
+    })

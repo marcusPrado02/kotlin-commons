@@ -1,11 +1,15 @@
 package com.marcusprado02.commons.adapters.email.smtp
 
+import com.marcusprado02.commons.ports.email.EmailAddress
 import com.marcusprado02.commons.ports.email.EmailAttachment
 import com.marcusprado02.commons.ports.email.EmailContent
 import jakarta.activation.DataHandler
 import jakarta.mail.Part
+import jakarta.mail.internet.InternetAddress
 import jakarta.mail.internet.MimeBodyPart
 import jakarta.mail.util.ByteArrayDataSource
+
+internal fun EmailAddress.toInternetAddress(): InternetAddress = InternetAddress(address, displayName, "UTF-8")
 
 internal fun Part.applyContent(content: EmailContent) {
     when {
