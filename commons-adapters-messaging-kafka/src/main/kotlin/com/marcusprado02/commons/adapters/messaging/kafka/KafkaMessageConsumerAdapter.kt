@@ -44,10 +44,21 @@ public class KafkaMessageConsumerAdapter(
             buffer.firstOrNull { it.topic() == topic.value }?.also { buffer.remove(it) }?.let { r ->
                 val id = MessageId(r.key() ?: UUID.randomUUID().toString())
                 pending[id.value] = TopicPartitionOffset(r.topic(), r.partition(), r.offset())
+                val correlationId =
+                    r
+                        .headers()
+                        .lastHeader("correlation-id")
+                        ?.value()
+                        ?.let { String(it) }
                 return@withContext MessageEnvelope(
                     topic = TopicName(r.topic()),
                     body = r.value(),
-                    headers = MessageHeaders(messageId = id, timestamp = Instant.ofEpochMilli(r.timestamp())),
+                    headers =
+                        MessageHeaders(
+                            messageId = id,
+                            timestamp = Instant.ofEpochMilli(r.timestamp()),
+                            correlationId = correlationId,
+                        ),
                 )
             }
             // Poll Kafka
@@ -56,10 +67,21 @@ public class KafkaMessageConsumerAdapter(
             buffer.firstOrNull { it.topic() == topic.value }?.also { buffer.remove(it) }?.let { r ->
                 val id = MessageId(r.key() ?: UUID.randomUUID().toString())
                 pending[id.value] = TopicPartitionOffset(r.topic(), r.partition(), r.offset())
+                val correlationId =
+                    r
+                        .headers()
+                        .lastHeader("correlation-id")
+                        ?.value()
+                        ?.let { String(it) }
                 MessageEnvelope(
                     topic = TopicName(r.topic()),
                     body = r.value(),
-                    headers = MessageHeaders(messageId = id, timestamp = Instant.ofEpochMilli(r.timestamp())),
+                    headers =
+                        MessageHeaders(
+                            messageId = id,
+                            timestamp = Instant.ofEpochMilli(r.timestamp()),
+                            correlationId = correlationId,
+                        ),
                 )
             }
         }
@@ -79,6 +101,12 @@ public class KafkaMessageConsumerAdapter(
                     tpo.offset,
                 )
             }
+        }
+
+    public suspend fun close(): Unit =
+        withContext(kafkaDispatcher) {
+            consumer.unsubscribe()
+            consumer.close()
         }
 
     public companion object {

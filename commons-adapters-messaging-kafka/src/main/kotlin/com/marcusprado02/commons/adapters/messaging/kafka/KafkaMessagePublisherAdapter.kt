@@ -26,6 +26,10 @@ public class KafkaMessagePublisherAdapter(
                     envelope.headers.messageId.value,
                     body,
                 )
+            // Add correlation-id header if present
+            envelope.headers.correlationId?.let {
+                record.headers().add("correlation-id", it.toByteArray())
+            }
             val future =
                 producer.send(record) { _, ex ->
                     if (ex != null) cont.resumeWithException(ex) else cont.resume(Unit)

@@ -147,4 +147,61 @@ class KafkaAdapterTest :
                 received shouldBe null
             }
         }
+
+        test("correlationId is propagated through publish and receive") {
+            runTest {
+                val corrGroupId = "correlation-group-${System.currentTimeMillis()}"
+                val correlationTopic = TopicName("correlation-topic-${System.currentTimeMillis()}")
+                val envelope =
+                    MessageEnvelope(
+                        topic = correlationTopic,
+                        body = "corr-test".toByteArray(),
+                        headers =
+                            MessageHeaders(
+                                messageId = MessageId.generate(),
+                                timestamp = Instant.now(),
+                                correlationId = "test-correlation-123",
+                            ),
+                    )
+                publisher.publish(envelope)
+
+                val correlationConsumer =
+                    KafkaConsumer<String, ByteArray>(
+                        mapOf(
+                            ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG to bootstrap,
+                            ConsumerConfig.GROUP_ID_CONFIG to corrGroupId,
+                            ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG to StringDeserializer::class.java.name,
+                            ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG to ByteArrayDeserializer::class.java.name,
+                            ConsumerConfig.AUTO_OFFSET_RESET_CONFIG to "earliest",
+                            ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG to "false",
+                        ),
+                    )
+                val correlationConsumerAdapter = KafkaMessageConsumerAdapter(correlationConsumer, corrGroupId)
+                try {
+                    val received = correlationConsumerAdapter.receive(correlationTopic, ConsumerGroup(corrGroupId))
+                    received shouldNotBe null
+                    received!!.headers.correlationId shouldBe "test-correlation-123"
+                } finally {
+                    correlationConsumer.close()
+                }
+            }
+        }
+
+        test("close() can be called without error") {
+            runTest {
+                val closeConsumer =
+                    KafkaConsumer<String, ByteArray>(
+                        mapOf(
+                            ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG to bootstrap,
+                            ConsumerConfig.GROUP_ID_CONFIG to "close-group-${System.currentTimeMillis()}",
+                            ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG to StringDeserializer::class.java.name,
+                            ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG to ByteArrayDeserializer::class.java.name,
+                            ConsumerConfig.AUTO_OFFSET_RESET_CONFIG to "earliest",
+                            ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG to "false",
+                        ),
+                    )
+                val closeConsumerAdapter = KafkaMessageConsumerAdapter(closeConsumer, "close-group")
+                closeConsumerAdapter.close()
+            }
+        }
     })
