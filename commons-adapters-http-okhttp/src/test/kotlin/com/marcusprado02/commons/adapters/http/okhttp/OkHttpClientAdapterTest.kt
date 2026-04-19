@@ -10,6 +10,7 @@ import kotlinx.coroutines.test.runTest
 import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
+import java.io.IOException
 import java.net.URI
 import java.util.concurrent.TimeUnit
 
@@ -88,6 +89,22 @@ class OkHttpClientAdapterTest : FunSpec({
             server.enqueue(MockResponse().setResponseCode(200).addHeader("X-Custom", "yes"))
             val response = adapter.execute(HttpRequest(url(), HttpMethod.GET))
             response.headers["x-custom"] shouldNotBe null
+        }
+    }
+
+    test("propagates IOException on connection failure") {
+        runTest {
+            val deadServer = MockWebServer()
+            deadServer.start()
+            val deadUrl = URI.create(deadServer.url("/").toString())
+            deadServer.shutdown()
+            val request = HttpRequest(deadUrl, HttpMethod.GET)
+            try {
+                adapter.execute(request)
+                error("Expected IOException")
+            } catch (e: IOException) {
+                // expected
+            }
         }
     }
 })
