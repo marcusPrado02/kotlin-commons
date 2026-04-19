@@ -12,6 +12,7 @@ import kotlinx.coroutines.test.runTest
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory
 import org.springframework.data.redis.core.RedisTemplate
+import org.springframework.data.redis.serializer.RedisSerializer
 import org.springframework.data.redis.serializer.StringRedisSerializer
 import java.time.Duration
 
@@ -23,6 +24,7 @@ class RedisCacheAdapterTest : FunSpec({
     val redis = RedisTemplate<String, ByteArray>().also {
         it.connectionFactory = connectionFactory
         it.keySerializer = StringRedisSerializer()
+        it.valueSerializer = RedisSerializer.byteArray()
         it.afterPropertiesSet()
     }
     val objectMapper: ObjectMapper = JsonMapper.builder()
@@ -80,6 +82,7 @@ class RedisCacheAdapterTest : FunSpec({
             adapter.put(CacheKey("b"), "y")
             adapter.clear()
             adapter.get(CacheKey("a"), String::class.java) shouldBe null
+            adapter.get(CacheKey("b"), String::class.java) shouldBe null
         }
     }
 
