@@ -86,4 +86,41 @@ class EmailPortTest :
             val a2 = EmailAttachment("other.txt", byteArrayOf(2), "text/plain")
             (a1 == a2) shouldBe false
         }
+
+        test("EmailContent.withBoth creates content with both html and plain") {
+            val content = EmailContent.withBoth(plain = "Hello", html = "<p>Hello</p>")
+            content.plain shouldBe "Hello"
+            content.html shouldBe "<p>Hello</p>"
+        }
+
+        test("EmailContent.withBoth satisfies init constraint") {
+            val content = EmailContent.withBoth(plain = "text", html = "<b>text</b>")
+            (content.html != null || content.plain != null) shouldBe true
+        }
+
+        test("Email.withHeader adds header to email") {
+            val email =
+                Email(
+                    from = EmailAddress("from@example.com"),
+                    to = listOf(EmailAddress("to@example.com")),
+                    subject = "Test",
+                    content = EmailContent(plain = "body"),
+                )
+            val updated = email.withHeader("X-Custom-Header", "value123")
+            updated.headers["X-Custom-Header"] shouldBe "value123"
+        }
+
+        test("Email.withHeader preserves existing headers") {
+            val email =
+                Email(
+                    from = EmailAddress("from@example.com"),
+                    to = listOf(EmailAddress("to@example.com")),
+                    subject = "Test",
+                    content = EmailContent(plain = "body"),
+                    headers = mapOf("X-Existing" to "exists"),
+                )
+            val updated = email.withHeader("X-New", "new-val")
+            updated.headers["X-Existing"] shouldBe "exists"
+            updated.headers["X-New"] shouldBe "new-val"
+        }
     })

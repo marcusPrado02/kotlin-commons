@@ -7,4 +7,11 @@ public data class EmailContent(
     init {
         require(html != null || plain != null) { "Email must have at least html or plain content" }
     }
+
+    public companion object {
+        public fun withBoth(
+            plain: String,
+            html: String,
+        ): EmailContent = EmailContent(html = html, plain = plain)
+    }
 }
