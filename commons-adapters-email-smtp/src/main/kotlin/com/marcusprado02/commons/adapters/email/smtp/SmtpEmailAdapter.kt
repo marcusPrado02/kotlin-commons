@@ -19,11 +19,11 @@ public class SmtpEmailAdapter(
     override suspend fun send(email: Email): Unit =
         withContext(Dispatchers.IO) {
             val message = MimeMessage(session)
-            message.setFrom(InternetAddress(email.from.address, email.from.displayName))
-            email.to.forEach { message.addRecipient(Message.RecipientType.TO, InternetAddress(it.address, it.displayName)) }
-            email.cc.forEach { message.addRecipient(Message.RecipientType.CC, InternetAddress(it.address, it.displayName)) }
-            email.bcc.forEach { message.addRecipient(Message.RecipientType.BCC, InternetAddress(it.address, it.displayName)) }
-            email.replyTo?.let { message.replyTo = arrayOf(InternetAddress(it.address, it.displayName)) }
+            message.setFrom(InternetAddress(email.from.address, email.from.displayName, "UTF-8"))
+            email.to.forEach { message.addRecipient(Message.RecipientType.TO, InternetAddress(it.address, it.displayName, "UTF-8")) }
+            email.cc.forEach { message.addRecipient(Message.RecipientType.CC, InternetAddress(it.address, it.displayName, "UTF-8")) }
+            email.bcc.forEach { message.addRecipient(Message.RecipientType.BCC, InternetAddress(it.address, it.displayName, "UTF-8")) }
+            email.replyTo?.let { message.replyTo = arrayOf(InternetAddress(it.address, it.displayName, "UTF-8")) }
             message.subject = email.subject
 
             if (email.attachments.isEmpty()) {
@@ -39,7 +39,5 @@ public class SmtpEmailAdapter(
         }
 
     override suspend fun sendBatch(emails: List<Email>): Unit =
-        withContext(Dispatchers.IO) {
-            emails.forEach { send(it) }
-        }
+        emails.forEach { send(it) }
 }
