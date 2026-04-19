@@ -83,4 +83,46 @@ class HttpPortTest :
             val b = MultipartPart("f", byteArrayOf(1, 2), "text/plain", null)
             a.hashCode() shouldBe b.hashCode()
         }
+
+        test("get extension calls execute with GET method") {
+            kotlinx.coroutines.test.runTest {
+                val client = mockk<HttpClientPort>()
+                val uri = java.net.URI.create("https://example.com/resource")
+                val response = HttpResponse(200, emptyMap<String, List<String>>(), "body".toByteArray())
+                coEvery { client.execute(HttpRequest(uri, HttpMethod.GET)) } returns response
+                client.get(uri).statusCode shouldBe 200
+            }
+        }
+
+        test("delete extension calls execute with DELETE method") {
+            kotlinx.coroutines.test.runTest {
+                val client = mockk<HttpClientPort>()
+                val uri = java.net.URI.create("https://example.com/resource/1")
+                val response = HttpResponse<ByteArray>(204, emptyMap(), null)
+                coEvery { client.execute(HttpRequest(uri, HttpMethod.DELETE)) } returns response
+                client.delete(uri).statusCode shouldBe 204
+            }
+        }
+
+        test("post extension calls execute with POST method and body") {
+            kotlinx.coroutines.test.runTest {
+                val client = mockk<HttpClientPort>()
+                val uri = java.net.URI.create("https://example.com/items")
+                val body = HttpBody.Bytes("{}".toByteArray(), "application/json")
+                val response = HttpResponse(201, emptyMap<String, List<String>>(), "created".toByteArray())
+                coEvery { client.execute(HttpRequest(uri, HttpMethod.POST, body = body)) } returns response
+                client.post(uri, body).statusCode shouldBe 201
+            }
+        }
+
+        test("put extension calls execute with PUT method and body") {
+            kotlinx.coroutines.test.runTest {
+                val client = mockk<HttpClientPort>()
+                val uri = java.net.URI.create("https://example.com/items/1")
+                val body = HttpBody.Bytes("{\"name\":\"x\"}".toByteArray(), "application/json")
+                val response = HttpResponse(200, emptyMap<String, List<String>>(), "updated".toByteArray())
+                coEvery { client.execute(HttpRequest(uri, HttpMethod.PUT, body = body)) } returns response
+                client.put(uri, body).statusCode shouldBe 200
+            }
+        }
     })
