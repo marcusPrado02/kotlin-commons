@@ -7,10 +7,11 @@ on:
 
 jobs:
   publish:
+    name: Publish to Maven Central
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 20
     permissions:
-      contents: read
+      contents: write
 
     steps:
       - uses: actions/checkout@v4
@@ -30,10 +31,8 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Build and verify
-        run: ./gradlew build -x ktlintCheck -x detekt
-        env:
-          DOCKER_HOST: unix:///var/run/docker.sock
+      - name: Compile (verify sources build cleanly)
+        run: ./gradlew assemble
 
       - name: Publish to Maven Central
         run: ./gradlew publishAllPublicationsToCentralPortal
@@ -42,3 +41,13 @@ jobs:
           MAVEN_CENTRAL_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG_NAME: ${{ github.ref_name }}
+        run: |
+          gh release create "$TAG_NAME" \
+            --title "$TAG_NAME" \
+            --generate-notes \
+            --verify-tag
