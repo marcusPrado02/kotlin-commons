@@ -1,6 +1,7 @@
 plugins {
     id("org.jetbrains.kotlinx.binary-compatibility-validator")
     id("org.jetbrains.kotlinx.kover")
+    id("org.jetbrains.dokka")
 }
 
 apiValidation {
@@ -23,6 +24,14 @@ kover {
 allprojects {
     group = "com.marcusprado02.commons"
     version = property("version").toString()
+}
+
+subprojects {
+    tasks.withType<org.jetbrains.dokka.gradle.AbstractDokkaLeafTask>().configureEach {
+        dokkaSourceSets.configureEach {
+            jdkVersion.set(21)
+        }
+    }
 }
 
 tasks.register("checkAll") {

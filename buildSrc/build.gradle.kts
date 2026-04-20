@@ -19,4 +19,5 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-allopen:2.1.0")
     implementation("io.spring.gradle:dependency-management-plugin:1.1.7")
     implementation("org.jetbrains.kotlinx:binary-compatibility-validator:0.17.0")
+    implementation("org.jetbrains.dokka:dokka-gradle-plugin:2.0.0")
 }
