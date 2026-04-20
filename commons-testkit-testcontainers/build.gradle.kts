@@ -10,4 +10,5 @@ dependencies {
     api(libs.testcontainers.mongodb)
     api(libs.testcontainers.mysql)
     api(libs.testcontainers.wiremock)
+    api(libs.testcontainers.localstack)
 }

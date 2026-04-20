@@ -30,6 +30,7 @@ testcontainers-kafka = { module = "org.testcontainers:kafka" }
 testcontainers-mongodb = { module = "org.testcontainers:mongodb", version.ref = "testcontainers" }
 testcontainers-mysql = { module = "org.testcontainers:mysql", version.ref = "testcontainers" }
 testcontainers-wiremock = { module = "org.wiremock.integrations.testcontainers:wiremock-testcontainers-module", version.ref = "wiremock-testcontainers" }
+testcontainers-localstack = { module = "org.testcontainers:localstack", version.ref = "testcontainers" }
 greenmail = { module = "com.icegreen:greenmail", version.ref = "greenmail" }
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 okhttp-mockwebserver = { module = "com.squareup.okhttp3:mockwebserver", version.ref = "okhttp" }
