@@ -7,6 +7,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import java.time.Instant
 
 class ProblemTest :
     FunSpec({
@@ -95,5 +96,52 @@ class ProblemTest :
             val json = Json.encodeToString(problem)
             json shouldContain "USER_NOT_FOUND"
             json shouldContain "User not found"
+        }
+
+        // Problems factory methods — uncovered variants
+        test("Problems.conflict creates a CONFLICT problem with MEDIUM severity") {
+            val p = Problems.conflict(ErrorCode("DUPLICATE_EMAIL"), "Email already exists")
+            p.category shouldBe ErrorCategory.CONFLICT
+            p.severity shouldBe Severity.MEDIUM
+            p.message shouldBe "Email already exists"
+        }
+
+        test("Problems.unauthorized creates an UNAUTHORIZED problem with HIGH severity") {
+            val p = Problems.unauthorized(ErrorCode("TOKEN_EXPIRED"), "Token has expired")
+            p.category shouldBe ErrorCategory.UNAUTHORIZED
+            p.severity shouldBe Severity.HIGH
+            p.message shouldBe "Token has expired"
+        }
+
+        test("Problems.forbidden creates a FORBIDDEN problem with HIGH severity") {
+            val p = Problems.forbidden(ErrorCode("ACCESS_DENIED"), "Access denied")
+            p.category shouldBe ErrorCategory.FORBIDDEN
+            p.severity shouldBe Severity.HIGH
+            p.message shouldBe "Access denied"
+        }
+
+        test("Problems.business creates a BUSINESS problem with MEDIUM severity") {
+            val p = Problems.business(ErrorCode("ORDER_LIMIT"), "Order limit exceeded")
+            p.category shouldBe ErrorCategory.BUSINESS
+            p.severity shouldBe Severity.MEDIUM
+            p.message shouldBe "Order limit exceeded"
+        }
+
+        test("ProblemDetail carries rejectedValue when provided") {
+            val detail = ProblemDetail(field = "age", message = "must be positive", rejectedValue = "-1")
+            detail.rejectedValue shouldBe "-1"
+        }
+
+        // InstantSerializer — serialize and deserialize
+        test("InstantSerializer serializes an Instant to ISO-8601 JSON string") {
+            val instant = Instant.parse("2024-06-15T10:30:00Z")
+            val json = Json.encodeToString(InstantSerializer, instant)
+            json shouldContain "2024-06-15T10:30:00Z"
+        }
+
+        test("InstantSerializer deserializes an ISO-8601 string back to Instant") {
+            val isoString = "\"2024-06-15T10:30:00Z\""
+            val instant = Json.decodeFromString(InstantSerializer, isoString)
+            instant shouldBe Instant.parse("2024-06-15T10:30:00Z")
         }
     })
