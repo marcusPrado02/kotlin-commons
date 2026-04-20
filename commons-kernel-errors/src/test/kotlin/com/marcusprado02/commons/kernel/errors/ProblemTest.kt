@@ -5,6 +5,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
+import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.time.Instant
@@ -96,6 +97,44 @@ class ProblemTest :
             val json = Json.encodeToString(problem)
             json shouldContain "USER_NOT_FOUND"
             json shouldContain "User not found"
+        }
+
+        // Serialization round-trips cover generated @Serializable branches (field present vs absent)
+        test("Problem round-trips through JSON with all default fields") {
+            val original = Problems.notFound(ErrorCode("X"), "not found")
+            val json = Json.encodeToString(original)
+            val decoded = Json.decodeFromString<Problem>(json)
+            decoded.code shouldBe original.code
+            decoded.category shouldBe original.category
+            decoded.message shouldBe original.message
+            decoded.details shouldHaveSize 0
+            decoded.meta shouldBe emptyMap()
+        }
+
+        test("Problem round-trips through JSON with details and meta") {
+            val detail = ProblemDetail(field = "name", message = "required")
+            val original =
+                Problems
+                    .validation(ErrorCode("INVALID"), "bad", detail)
+                    .withContext("traceId", "abc")
+            val json = Json.encodeToString(original)
+            val decoded = Json.decodeFromString<Problem>(json)
+            decoded.details shouldHaveSize 1
+            decoded.meta["traceId"] shouldBe "abc"
+        }
+
+        test("ProblemDetail round-trips with rejectedValue present") {
+            val detail = ProblemDetail(field = "age", message = "must be positive", rejectedValue = "-5")
+            val json = Json.encodeToString(detail)
+            val decoded = Json.decodeFromString<ProblemDetail>(json)
+            decoded.rejectedValue shouldBe "-5"
+        }
+
+        test("ProblemDetail round-trips without rejectedValue") {
+            val detail = ProblemDetail(field = "name", message = "required")
+            val json = Json.encodeToString(detail)
+            val decoded = Json.decodeFromString<ProblemDetail>(json)
+            decoded.rejectedValue shouldBe null
         }
 
         // Problems factory methods — uncovered variants
