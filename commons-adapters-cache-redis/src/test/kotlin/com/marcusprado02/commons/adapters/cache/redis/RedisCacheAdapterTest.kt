@@ -15,6 +15,7 @@ import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.data.redis.serializer.RedisSerializer
 import org.springframework.data.redis.serializer.StringRedisSerializer
 import java.time.Duration
+import java.util.concurrent.atomic.AtomicInteger
 
 class RedisCacheAdapterTest :
     FunSpec({
@@ -95,6 +96,53 @@ class RedisCacheAdapterTest :
             runTest {
                 adapter.put(CacheKey("ttl-key"), "temporary", ttl = Duration.ofSeconds(30))
                 adapter.get(CacheKey("ttl-key"), String::class.java) shouldNotBe null
+            }
+        }
+
+        test("adapter can be constructed with a custom RedisPoolConfig") {
+            runTest {
+                val customConfig =
+                    RedisPoolConfig(
+                        maxConnections = 16,
+                        minIdle = 2,
+                        maxIdle = 8,
+                        connectTimeoutMs = 3_000L,
+                        readTimeoutMs = 6_000L,
+                    )
+                val customAdapter = RedisCacheAdapter(redis, objectMapper, customConfig)
+                customAdapter.poolConfig shouldBe customConfig
+                // verify the adapter still works correctly with the custom config
+                customAdapter.put(CacheKey("pool-key"), "pool-value")
+                customAdapter.get(CacheKey("pool-key"), String::class.java) shouldBe "pool-value"
+            }
+        }
+
+        test("custom CacheSerializer is invoked on put and get") {
+            runTest {
+                val serializeCount = AtomicInteger(0)
+                val deserializeCount = AtomicInteger(0)
+                val spySerializer =
+                    object : CacheSerializer {
+                        private val delegate = JacksonCacheSerializer(objectMapper)
+
+                        override fun <T : Any> serialize(value: T): ByteArray {
+                            serializeCount.incrementAndGet()
+                            return delegate.serialize(value)
+                        }
+
+                        override fun <T : Any> deserialize(
+                            bytes: ByteArray,
+                            type: Class<T>,
+                        ): T {
+                            deserializeCount.incrementAndGet()
+                            return delegate.deserialize(bytes, type)
+                        }
+                    }
+                val spyAdapter = RedisCacheAdapter(redis, spySerializer)
+                spyAdapter.put(CacheKey("spy-key"), "spy-value")
+                spyAdapter.get(CacheKey("spy-key"), String::class.java)
+                serializeCount.get() shouldBe 1
+                deserializeCount.get() shouldBe 1
             }
         }
     })

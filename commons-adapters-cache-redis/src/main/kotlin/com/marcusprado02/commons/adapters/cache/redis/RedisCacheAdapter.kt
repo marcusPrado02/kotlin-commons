@@ -1,11 +1,14 @@
 package com.marcusprado02.commons.adapters.cache.redis
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.json.JsonMapper
+import com.fasterxml.jackson.module.kotlin.kotlinModule
 import com.marcusprado02.commons.ports.cache.CacheKey
 import com.marcusprado02.commons.ports.cache.CachePort
 import com.marcusprado02.commons.ports.persistence.PersistenceException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.slf4j.LoggerFactory
 import org.springframework.dao.DataAccessException
 import org.springframework.data.redis.RedisConnectionFailureException
 import org.springframework.data.redis.core.RedisTemplate
@@ -13,15 +16,34 @@ import java.time.Duration
 
 public class RedisCacheAdapter(
     private val redis: RedisTemplate<String, ByteArray>,
-    private val objectMapper: ObjectMapper,
+    private val serializer: CacheSerializer = defaultSerializer(),
+    public val poolConfig: RedisPoolConfig = RedisPoolConfig(),
 ) : CachePort {
+    public constructor(
+        redis: RedisTemplate<String, ByteArray>,
+        objectMapper: ObjectMapper,
+    ) : this(redis, JacksonCacheSerializer(objectMapper))
+
+    public constructor(
+        redis: RedisTemplate<String, ByteArray>,
+        objectMapper: ObjectMapper,
+        poolConfig: RedisPoolConfig,
+    ) : this(redis, JacksonCacheSerializer(objectMapper), poolConfig)
+
     override suspend fun <T : Any> get(
         key: CacheKey,
         type: Class<T>,
     ): T? =
         withContext(Dispatchers.IO) {
             try {
-                redis.opsForValue().get(key.value)?.let { objectMapper.readValue(it, type) }
+                val bytes = redis.opsForValue().get(key.value)
+                val value = bytes?.let { serializer.deserialize(it, type) }
+                if (value != null) {
+                    log.debug("Cache HIT for key={}", key.value)
+                } else {
+                    log.debug("Cache MISS for key={}", key.value)
+                }
+                value
             } catch (ex: RedisConnectionFailureException) {
                 throw PersistenceException("Redis get failed for key '${key.value}'", ex)
             }
@@ -34,7 +56,7 @@ public class RedisCacheAdapter(
     ): Unit =
         withContext(Dispatchers.IO) {
             try {
-                val bytes = objectMapper.writeValueAsBytes(value)
+                val bytes = serializer.serialize(value)
                 if (ttl != null) {
                     redis.opsForValue().set(key.value, bytes, ttl)
                 } else {
@@ -71,4 +93,13 @@ public class RedisCacheAdapter(
                 throw PersistenceException("Redis exists failed for key '${key.value}'", ex)
             }
         }
+
+    private companion object {
+        private val log = LoggerFactory.getLogger(RedisCacheAdapter::class.java)
+
+        private fun defaultSerializer(): CacheSerializer =
+            JacksonCacheSerializer(
+                JsonMapper.builder().addModule(kotlinModule()).build(),
+            )
+    }
 }

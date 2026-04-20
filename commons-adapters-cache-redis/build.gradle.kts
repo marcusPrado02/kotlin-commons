@@ -9,6 +9,7 @@ dependencies {
     api("com.fasterxml.jackson.core:jackson-databind")
     api("com.fasterxml.jackson.module:jackson-module-kotlin")
     api(libs.kotlinx.coroutines.core)
+    implementation(libs.slf4j.api)
     testImplementation(project(":commons-testkit-testcontainers"))
     testImplementation(platform(libs.testcontainers.bom))
     testImplementation(libs.testcontainers.core)
