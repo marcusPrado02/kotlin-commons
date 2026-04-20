@@ -8,6 +8,7 @@ import com.marcusprado02.commons.ports.messaging.MessageHeaders
 import com.marcusprado02.commons.ports.messaging.MessageId
 import com.marcusprado02.commons.ports.messaging.TopicName
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.apache.kafka.clients.consumer.KafkaConsumer
@@ -23,6 +24,7 @@ public class KafkaMessageConsumerAdapter(
     private val groupId: String,
     private val maxNacks: Int = 3,
     private val deadLetterPort: DeadLetterPort? = null,
+    private val retryPolicy: RetryPolicy = RetryPolicy(),
 ) : MessageConsumerPort {
     private val kafkaDispatcher = Dispatchers.IO.limitedParallelism(1)
     private val pollTimeout: Duration = Duration.ofMillis(POLL_TIMEOUT_MS)
@@ -117,6 +119,9 @@ public class KafkaMessageConsumerAdapter(
                 nackCounts.remove(messageId.value)
                 return@withContext
             }
+            val attempt = nackCounts.getOrDefault(messageId.value, 1) - 1
+            val delayMs = retryPolicy.delayFor(attempt)
+            if (delayMs > 0) delay(delayMs)
             pending.remove(messageId.value)?.let { tpo ->
                 consumer.seek(
                     TopicPartition(tpo.topic, tpo.partition),
