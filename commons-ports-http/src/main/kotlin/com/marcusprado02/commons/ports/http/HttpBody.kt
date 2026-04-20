@@ -23,6 +23,24 @@ public sealed class HttpBody {
     public data class Multipart(
         val parts: List<MultipartPart>,
     ) : HttpBody()
+
+    public class Json<T>(
+        public val value: T,
+        public val serializer: kotlinx.serialization.KSerializer<T>,
+        public val format: kotlinx.serialization.json.Json = kotlinx.serialization.json.Json,
+    ) : HttpBody() {
+        public fun toBytes(): ByteArray = format.encodeToString(serializer, value).toByteArray(Charsets.UTF_8)
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is Json<*>) return false
+            return value == other.value
+        }
+
+        override fun hashCode(): Int = value?.hashCode() ?: 0
+
+        override fun toString(): String = "Json(value=$value)"
+    }
 }
 
 public class MultipartPart(

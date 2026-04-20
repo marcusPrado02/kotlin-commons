@@ -41,4 +41,5 @@ private fun HttpBody.toRequestBody(): RequestBody? =
                         }
                     }
                 }.build()
+        is HttpBody.Json<*> -> this.toBytes().toRequestBody("application/json; charset=utf-8".toMediaType())
     }

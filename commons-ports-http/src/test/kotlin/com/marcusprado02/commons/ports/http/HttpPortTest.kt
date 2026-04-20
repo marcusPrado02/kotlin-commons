@@ -4,6 +4,8 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.mockk.coEvery
 import io.mockk.mockk
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
 import java.net.URI
 
 class HttpPortTest :
@@ -125,4 +127,37 @@ class HttpPortTest :
                 client.put(uri, body).statusCode shouldBe 200
             }
         }
+
+        test("HttpBody.Json.toBytes() serializes a data class to JSON bytes") {
+            val person = Person("Alice", 30)
+            val body = HttpBody.Json(person, Person.serializer())
+            val bytes = body.toBytes()
+            val json = String(bytes, Charsets.UTF_8)
+            json shouldBe """{"name":"Alice","age":30}"""
+        }
+
+        test("HttpBody.Json round-trip: serialized bytes decode back to original object") {
+            val original = Person("Bob", 25)
+            val body = HttpBody.Json(original, Person.serializer())
+            val bytes = body.toBytes()
+            val decoded = Json.decodeFromString(Person.serializer(), String(bytes, Charsets.UTF_8))
+            decoded shouldBe original
+        }
+
+        test("HttpBody.Json equality is based on value") {
+            val a = HttpBody.Json(Person("Alice", 30), Person.serializer())
+            val b = HttpBody.Json(Person("Alice", 30), Person.serializer())
+            (a == b) shouldBe true
+        }
+
+        test("HttpBody.Json toString contains value representation") {
+            val body = HttpBody.Json(Person("Alice", 30), Person.serializer())
+            body.toString() shouldBe "Json(value=Person(name=Alice, age=30))"
+        }
     })
+
+@Serializable
+private data class Person(
+    val name: String,
+    val age: Int,
+)
