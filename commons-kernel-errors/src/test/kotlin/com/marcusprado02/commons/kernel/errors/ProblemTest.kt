@@ -144,4 +144,78 @@ class ProblemTest :
             val instant = Json.decodeFromString(InstantSerializer, isoString)
             instant shouldBe Instant.parse("2024-06-15T10:30:00Z")
         }
+
+        // fromException null-message fallbacks (covers the ?: branches for each when arm)
+        test("fromException uses fallback message when NoSuchElementException message is null") {
+            val p = Problems.fromException(NoSuchElementException(null as String?))
+            p.message shouldBe "Not found"
+        }
+
+        test("fromException uses fallback message when IllegalStateException message is null") {
+            val p = Problems.fromException(IllegalStateException(null as String?))
+            p.message shouldBe "Business error"
+        }
+
+        test("fromException uses fallback message when generic exception message is null") {
+            val p = Problems.fromException(RuntimeException(null as String?))
+            p.message shouldBe "Technical error"
+        }
+
+        // DomainException subclasses — covers constructor branches (with and without cause)
+        test("BusinessException carries the problem") {
+            val problem = Problems.business(ErrorCode("RULE"), "rule violated")
+            val ex = BusinessException(problem)
+            ex.problem shouldBe problem
+            ex.message shouldBe "rule violated"
+        }
+
+        test("BusinessException with cause wraps the throwable") {
+            val problem = Problems.business(ErrorCode("RULE"), "rule violated")
+            val cause = RuntimeException("root")
+            val ex = BusinessException(problem, cause)
+            ex.cause shouldBe cause
+        }
+
+        test("ValidationException carries the problem") {
+            val problem = Problems.validation(ErrorCode("INVALID"), "bad input")
+            val ex = ValidationException(problem)
+            ex.problem shouldBe problem
+        }
+
+        test("NotFoundException carries the problem") {
+            val problem = Problems.notFound(ErrorCode("MISSING"), "not found")
+            val ex = NotFoundException(problem)
+            ex.problem shouldBe problem
+        }
+
+        test("ConflictException carries the problem") {
+            val problem = Problems.conflict(ErrorCode("DUP"), "duplicate")
+            val ex = ConflictException(problem)
+            ex.problem shouldBe problem
+        }
+
+        test("UnauthorizedException carries the problem") {
+            val problem = Problems.unauthorized(ErrorCode("NO_TOKEN"), "unauthenticated")
+            val ex = UnauthorizedException(problem)
+            ex.problem shouldBe problem
+        }
+
+        test("ForbiddenException carries the problem") {
+            val problem = Problems.forbidden(ErrorCode("NO_PERM"), "forbidden")
+            val ex = ForbiddenException(problem)
+            ex.problem shouldBe problem
+        }
+
+        test("TechnicalException carries the problem") {
+            val problem = Problems.technical(ErrorCode("INFRA"), "infra error")
+            val ex = TechnicalException(problem)
+            ex.problem shouldBe problem
+        }
+
+        test("TechnicalException with cause wraps the throwable") {
+            val problem = Problems.technical(ErrorCode("INFRA"), "infra error")
+            val cause = RuntimeException("db down")
+            val ex = TechnicalException(problem, cause)
+            ex.cause shouldBe cause
+        }
     })
