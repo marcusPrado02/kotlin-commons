@@ -1,8 +1,8 @@
+import com.vanniktech.maven.publish.SonatypeHost
+
 plugins {
     `java-platform`
-    `maven-publish`
-    signing
-    id("com.gradleup.nmcp")
+    id("com.vanniktech.maven.publish")
 }
 
 javaPlatform {
@@ -30,50 +30,30 @@ dependencies {
     }
 }
 
-publishing {
-    publications {
-        create<MavenPublication>("bom") {
-            from(components["javaPlatform"])
-            pom {
-                name.set("kotlin-commons BOM")
-                description.set("Bill of Materials for kotlin-commons modules.")
-                url.set("https://github.com/marcusPrado02/kotlin-commons")
-                licenses {
-                    license {
-                        name.set("Apache License, Version 2.0")
-                        url.set("https://www.apache.org/licenses/LICENSE-2.0")
-                    }
-                }
-                developers {
-                    developer {
-                        id.set("marcusprado02")
-                        name.set("Marcus Prado Silva")
-                        email.set("silvamarcusprado@gmail.com")
-                    }
-                }
-                scm {
-                    connection.set("scm:git:git://github.com/marcusPrado02/kotlin-commons.git")
-                    developerConnection.set("scm:git:ssh://github.com/marcusPrado02/kotlin-commons.git")
-                    url.set("https://github.com/marcusPrado02/kotlin-commons")
-                }
+mavenPublishing {
+    publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL, automaticRelease = true)
+    signAllPublications()
+    pom {
+        name.set("kotlin-commons BOM")
+        description.set("Bill of Materials for kotlin-commons modules.")
+        url.set("https://github.com/marcusPrado02/kotlin-commons")
+        licenses {
+            license {
+                name.set("Apache License, Version 2.0")
+                url.set("https://www.apache.org/licenses/LICENSE-2.0")
             }
         }
-    }
-}
-
-signing {
-    val gpgKey = providers.environmentVariable("GPG_PRIVATE_KEY").orNull
-    val gpgPass = providers.environmentVariable("GPG_PASSPHRASE").orNull
-    if (gpgKey != null) {
-        useInMemoryPgpKeys(gpgKey, gpgPass)
-        sign(publishing.publications["bom"])
-    }
-}
-
-nmcp {
-    publishAllPublicationsToCentralPortal {
-        username = System.getenv("MAVEN_CENTRAL_USERNAME") ?: ""
-        password = System.getenv("MAVEN_CENTRAL_PASSWORD") ?: ""
-        publishingType = "AUTOMATIC"
+        developers {
+            developer {
+                id.set("marcusprado02")
+                name.set("Marcus Prado Silva")
+                email.set("silvamarcusprado@gmail.com")
+            }
+        }
+        scm {
+            url.set("https://github.com/marcusPrado02/kotlin-commons")
+            connection.set("scm:git:git://github.com/marcusPrado02/kotlin-commons.git")
+            developerConnection.set("scm:git:ssh://github.com/marcusPrado02/kotlin-commons.git")
+        }
     }
 }

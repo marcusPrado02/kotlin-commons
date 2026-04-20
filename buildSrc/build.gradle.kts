@@ -20,6 +20,6 @@ dependencies {
     implementation("io.spring.gradle:dependency-management-plugin:1.1.7")
     implementation("org.jetbrains.kotlinx:binary-compatibility-validator:0.17.0")
     implementation("org.jetbrains.dokka:dokka-gradle-plugin:2.0.0")
-    // nmcp — New Maven Central Publishing plugin
-    implementation("com.gradleup.nmcp:com.gradleup.nmcp.gradle.plugin:0.0.9")
+    // Maven Central publishing
+    implementation("com.vanniktech:gradle-maven-publish-plugin:0.29.0")
 }
