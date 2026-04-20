@@ -13,6 +13,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.mockk.coVerify
 import io.mockk.mockk
+import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runTest
 import org.apache.kafka.clients.consumer.ConsumerConfig
@@ -80,7 +81,7 @@ class KafkaAdapterTest :
         }
 
         test("publish sends a message that can be received") {
-            runTest(timeout = 30_000) {
+            runTest(timeout = 30.seconds) {
                 val envelope =
                     MessageEnvelope(
                         topic = topic,
@@ -95,7 +96,7 @@ class KafkaAdapterTest :
         }
 
         test("acknowledge commits offset without error") {
-            runTest(timeout = 30_000) {
+            runTest(timeout = 30.seconds) {
                 val envelope =
                     MessageEnvelope(
                         topic = topic,
@@ -110,7 +111,7 @@ class KafkaAdapterTest :
         }
 
         test("publishBatch sends all messages") {
-            runTest(timeout = 30_000) {
+            runTest(timeout = 30.seconds) {
                 val envelopes =
                     (1..3).map { i ->
                         MessageEnvelope(
@@ -144,7 +145,7 @@ class KafkaAdapterTest :
         }
 
         test("nack removes message from pending without error") {
-            runTest(timeout = 30_000) {
+            runTest(timeout = 30.seconds) {
                 val envelope =
                     MessageEnvelope(
                         topic = topic,
@@ -173,7 +174,7 @@ class KafkaAdapterTest :
         }
 
         test("correlationId is propagated through publish and receive") {
-            runTest(timeout = 30_000) {
+            runTest(timeout = 30.seconds) {
                 val corrGroupId = "correlation-group-${System.currentTimeMillis()}"
                 val correlationTopic = TopicName("correlation-topic-${System.currentTimeMillis()}")
                 val envelope =
@@ -234,7 +235,7 @@ class KafkaAdapterTest :
         }
 
         test("dead-letter port is invoked after maxNacks nacks") {
-            runTest(timeout = 30_000) {
+            runTest(timeout = 30.seconds) {
                 val dlTopic = TopicName("dl-test-topic-${System.currentTimeMillis()}")
                 val dlGroup = ConsumerGroup("dl-group-${System.currentTimeMillis()}")
                 val dlDeadLetterPort = mockk<DeadLetterPort>(relaxed = true)
@@ -278,7 +279,7 @@ class KafkaAdapterTest :
         }
 
         test("dead-letter port is not invoked below maxNacks") {
-            runTest(timeout = 30_000) {
+            runTest(timeout = 30.seconds) {
                 val dlTopic2 = TopicName("dl-below-topic-${System.currentTimeMillis()}")
                 val dlGroup2 = ConsumerGroup("dl-below-group-${System.currentTimeMillis()}")
                 val dlDeadLetterPort2 = mockk<DeadLetterPort>(relaxed = true)
