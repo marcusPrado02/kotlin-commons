@@ -31,12 +31,10 @@ import java.time.Duration
  */
 public class RedisClusterCacheAdapter(
     clusterClient: RedisClusterClient,
-    private val serializer: CacheSerializer = JacksonCacheSerializer(
-        JsonMapper.builder().addModule(kotlinModule()).build(),
-    ),
+    private val serializer: CacheSerializer =
+        JacksonCacheSerializer(JsonMapper.builder().addModule(kotlinModule()).build()),
 ) : CachePort,
     Closeable {
-
     private val connection: StatefulRedisClusterConnection<String, ByteArray> =
         clusterClient.connect(RedisCodec.of(StringCodec.UTF8, ByteArrayCodec.INSTANCE))
 

@@ -183,8 +183,8 @@ implementado em qualquer ordem.
 
 ## Documentação & Developer Experience
 
-- [ ] **T-90** Adicionar KDoc a todas as classes e funções de API pública
-- [ ] **T-91** Configurar `dokka` para gerar site HTML e publicar no GitHub Pages
+- [x] **T-90** Adicionar KDoc a todas as classes e funções de API pública
+- [x] **T-91** Configurar `dokka` para gerar site HTML e publicar no GitHub Pages
 - [x] **T-92** Adicionar badges no `README.md`: build status, cobertura, versão Maven Central
 - [x] **T-93** Criar `CHANGELOG.md` seguindo o formato [Keep a Changelog](https://keepachangelog.com)
 - [x] **T-94** Criar `CONTRIBUTING.md` com guia de setup local e convenções de commit
