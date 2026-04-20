@@ -4,6 +4,9 @@ import okhttp3.Interceptor
 import okhttp3.Response
 import org.slf4j.LoggerFactory
 
+/**
+ * OkHttp [Interceptor] that logs HTTP method, URL, response status code, and elapsed time at INFO level.
+ */
 public class LoggingInterceptor : Interceptor {
     private val log = LoggerFactory.getLogger(LoggingInterceptor::class.java)
 

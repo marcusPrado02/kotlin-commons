@@ -14,6 +14,14 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
 
+/**
+ * [EmailPort] implementation that sends email messages via a Jakarta Mail SMTP [Session].
+ *
+ * All send operations are dispatched on [kotlinx.coroutines.Dispatchers.IO].
+ * Batch sends are parallelised using coroutine concurrency.
+ *
+ * @param session the Jakarta Mail session used to create and send messages.
+ */
 public class SmtpEmailAdapter(
     private val session: Session,
 ) : EmailPort {

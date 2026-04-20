@@ -8,6 +8,16 @@ import org.springframework.dao.DataAccessException
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.orm.ObjectOptimisticLockingFailureException
 
+/**
+ * Abstract [Repository] adapter that delegates to a Spring Data [JpaRepository].
+ *
+ * All database calls are dispatched on [kotlinx.coroutines.Dispatchers.IO] and wrapped in
+ * [PersistenceException] to decouple callers from Spring Data exceptions. Optimistic locking
+ * failures are explicitly mapped to [PersistenceException] with a descriptive message.
+ *
+ * @param E the entity type.
+ * @param I the entity's identity type.
+ */
 public abstract class JpaRepositoryAdapter<E : Any, I : Any>(
     protected val jpa: JpaRepository<E, I>,
 ) : Repository<E, I> {

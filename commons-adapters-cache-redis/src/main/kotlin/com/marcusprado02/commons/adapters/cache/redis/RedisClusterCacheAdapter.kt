@@ -19,6 +19,16 @@ import org.slf4j.LoggerFactory
 import java.io.Closeable
 import java.time.Duration
 
+/**
+ * [CachePort] implementation backed by a Redis Cluster via Lettuce.
+ *
+ * Serializes values to byte arrays using the supplied [CacheSerializer] and executes all
+ * Redis I/O on [kotlinx.coroutines.Dispatchers.IO]. Implements [Closeable] to allow explicit
+ * release of the underlying cluster connection.
+ *
+ * Note: [clear] flushes only the local node's database. For a full cluster-wide flush,
+ * iterate all cluster nodes individually; this operation is intended for non-production use.
+ */
 public class RedisClusterCacheAdapter(
     clusterClient: RedisClusterClient,
     private val serializer: CacheSerializer = JacksonCacheSerializer(

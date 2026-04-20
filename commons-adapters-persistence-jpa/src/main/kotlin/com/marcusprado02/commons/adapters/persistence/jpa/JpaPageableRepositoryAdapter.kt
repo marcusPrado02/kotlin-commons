@@ -9,6 +9,15 @@ import kotlinx.coroutines.withContext
 import org.springframework.dao.DataAccessException
 import org.springframework.data.jpa.repository.JpaRepository
 
+/**
+ * Extension of [JpaRepositoryAdapter] that also implements [PageableRepository].
+ *
+ * Adds paginated [findAll] and [count] operations on top of the base CRUD operations,
+ * converting Spring Data page results to the port's [PageResult] type.
+ *
+ * @param E the entity type.
+ * @param I the entity's identity type.
+ */
 public abstract class JpaPageableRepositoryAdapter<E : Any, I : Any>(
     jpa: JpaRepository<E, I>,
 ) : JpaRepositoryAdapter<E, I>(jpa),

@@ -19,6 +19,20 @@ import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentLinkedQueue
 
+/**
+ * [MessageConsumerPort] implementation backed by a Kafka [KafkaConsumer].
+ *
+ * Polls a single Kafka topic per [receive] call and maintains per-message acknowledgment state.
+ * Messages that are nacked [maxNacks] times are forwarded to [deadLetterPort] when provided.
+ * All Kafka interactions are serialised on a single-thread dispatcher to satisfy the
+ * non-concurrent access requirement of the Kafka consumer.
+ *
+ * @param consumer the underlying Kafka consumer; must not be shared across threads.
+ * @param groupId the consumer group this adapter is registered under.
+ * @param maxNacks maximum nack count before a message is sent to the dead-letter destination.
+ * @param deadLetterPort optional port for dead-letter handling.
+ * @param retryPolicy exponential back-off policy applied between nack attempts.
+ */
 public class KafkaMessageConsumerAdapter(
     private val consumer: KafkaConsumer<String, ByteArray>,
     private val groupId: String,
@@ -130,6 +144,7 @@ public class KafkaMessageConsumerAdapter(
             }
         }
 
+    /** Unsubscribes and closes the underlying Kafka consumer. */
     public suspend fun close(): Unit =
         withContext(kafkaDispatcher) {
             consumer.unsubscribe()

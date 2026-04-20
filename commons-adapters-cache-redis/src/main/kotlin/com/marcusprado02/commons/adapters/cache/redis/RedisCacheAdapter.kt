@@ -14,16 +14,37 @@ import org.springframework.data.redis.RedisConnectionFailureException
 import org.springframework.data.redis.core.RedisTemplate
 import java.time.Duration
 
+/**
+ * [CachePort] implementation backed by a standalone Redis instance via Spring Data Redis.
+ *
+ * Serializes values to byte arrays using the supplied [CacheSerializer] and executes all
+ * Redis I/O on [kotlinx.coroutines.Dispatchers.IO].
+ *
+ * @property poolConfig connection pool settings exposed for introspection.
+ */
 public class RedisCacheAdapter(
     private val redis: RedisTemplate<String, ByteArray>,
     private val serializer: CacheSerializer = defaultSerializer(),
     public val poolConfig: RedisPoolConfig = RedisPoolConfig(),
 ) : CachePort {
+    /**
+     * Creates an adapter using a [JacksonCacheSerializer] built from the given [objectMapper].
+     *
+     * @param redis the Spring Data Redis template.
+     * @param objectMapper the Jackson mapper used for serialization.
+     */
     public constructor(
         redis: RedisTemplate<String, ByteArray>,
         objectMapper: ObjectMapper,
     ) : this(redis, JacksonCacheSerializer(objectMapper))
 
+    /**
+     * Creates an adapter using a [JacksonCacheSerializer] and a custom [poolConfig].
+     *
+     * @param redis the Spring Data Redis template.
+     * @param objectMapper the Jackson mapper used for serialization.
+     * @param poolConfig connection pool settings.
+     */
     public constructor(
         redis: RedisTemplate<String, ByteArray>,
         objectMapper: ObjectMapper,

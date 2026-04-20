@@ -10,6 +10,15 @@ import org.apache.kafka.clients.producer.ProducerRecord
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
+/**
+ * [MessagePublisherPort] implementation backed by a Kafka [KafkaProducer].
+ *
+ * Publishes [MessageEnvelope] instances whose body must be a [ByteArray]. The message key is
+ * set to the envelope's message ID. An optional `correlation-id` header is added when present.
+ * All sends are awaited as suspending calls; batch publishing parallelises them within a [kotlinx.coroutines.coroutineScope].
+ *
+ * @param producer the Kafka producer; may be shared as it is thread-safe.
+ */
 public class KafkaMessagePublisherAdapter(
     private val producer: KafkaProducer<String, ByteArray>,
 ) : MessagePublisherPort {

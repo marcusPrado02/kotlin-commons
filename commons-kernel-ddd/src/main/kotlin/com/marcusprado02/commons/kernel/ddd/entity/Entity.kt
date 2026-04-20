@@ -5,6 +5,14 @@ import com.marcusprado02.commons.kernel.ddd.audit.AuditTrail
 import com.marcusprado02.commons.kernel.ddd.audit.DeletionStamp
 import com.marcusprado02.commons.kernel.ddd.identity.TenantId
 
+/**
+ * Base class for all domain entities.
+ *
+ * Provides identity, tenant scoping, optimistic-concurrency versioning, audit trail,
+ * and soft-delete support. Equality is based on [id] and [tenantId].
+ *
+ * @param I the type of the entity's identity.
+ */
 public abstract class Entity<I : Any>(
     public val id: I,
     public val tenantId: TenantId,
@@ -22,11 +30,23 @@ public abstract class Entity<I : Any>(
     public var deletion: DeletionStamp? = initialDeletion
         private set
 
+    /**
+     * Updates the audit trail and increments the version.
+     *
+     * @param updated the audit stamp for the change.
+     */
     protected fun touch(updated: AuditStamp) {
         audit = audit.copy(updated = updated)
         version = version.increment()
     }
 
+    /**
+     * Marks the entity as soft-deleted.
+     *
+     * @param stamp deletion metadata.
+     * @param updated the audit stamp for the operation.
+     * @throws IllegalStateException if the entity is already deleted.
+     */
     protected fun softDelete(
         stamp: DeletionStamp,
         updated: AuditStamp,
@@ -37,6 +57,12 @@ public abstract class Entity<I : Any>(
         touch(updated)
     }
 
+    /**
+     * Restores a previously soft-deleted entity.
+     *
+     * @param updated the audit stamp for the restoration.
+     * @throws IllegalStateException if the entity is not deleted.
+     */
     protected fun restore(updated: AuditStamp) {
         check(isDeleted) { "Entity $id is not deleted" }
         isDeleted = false

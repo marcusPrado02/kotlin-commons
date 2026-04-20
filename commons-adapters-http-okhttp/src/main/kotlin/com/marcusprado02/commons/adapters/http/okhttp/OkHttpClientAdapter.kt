@@ -13,6 +13,14 @@ import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
+/**
+ * [HttpClientPort] implementation backed by OkHttp.
+ *
+ * Executes requests asynchronously and exposes them as suspending coroutine calls.
+ * Per-request timeouts override the client-level call timeout when specified.
+ *
+ * @param client the pre-configured OkHttp client to use for requests.
+ */
 public class OkHttpClientAdapter(
     private val client: OkHttpClient,
 ) : HttpClientPort {

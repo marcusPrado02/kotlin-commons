@@ -4,6 +4,15 @@ import okhttp3.Interceptor
 import okhttp3.Response
 import java.io.IOException
 
+/**
+ * OkHttp [Interceptor] that retries failed requests up to [maxRetries] times with a fixed delay.
+ *
+ * A retry occurs when an [java.io.IOException] is thrown or when the response is not successful and
+ * the attempt is not the last. The final exception is re-thrown if all attempts fail.
+ *
+ * @param maxRetries the maximum number of attempts (including the first).
+ * @param delayMillis the delay in milliseconds between consecutive attempts.
+ */
 public class RetryInterceptor(
     private val maxRetries: Int = 3,
     private val delayMillis: Long = 200L,
