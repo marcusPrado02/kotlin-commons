@@ -1,9 +1,11 @@
 plugins {
     `java-platform`
+    `maven-publish`
 }
 
-group = "com.marcusprado02.commons"
-version = "0.1.0-SNAPSHOT"
+javaPlatform {
+    allowDependencies()
+}
 
 dependencies {
     constraints {
@@ -23,5 +25,44 @@ dependencies {
         api(project(":commons-adapters-messaging-kafka"))
         api(project(":commons-adapters-http-okhttp"))
         api(project(":commons-adapters-email-smtp"))
+    }
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("bom") {
+            groupId = "com.marcusprado02"
+            artifactId = "commons-bom"
+            version = project.version.toString()
+            from(components["javaPlatform"])
+            pom {
+                name.set("kotlin-commons BOM")
+                description.set("Bill of Materials for kotlin-commons modules")
+                url.set("https://github.com/marcusprado02/kotlin-commons")
+                licenses {
+                    license {
+                        name.set("Apache License 2.0")
+                        url.set("https://www.apache.org/licenses/LICENSE-2.0")
+                    }
+                }
+                developers {
+                    developer {
+                        id.set("marcusprado02")
+                        name.set("Marcus Prado Silva")
+                        email.set("silvamarcusprado@gmail.com")
+                    }
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/marcusprado02/kotlin-commons")
+            credentials {
+                username = System.getenv("GITHUB_ACTOR") ?: ""
+                password = System.getenv("GITHUB_TOKEN") ?: ""
+            }
+        }
     }
 }
