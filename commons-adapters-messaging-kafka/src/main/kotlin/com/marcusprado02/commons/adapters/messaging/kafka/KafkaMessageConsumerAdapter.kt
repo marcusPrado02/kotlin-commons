@@ -1,6 +1,7 @@
 package com.marcusprado02.commons.adapters.messaging.kafka
 
 import com.marcusprado02.commons.ports.messaging.ConsumerGroup
+import com.marcusprado02.commons.ports.messaging.DeadLetterPort
 import com.marcusprado02.commons.ports.messaging.MessageConsumerPort
 import com.marcusprado02.commons.ports.messaging.MessageEnvelope
 import com.marcusprado02.commons.ports.messaging.MessageHeaders
@@ -20,12 +21,16 @@ import java.util.concurrent.ConcurrentLinkedQueue
 public class KafkaMessageConsumerAdapter(
     private val consumer: KafkaConsumer<String, ByteArray>,
     private val groupId: String,
+    private val maxNacks: Int = 3,
+    private val deadLetterPort: DeadLetterPort? = null,
 ) : MessageConsumerPort {
     private val kafkaDispatcher = Dispatchers.IO.limitedParallelism(1)
     private val pollTimeout: Duration = Duration.ofMillis(POLL_TIMEOUT_MS)
     private val pending = ConcurrentHashMap<String, TopicPartitionOffset>()
     private val buffer = ConcurrentLinkedQueue<ConsumerRecord<String, ByteArray>>()
     private var subscribedTopics: Set<String> = emptySet()
+    private val nackCounts = ConcurrentHashMap<String, Int>()
+    private val pendingEnvelopes = ConcurrentHashMap<String, MessageEnvelope<ByteArray>>()
 
     override suspend fun receive(
         topic: TopicName,
@@ -50,16 +55,19 @@ public class KafkaMessageConsumerAdapter(
                         .lastHeader("correlation-id")
                         ?.value()
                         ?.let { String(it) }
-                return@withContext MessageEnvelope(
-                    topic = TopicName(r.topic()),
-                    body = r.value(),
-                    headers =
-                        MessageHeaders(
-                            messageId = id,
-                            timestamp = Instant.ofEpochMilli(r.timestamp()),
-                            correlationId = correlationId,
-                        ),
-                )
+                val envelope =
+                    MessageEnvelope(
+                        topic = TopicName(r.topic()),
+                        body = r.value(),
+                        headers =
+                            MessageHeaders(
+                                messageId = id,
+                                timestamp = Instant.ofEpochMilli(r.timestamp()),
+                                correlationId = correlationId,
+                            ),
+                    )
+                pendingEnvelopes[id.value] = envelope
+                return@withContext envelope
             }
             // Poll Kafka
             consumer.poll(pollTimeout).forEach { buffer.offer(it) }
@@ -73,21 +81,26 @@ public class KafkaMessageConsumerAdapter(
                         .lastHeader("correlation-id")
                         ?.value()
                         ?.let { String(it) }
-                MessageEnvelope(
-                    topic = TopicName(r.topic()),
-                    body = r.value(),
-                    headers =
-                        MessageHeaders(
-                            messageId = id,
-                            timestamp = Instant.ofEpochMilli(r.timestamp()),
-                            correlationId = correlationId,
-                        ),
-                )
+                val envelope =
+                    MessageEnvelope(
+                        topic = TopicName(r.topic()),
+                        body = r.value(),
+                        headers =
+                            MessageHeaders(
+                                messageId = id,
+                                timestamp = Instant.ofEpochMilli(r.timestamp()),
+                                correlationId = correlationId,
+                            ),
+                    )
+                pendingEnvelopes[id.value] = envelope
+                envelope
             }
         }
 
     override suspend fun acknowledge(messageId: MessageId): Unit =
         withContext(kafkaDispatcher) {
+            pendingEnvelopes.remove(messageId.value)
+            nackCounts.remove(messageId.value)
             pending.remove(messageId.value)?.let { tpo ->
                 consumer.commitSync(tpo.toOffsetMap())
             }
@@ -95,6 +108,15 @@ public class KafkaMessageConsumerAdapter(
 
     override suspend fun nack(messageId: MessageId): Unit =
         withContext(kafkaDispatcher) {
+            val count = nackCounts.merge(messageId.value, 1, Int::plus) ?: 1
+            if (count >= maxNacks && deadLetterPort != null) {
+                pendingEnvelopes.remove(messageId.value)?.let { envelope ->
+                    val tpo = pending.remove(messageId.value)
+                    deadLetterPort.send(envelope, "Nacked $count times", TopicName(tpo?.topic ?: "unknown"))
+                }
+                nackCounts.remove(messageId.value)
+                return@withContext
+            }
             pending.remove(messageId.value)?.let { tpo ->
                 consumer.seek(
                     TopicPartition(tpo.topic, tpo.partition),
