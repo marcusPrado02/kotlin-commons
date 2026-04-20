@@ -10,7 +10,9 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 
-private data class PositiveAmount(val amount: Double) : ValueObject {
+private data class PositiveAmount(
+    val amount: Double,
+) : ValueObject {
     override fun validate(): Result<Unit> =
         if (amount > 0) {
             Result.ok(Unit)
@@ -26,7 +28,9 @@ private data class PositiveAmount(val amount: Double) : ValueObject {
         }
 }
 
-private data class SimpleTag(val value: String) : ValueObject
+private data class SimpleTag(
+    val value: String,
+) : ValueObject
 
 class ValueObjectValidateTest :
     FunSpec({

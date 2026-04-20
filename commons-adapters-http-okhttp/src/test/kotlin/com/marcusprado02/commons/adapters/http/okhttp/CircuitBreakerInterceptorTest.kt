@@ -11,6 +11,7 @@ import okhttp3.Request
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import java.io.IOException
+import java.util.concurrent.TimeUnit
 
 class CircuitBreakerInterceptorTest :
     FunSpec({
@@ -22,7 +23,8 @@ class CircuitBreakerInterceptorTest :
         fun closedCircuitBreaker(): CircuitBreaker =
             CircuitBreaker.of(
                 "test",
-                CircuitBreakerConfig.custom()
+                CircuitBreakerConfig
+                    .custom()
                     .slidingWindowSize(10)
                     .build(),
             )
@@ -30,12 +32,16 @@ class CircuitBreakerInterceptorTest :
         test("passes successful response through and records success") {
             val cb = closedCircuitBreaker()
             val client =
-                OkHttpClient.Builder()
+                OkHttpClient
+                    .Builder()
                     .addInterceptor(CircuitBreakerInterceptor(cb))
                     .build()
             server.enqueue(MockResponse().setBody("ok").setResponseCode(200))
 
-            val response = client.newCall(Request.Builder().url(server.url("/")).build()).execute()
+            val response =
+                client
+                    .newCall(Request.Builder().url(server.url("/")).build())
+                    .execute()
 
             response.code shouldBe 200
             response.close()
@@ -50,12 +56,15 @@ class CircuitBreakerInterceptorTest :
             deadServer.shutdown()
 
             val client =
-                OkHttpClient.Builder()
+                OkHttpClient
+                    .Builder()
                     .addInterceptor(CircuitBreakerInterceptor(cb))
                     .build()
 
             shouldThrow<IOException> {
-                client.newCall(Request.Builder().url(deadUrl).build()).execute()
+                client
+                    .newCall(Request.Builder().url(deadUrl).build())
+                    .execute()
             }
             cb.metrics.numberOfFailedCalls shouldBe 1
         }
@@ -64,24 +73,27 @@ class CircuitBreakerInterceptorTest :
             val cb =
                 CircuitBreaker.of(
                     "open-cb",
-                    CircuitBreakerConfig.custom()
+                    CircuitBreakerConfig
+                        .custom()
                         .slidingWindowSize(1)
                         .failureRateThreshold(100f)
                         .build(),
                 )
-            // Force the circuit open by recording a failure
-            cb.onError(0, java.util.concurrent.TimeUnit.NANOSECONDS, IOException("seed failure"))
+            cb.onError(0, TimeUnit.NANOSECONDS, IOException("seed failure"))
             cb.transitionToOpenState()
 
             val client =
-                OkHttpClient.Builder()
+                OkHttpClient
+                    .Builder()
                     .addInterceptor(CircuitBreakerInterceptor(cb))
                     .build()
             server.enqueue(MockResponse().setBody("should not reach").setResponseCode(200))
 
             val ex =
                 shouldThrow<IOException> {
-                    client.newCall(Request.Builder().url(server.url("/")).build()).execute()
+                    client
+                        .newCall(Request.Builder().url(server.url("/")).build())
+                        .execute()
                 }
             ex.message shouldContain "OPEN"
         }
