@@ -1,9 +1,23 @@
 plugins {
     id("org.jetbrains.kotlinx.binary-compatibility-validator")
+    id("org.jetbrains.kotlinx.kover")
 }
 
 apiValidation {
     ignoredProjects += setOf("commons-bom", "commons-testkit-testcontainers")
+}
+
+kover {
+    reports {
+        total {
+            xml {
+                onCheck = true
+            }
+            html {
+                onCheck = false
+            }
+        }
+    }
 }
 
 allprojects {
