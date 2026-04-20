@@ -22,6 +22,17 @@ public final class com/marcusprado02/commons/adapters/cache/redis/RedisCacheAdap
 	public fun remove-7djrlkA (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
+public final class com/marcusprado02/commons/adapters/cache/redis/RedisClusterCacheAdapter : com/marcusprado02/commons/ports/cache/CachePort, java/io/Closeable {
+	public fun <init> (Lio/lettuce/core/cluster/RedisClusterClient;Lcom/marcusprado02/commons/adapters/cache/redis/CacheSerializer;)V
+	public synthetic fun <init> (Lio/lettuce/core/cluster/RedisClusterClient;Lcom/marcusprado02/commons/adapters/cache/redis/CacheSerializer;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun clear (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun close ()V
+	public fun exists-7djrlkA (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun get-nsuoKCM (Ljava/lang/String;Ljava/lang/Class;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun put-DS508Zo (Ljava/lang/String;Ljava/lang/Object;Ljava/time/Duration;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun remove-7djrlkA (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
 public final class com/marcusprado02/commons/adapters/cache/redis/RedisPoolConfig {
 	public fun <init> ()V
 	public fun <init> (IIIJJ)V

@@ -137,7 +137,7 @@ implementado em qualquer ordem.
 ## commons-adapters-cache-redis
 
 - [x] **T-68** Expor configuração de pool de conexão via construtor ou builder
-- [ ] **T-69** Adicionar suporte a Redis Cluster com `RedisClusterClient` do Lettuce
+- [x] **T-69** Adicionar suporte a Redis Cluster com `RedisClusterClient` do Lettuce
 - [x] **T-70** Adicionar logging estruturado de cache hits/misses com SLF4J
 - [x] **T-71** Permitir escolha de serializer via estratégia injetada no construtor
 

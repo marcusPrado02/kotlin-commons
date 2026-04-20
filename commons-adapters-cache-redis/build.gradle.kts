@@ -8,6 +8,7 @@ dependencies {
     api("org.springframework.boot:spring-boot-starter-data-redis")
     api("com.fasterxml.jackson.core:jackson-databind")
     api("com.fasterxml.jackson.module:jackson-module-kotlin")
+    api("io.lettuce:lettuce-core")
     api(libs.kotlinx.coroutines.core)
     implementation(libs.slf4j.api)
     testImplementation(project(":commons-testkit-testcontainers"))
@@ -16,4 +17,5 @@ dependencies {
     testImplementation(libs.kotest.runner.junit5)
     testImplementation(libs.kotest.assertions.core)
     testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.mockk)
 }
