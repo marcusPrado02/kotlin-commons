@@ -22,7 +22,7 @@ kover {
 }
 
 allprojects {
-    group = "com.marcusprado02.commons"
+    group = "io.github.marcusprado02.commons"
     version = property("version").toString()
 }
 

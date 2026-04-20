@@ -1,6 +1,8 @@
 plugins {
     `java-platform`
     `maven-publish`
+    signing
+    id("com.gradleup.nmcp")
 }
 
 javaPlatform {
@@ -31,17 +33,14 @@ dependencies {
 publishing {
     publications {
         create<MavenPublication>("bom") {
-            groupId = "com.marcusprado02"
-            artifactId = "commons-bom"
-            version = project.version.toString()
             from(components["javaPlatform"])
             pom {
                 name.set("kotlin-commons BOM")
-                description.set("Bill of Materials for kotlin-commons modules")
-                url.set("https://github.com/marcusprado02/kotlin-commons")
+                description.set("Bill of Materials for kotlin-commons modules.")
+                url.set("https://github.com/marcusPrado02/kotlin-commons")
                 licenses {
                     license {
-                        name.set("Apache License 2.0")
+                        name.set("Apache License, Version 2.0")
                         url.set("https://www.apache.org/licenses/LICENSE-2.0")
                     }
                 }
@@ -52,17 +51,29 @@ publishing {
                         email.set("silvamarcusprado@gmail.com")
                     }
                 }
+                scm {
+                    connection.set("scm:git:git://github.com/marcusPrado02/kotlin-commons.git")
+                    developerConnection.set("scm:git:ssh://github.com/marcusPrado02/kotlin-commons.git")
+                    url.set("https://github.com/marcusPrado02/kotlin-commons")
+                }
             }
         }
     }
-    repositories {
-        maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/marcusprado02/kotlin-commons")
-            credentials {
-                username = System.getenv("GITHUB_ACTOR") ?: ""
-                password = System.getenv("GITHUB_TOKEN") ?: ""
-            }
-        }
+}
+
+signing {
+    val gpgKey = providers.environmentVariable("GPG_PRIVATE_KEY").orNull
+    val gpgPass = providers.environmentVariable("GPG_PASSPHRASE").orNull
+    if (gpgKey != null) {
+        useInMemoryPgpKeys(gpgKey, gpgPass)
+        sign(publishing.publications["bom"])
+    }
+}
+
+nmcp {
+    publishAllPublicationsToCentralPortal {
+        username = System.getenv("MAVEN_CENTRAL_USERNAME") ?: ""
+        password = System.getenv("MAVEN_CENTRAL_PASSWORD") ?: ""
+        publishingType = "AUTOMATIC"
     }
 }
