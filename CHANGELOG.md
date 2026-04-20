@@ -1,0 +1,55 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+### Added
+- `Collections.splitWhen` — splits a list into sublists at predicate boundaries (T-14)
+- `Numbers.clamp` — clamps Int/Long/Double to a [min, max] range (T-15)
+- `Numbers.percentage` — computes percentage with zero-total and bounds guards (T-16)
+- `ErrorCatalog` marker interface for domain-scoped error code grouping (T-19)
+- `Problems.fromException` — maps common JVM exceptions to `Problem` (T-20)
+- `Problem.withContext` — immutably enriches a problem with string metadata (T-22)
+- `Either.swap`, `Either.flatMapLeft` — symmetrical Either combinators (T-23, T-24)
+- `Result.zip`, `Result.zipWith`, `Result.sequence` — result composition (T-25, T-26, T-30)
+- `Result.toEither` / `Either<Problem,T>.toResult` interop extensions (T-27)
+- `Option.orElse`, `Option.toResult` — option composition (T-28, T-29)
+- `Command` / `CommandHandler`, `Query` / `QueryHandler` CQRS abstractions (T-31, T-32)
+- `DomainService` marker interface (T-33)
+- `Policy<E : DomainEvent>` reaction abstraction (T-34)
+- `Saga` / `SagaStep` long-running process abstractions (T-35)
+- `TimeWindow.merge` — merges two time windows into their union (T-44)
+- `FixedClockProvider.advance` — advances the fixed clock for testing (T-45)
+- `Repository.saveAll` default method with batch override in JPA adapter (T-48, T-65)
+- `ProjectionRepository` read-only port returning projections (T-50)
+- `MessageConsumerPort.poll` batch receive (T-52)
+- `DeadLetterPort` for failed message routing (T-53)
+- `MessageEnvelope.withHeader` immutable header builder (T-54)
+- `HttpClientPort.get/post/put/delete` convenience extensions (T-58)
+- `HttpBody.Json<T>` with `kotlinx.serialization` auto-serialization (T-57)
+- `CachePort.getOrPut`, `getAll`, `invalidateByPrefix` extensions (T-59, T-60, T-61)
+- `EmailContent.withBoth` factory for multipart/alternative emails (T-62)
+- `Email.withHeader` for custom email headers (T-63)
+- `Problem` / `ProblemDetail` JSON serialization via `kotlinx.serialization` (T-21)
+- CorrelationId propagation as Kafka record headers (T-73)
+- `KafkaMessageConsumerAdapter.close()` for graceful shutdown (T-75)
+- Dead-letter routing after configurable max nacks in Kafka consumer (T-74)
+- `RetryPolicy` with exponential backoff for Kafka consumer (T-76)
+- `LoggingInterceptor` and `RetryInterceptor` for OkHttp (T-78, T-80)
+- `OkHttpClientBuilder` for connection pool and timeout configuration (T-81)
+- `SmtpEmailAdapter` multipart/alternative support (T-82)
+- Parallel `sendBatch` via coroutines in SMTP adapter (T-83)
+- `SmtpSessionBuilder` fluent builder for Jakarta Mail sessions (T-84)
+- `MongoContainers`, `MySqlContainers`, `WireMockContainers` testkit factories (T-85, T-86, T-88)
+- `LocalStackContainers` for AWS service emulation in tests (T-87)
+- `KafkaContainers.schemaRegistry` for Confluent Schema Registry (T-89)
+- Redis: pluggable `CacheSerializer` strategy, SLF4J hit/miss logging, `RedisPoolConfig` (T-68, T-70, T-71)
+- JPA adapter detects `ObjectOptimisticLockingFailureException` (T-66)
+- GitHub Actions CI workflow (T-01)
+- Gradle Build Cache, parallel builds, configuration cache (T-04)
+- `checkAll` verification task aggregating lint + tests (T-06)
+- `TYPESAFE_PROJECT_ACCESSORS` feature preview (T-10)
