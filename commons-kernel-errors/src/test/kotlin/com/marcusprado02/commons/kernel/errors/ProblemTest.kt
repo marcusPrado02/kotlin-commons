@@ -4,6 +4,9 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldContain
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 class ProblemTest :
     FunSpec({
@@ -76,14 +79,21 @@ class ProblemTest :
                 Problems
                     .notFound(ErrorCode("X"), "not found")
                     .withContext("k1", "v1")
-                    .withContext("k2", 42)
+                    .withContext("k2", "42")
             p.meta["k1"] shouldBe "v1"
-            p.meta["k2"] shouldBe 42
+            p.meta["k2"] shouldBe "42"
         }
 
         test("withContext does not mutate the original problem") {
             val original = Problems.notFound(ErrorCode("X"), "not found")
             original.withContext("k", "v")
             original.meta.containsKey("k") shouldBe false
+        }
+
+        test("Json.encodeToString produces valid JSON with code and message fields") {
+            val problem = Problems.notFound(ErrorCode("USER_NOT_FOUND"), "User not found")
+            val json = Json.encodeToString(problem)
+            json shouldContain "USER_NOT_FOUND"
+            json shouldContain "User not found"
         }
     })
