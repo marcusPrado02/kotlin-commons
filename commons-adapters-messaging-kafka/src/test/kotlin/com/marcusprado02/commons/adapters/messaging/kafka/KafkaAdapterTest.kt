@@ -13,6 +13,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.mockk.coVerify
 import io.mockk.mockk
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runTest
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.clients.consumer.KafkaConsumer
@@ -23,6 +24,26 @@ import org.apache.kafka.common.serialization.ByteArraySerializer
 import org.apache.kafka.common.serialization.StringDeserializer
 import org.apache.kafka.common.serialization.StringSerializer
 import java.time.Instant
+
+private const val RECEIVE_RETRY_ATTEMPTS = 20
+private const val RECEIVE_RETRY_DELAY_MS = 300L
+
+/**
+ * Retries [KafkaMessageConsumerAdapter.receive] until a message arrives or [RECEIVE_RETRY_ATTEMPTS]
+ * is exhausted. Necessary on CI because the first poll triggers consumer group rebalancing, which
+ * may take longer than the single poll timeout.
+ */
+private suspend fun KafkaMessageConsumerAdapter.receiveWithRetry(
+    topic: TopicName,
+    group: ConsumerGroup,
+): MessageEnvelope<ByteArray>? {
+    repeat(RECEIVE_RETRY_ATTEMPTS) {
+        val msg = receive(topic, group)
+        if (msg != null) return msg
+        delay(RECEIVE_RETRY_DELAY_MS)
+    }
+    return null
+}
 
 class KafkaAdapterTest :
     FunSpec({
@@ -59,7 +80,7 @@ class KafkaAdapterTest :
         }
 
         test("publish sends a message that can be received") {
-            runTest {
+            runTest(timeout = 30_000) {
                 val envelope =
                     MessageEnvelope(
                         topic = topic,
@@ -67,14 +88,14 @@ class KafkaAdapterTest :
                         headers = MessageHeaders(messageId = MessageId.generate(), timestamp = Instant.now()),
                     )
                 publisher.publish(envelope)
-                val received = consumerAdapter.receive(topic, group)
+                val received = consumerAdapter.receiveWithRetry(topic, group)
                 received shouldNotBe null
                 String(received!!.body) shouldBe "hello-kafka"
             }
         }
 
         test("acknowledge commits offset without error") {
-            runTest {
+            runTest(timeout = 30_000) {
                 val envelope =
                     MessageEnvelope(
                         topic = topic,
@@ -82,14 +103,14 @@ class KafkaAdapterTest :
                         headers = MessageHeaders(messageId = MessageId.generate(), timestamp = Instant.now()),
                     )
                 publisher.publish(envelope)
-                val received = consumerAdapter.receive(topic, group)
+                val received = consumerAdapter.receiveWithRetry(topic, group)
                 received shouldNotBe null
                 consumerAdapter.acknowledge(received!!.headers.messageId)
             }
         }
 
         test("publishBatch sends all messages") {
-            runTest {
+            runTest(timeout = 30_000) {
                 val envelopes =
                     (1..3).map { i ->
                         MessageEnvelope(
@@ -101,7 +122,7 @@ class KafkaAdapterTest :
                 publisher.publishBatch(envelopes)
                 var count = 0
                 repeat(3) {
-                    val msg = consumerAdapter.receive(topic, group)
+                    val msg = consumerAdapter.receiveWithRetry(topic, group)
                     if (msg != null) count++
                 }
                 count shouldBe 3
@@ -123,7 +144,7 @@ class KafkaAdapterTest :
         }
 
         test("nack removes message from pending without error") {
-            runTest {
+            runTest(timeout = 30_000) {
                 val envelope =
                     MessageEnvelope(
                         topic = topic,
@@ -131,7 +152,7 @@ class KafkaAdapterTest :
                         headers = MessageHeaders(messageId = MessageId.generate(), timestamp = Instant.now()),
                     )
                 publisher.publish(envelope)
-                val received = consumerAdapter.receive(topic, group)
+                val received = consumerAdapter.receiveWithRetry(topic, group)
                 received shouldNotBe null
                 consumerAdapter.nack(received!!.headers.messageId)
             }
@@ -152,7 +173,7 @@ class KafkaAdapterTest :
         }
 
         test("correlationId is propagated through publish and receive") {
-            runTest {
+            runTest(timeout = 30_000) {
                 val corrGroupId = "correlation-group-${System.currentTimeMillis()}"
                 val correlationTopic = TopicName("correlation-topic-${System.currentTimeMillis()}")
                 val envelope =
@@ -181,7 +202,11 @@ class KafkaAdapterTest :
                     )
                 val correlationConsumerAdapter = KafkaMessageConsumerAdapter(correlationConsumer, corrGroupId)
                 try {
-                    val received = correlationConsumerAdapter.receive(correlationTopic, ConsumerGroup(corrGroupId))
+                    val received =
+                        correlationConsumerAdapter.receiveWithRetry(
+                            correlationTopic,
+                            ConsumerGroup(corrGroupId),
+                        )
                     received shouldNotBe null
                     received!!.headers.correlationId shouldBe "test-correlation-123"
                 } finally {
@@ -209,7 +234,7 @@ class KafkaAdapterTest :
         }
 
         test("dead-letter port is invoked after maxNacks nacks") {
-            runTest {
+            runTest(timeout = 30_000) {
                 val dlTopic = TopicName("dl-test-topic-${System.currentTimeMillis()}")
                 val dlGroup = ConsumerGroup("dl-group-${System.currentTimeMillis()}")
                 val dlDeadLetterPort = mockk<DeadLetterPort>(relaxed = true)
@@ -239,7 +264,7 @@ class KafkaAdapterTest :
                             headers = MessageHeaders(messageId = MessageId.generate(), timestamp = Instant.now()),
                         )
                     publisher.publish(envelope)
-                    val received = dlAdapter.receive(dlTopic, dlGroup)
+                    val received = dlAdapter.receiveWithRetry(dlTopic, dlGroup)
                     received shouldNotBe null
                     val msgId = received!!.headers.messageId
                     dlAdapter.nack(msgId)
@@ -253,7 +278,7 @@ class KafkaAdapterTest :
         }
 
         test("dead-letter port is not invoked below maxNacks") {
-            runTest {
+            runTest(timeout = 30_000) {
                 val dlTopic2 = TopicName("dl-below-topic-${System.currentTimeMillis()}")
                 val dlGroup2 = ConsumerGroup("dl-below-group-${System.currentTimeMillis()}")
                 val dlDeadLetterPort2 = mockk<DeadLetterPort>(relaxed = true)
@@ -283,7 +308,7 @@ class KafkaAdapterTest :
                             headers = MessageHeaders(messageId = MessageId.generate(), timestamp = Instant.now()),
                         )
                     publisher.publish(envelope)
-                    val received = dlAdapter2.receive(dlTopic2, dlGroup2)
+                    val received = dlAdapter2.receiveWithRetry(dlTopic2, dlGroup2)
                     received shouldNotBe null
                     val msgId = received!!.headers.messageId
                     dlAdapter2.nack(msgId)
