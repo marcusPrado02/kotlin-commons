@@ -1,0 +1,139 @@
+public abstract class com/marcusprado02/commons/kernel/result/Either {
+	public static final field Companion Lcom/marcusprado02/commons/kernel/result/Either$Companion;
+	public final fun flatMapLeft (Lkotlin/jvm/functions/Function1;)Lcom/marcusprado02/commons/kernel/result/Either;
+	public final fun flatMapRight (Lkotlin/jvm/functions/Function1;)Lcom/marcusprado02/commons/kernel/result/Either;
+	public final fun fold (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public final fun isLeft ()Z
+	public final fun isRight ()Z
+	public final fun leftOrNull ()Ljava/lang/Object;
+	public final fun mapLeft (Lkotlin/jvm/functions/Function1;)Lcom/marcusprado02/commons/kernel/result/Either;
+	public final fun mapRight (Lkotlin/jvm/functions/Function1;)Lcom/marcusprado02/commons/kernel/result/Either;
+	public final fun rightOrNull ()Ljava/lang/Object;
+	public final fun swap ()Lcom/marcusprado02/commons/kernel/result/Either;
+}
+
+public final class com/marcusprado02/commons/kernel/result/Either$Companion {
+	public final fun left (Ljava/lang/Object;)Lcom/marcusprado02/commons/kernel/result/Either;
+	public final fun right (Ljava/lang/Object;)Lcom/marcusprado02/commons/kernel/result/Either;
+}
+
+public final class com/marcusprado02/commons/kernel/result/Either$Left : com/marcusprado02/commons/kernel/result/Either {
+	public fun <init> (Ljava/lang/Object;)V
+	public final fun component1 ()Ljava/lang/Object;
+	public final fun copy (Ljava/lang/Object;)Lcom/marcusprado02/commons/kernel/result/Either$Left;
+	public static synthetic fun copy$default (Lcom/marcusprado02/commons/kernel/result/Either$Left;Ljava/lang/Object;ILjava/lang/Object;)Lcom/marcusprado02/commons/kernel/result/Either$Left;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getValue ()Ljava/lang/Object;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/marcusprado02/commons/kernel/result/Either$Right : com/marcusprado02/commons/kernel/result/Either {
+	public fun <init> (Ljava/lang/Object;)V
+	public final fun component1 ()Ljava/lang/Object;
+	public final fun copy (Ljava/lang/Object;)Lcom/marcusprado02/commons/kernel/result/Either$Right;
+	public static synthetic fun copy$default (Lcom/marcusprado02/commons/kernel/result/Either$Right;Ljava/lang/Object;ILjava/lang/Object;)Lcom/marcusprado02/commons/kernel/result/Either$Right;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getValue ()Ljava/lang/Object;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract class com/marcusprado02/commons/kernel/result/Option {
+	public static final field Companion Lcom/marcusprado02/commons/kernel/result/Option$Companion;
+	public final fun filter (Lkotlin/jvm/functions/Function1;)Lcom/marcusprado02/commons/kernel/result/Option;
+	public final fun flatMap (Lkotlin/jvm/functions/Function1;)Lcom/marcusprado02/commons/kernel/result/Option;
+	public final fun getOrElse (Ljava/lang/Object;)Ljava/lang/Object;
+	public final fun getOrElse (Lkotlin/jvm/functions/Function0;)Ljava/lang/Object;
+	public final fun getOrNull ()Ljava/lang/Object;
+	public final fun ifSome (Lkotlin/jvm/functions/Function1;)Lcom/marcusprado02/commons/kernel/result/Option;
+	public final fun isNone ()Z
+	public final fun isSome ()Z
+	public final fun map (Lkotlin/jvm/functions/Function1;)Lcom/marcusprado02/commons/kernel/result/Option;
+	public final fun orElse (Lcom/marcusprado02/commons/kernel/result/Option;)Lcom/marcusprado02/commons/kernel/result/Option;
+	public final fun toResult (Lcom/marcusprado02/commons/kernel/errors/Problem;)Lcom/marcusprado02/commons/kernel/result/Result;
+}
+
+public final class com/marcusprado02/commons/kernel/result/Option$Companion {
+	public final fun none ()Lcom/marcusprado02/commons/kernel/result/Option;
+	public final fun of (Ljava/lang/Object;)Lcom/marcusprado02/commons/kernel/result/Option;
+	public final fun some (Ljava/lang/Object;)Lcom/marcusprado02/commons/kernel/result/Option;
+}
+
+public final class com/marcusprado02/commons/kernel/result/Option$None : com/marcusprado02/commons/kernel/result/Option {
+	public static final field INSTANCE Lcom/marcusprado02/commons/kernel/result/Option$None;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/marcusprado02/commons/kernel/result/Option$Some : com/marcusprado02/commons/kernel/result/Option {
+	public fun <init> (Ljava/lang/Object;)V
+	public final fun component1 ()Ljava/lang/Object;
+	public final fun copy (Ljava/lang/Object;)Lcom/marcusprado02/commons/kernel/result/Option$Some;
+	public static synthetic fun copy$default (Lcom/marcusprado02/commons/kernel/result/Option$Some;Ljava/lang/Object;ILjava/lang/Object;)Lcom/marcusprado02/commons/kernel/result/Option$Some;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getValue ()Ljava/lang/Object;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/marcusprado02/commons/kernel/result/OptionKt {
+	public static final fun toOption (Ljava/lang/Object;)Lcom/marcusprado02/commons/kernel/result/Option;
+}
+
+public abstract class com/marcusprado02/commons/kernel/result/Result {
+	public static final field Companion Lcom/marcusprado02/commons/kernel/result/Result$Companion;
+	public final fun flatMap (Lkotlin/jvm/functions/Function1;)Lcom/marcusprado02/commons/kernel/result/Result;
+	public final fun flatMapAsync (Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun fold (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public final fun getOrElse (Ljava/lang/Object;)Ljava/lang/Object;
+	public final fun getOrElse (Lkotlin/jvm/functions/Function0;)Ljava/lang/Object;
+	public final fun getOrNull ()Ljava/lang/Object;
+	public final fun isFail ()Z
+	public final fun isOk ()Z
+	public final fun map (Lkotlin/jvm/functions/Function1;)Lcom/marcusprado02/commons/kernel/result/Result;
+	public final fun mapAsync (Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun mapError (Lkotlin/jvm/functions/Function1;)Lcom/marcusprado02/commons/kernel/result/Result;
+	public final fun peek (Lkotlin/jvm/functions/Function1;)Lcom/marcusprado02/commons/kernel/result/Result;
+	public final fun peekError (Lkotlin/jvm/functions/Function1;)Lcom/marcusprado02/commons/kernel/result/Result;
+	public final fun problemOrNull ()Lcom/marcusprado02/commons/kernel/errors/Problem;
+	public final fun recover (Lkotlin/jvm/functions/Function1;)Lcom/marcusprado02/commons/kernel/result/Result;
+	public final fun recoverWith (Lkotlin/jvm/functions/Function1;)Lcom/marcusprado02/commons/kernel/result/Result;
+	public final fun zip (Lcom/marcusprado02/commons/kernel/result/Result;)Lcom/marcusprado02/commons/kernel/result/Result;
+	public final fun zipWith (Lcom/marcusprado02/commons/kernel/result/Result;Lkotlin/jvm/functions/Function2;)Lcom/marcusprado02/commons/kernel/result/Result;
+}
+
+public final class com/marcusprado02/commons/kernel/result/Result$Companion {
+	public final fun fail (Lcom/marcusprado02/commons/kernel/errors/Problem;)Lcom/marcusprado02/commons/kernel/result/Result;
+	public final fun ok (Ljava/lang/Object;)Lcom/marcusprado02/commons/kernel/result/Result;
+	public final fun sequence (Ljava/util/List;)Lcom/marcusprado02/commons/kernel/result/Result;
+}
+
+public final class com/marcusprado02/commons/kernel/result/Result$Fail : com/marcusprado02/commons/kernel/result/Result {
+	public fun <init> (Lcom/marcusprado02/commons/kernel/errors/Problem;)V
+	public final fun component1 ()Lcom/marcusprado02/commons/kernel/errors/Problem;
+	public final fun copy (Lcom/marcusprado02/commons/kernel/errors/Problem;)Lcom/marcusprado02/commons/kernel/result/Result$Fail;
+	public static synthetic fun copy$default (Lcom/marcusprado02/commons/kernel/result/Result$Fail;Lcom/marcusprado02/commons/kernel/errors/Problem;ILjava/lang/Object;)Lcom/marcusprado02/commons/kernel/result/Result$Fail;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getProblem ()Lcom/marcusprado02/commons/kernel/errors/Problem;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/marcusprado02/commons/kernel/result/Result$Ok : com/marcusprado02/commons/kernel/result/Result {
+	public fun <init> (Ljava/lang/Object;)V
+	public final fun component1 ()Ljava/lang/Object;
+	public final fun copy (Ljava/lang/Object;)Lcom/marcusprado02/commons/kernel/result/Result$Ok;
+	public static synthetic fun copy$default (Lcom/marcusprado02/commons/kernel/result/Result$Ok;Ljava/lang/Object;ILjava/lang/Object;)Lcom/marcusprado02/commons/kernel/result/Result$Ok;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getValue ()Ljava/lang/Object;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/marcusprado02/commons/kernel/result/ResultEitherInteropKt {
+	public static final fun toEither (Lcom/marcusprado02/commons/kernel/result/Result;)Lcom/marcusprado02/commons/kernel/result/Either;
+	public static final fun toResult (Lcom/marcusprado02/commons/kernel/result/Either;)Lcom/marcusprado02/commons/kernel/result/Result;
+}
+

@@ -1,0 +1,31 @@
+public final class com/marcusprado02/commons/ports/cache/CacheKey {
+	public static final synthetic fun box-impl (Ljava/lang/String;)Lcom/marcusprado02/commons/ports/cache/CacheKey;
+	public static fun constructor-impl (Ljava/lang/String;)Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (Ljava/lang/String;Ljava/lang/Object;)Z
+	public static final fun equals-impl0 (Ljava/lang/String;Ljava/lang/String;)Z
+	public final fun getValue ()Ljava/lang/String;
+	public fun hashCode ()I
+	public static fun hashCode-impl (Ljava/lang/String;)I
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (Ljava/lang/String;)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()Ljava/lang/String;
+}
+
+public abstract interface class com/marcusprado02/commons/ports/cache/CachePort {
+	public abstract fun clear (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun exists-7djrlkA (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun get-nsuoKCM (Ljava/lang/String;Ljava/lang/Class;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun put-DS508Zo (Ljava/lang/String;Ljava/lang/Object;Ljava/time/Duration;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun remove-7djrlkA (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class com/marcusprado02/commons/ports/cache/CachePort$DefaultImpls {
+	public static synthetic fun put-DS508Zo$default (Lcom/marcusprado02/commons/ports/cache/CachePort;Ljava/lang/String;Ljava/lang/Object;Ljava/time/Duration;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+}
+
+public final class com/marcusprado02/commons/ports/cache/CachePortKt {
+	public static final fun getAll (Lcom/marcusprado02/commons/ports/cache/CachePort;Ljava/util/Set;Ljava/lang/Class;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun invalidateByPrefix (Lcom/marcusprado02/commons/ports/cache/CachePort;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+

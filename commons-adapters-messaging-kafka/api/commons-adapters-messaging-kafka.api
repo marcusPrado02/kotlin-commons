@@ -1,0 +1,38 @@
+public final class com/marcusprado02/commons/adapters/messaging/kafka/KafkaMessageConsumerAdapter : com/marcusprado02/commons/ports/messaging/MessageConsumerPort {
+	public static final field Companion Lcom/marcusprado02/commons/adapters/messaging/kafka/KafkaMessageConsumerAdapter$Companion;
+	public fun <init> (Lorg/apache/kafka/clients/consumer/KafkaConsumer;Ljava/lang/String;ILcom/marcusprado02/commons/ports/messaging/DeadLetterPort;Lcom/marcusprado02/commons/adapters/messaging/kafka/RetryPolicy;)V
+	public synthetic fun <init> (Lorg/apache/kafka/clients/consumer/KafkaConsumer;Ljava/lang/String;ILcom/marcusprado02/commons/ports/messaging/DeadLetterPort;Lcom/marcusprado02/commons/adapters/messaging/kafka/RetryPolicy;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun acknowledge-pFk7-As (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun close (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun nack-pFk7-As (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun poll-r10hdkM (Ljava/lang/String;Ljava/lang/String;ILkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun receive-7kRyx4k (Ljava/lang/String;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class com/marcusprado02/commons/adapters/messaging/kafka/KafkaMessageConsumerAdapter$Companion {
+}
+
+public final class com/marcusprado02/commons/adapters/messaging/kafka/KafkaMessagePublisherAdapter : com/marcusprado02/commons/ports/messaging/MessagePublisherPort {
+	public fun <init> (Lorg/apache/kafka/clients/producer/KafkaProducer;)V
+	public fun publish (Lcom/marcusprado02/commons/ports/messaging/MessageEnvelope;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun publishBatch (Ljava/util/List;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class com/marcusprado02/commons/adapters/messaging/kafka/RetryPolicy {
+	public fun <init> ()V
+	public fun <init> (JDJ)V
+	public synthetic fun <init> (JDJILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()J
+	public final fun component2 ()D
+	public final fun component3 ()J
+	public final fun copy (JDJ)Lcom/marcusprado02/commons/adapters/messaging/kafka/RetryPolicy;
+	public static synthetic fun copy$default (Lcom/marcusprado02/commons/adapters/messaging/kafka/RetryPolicy;JDJILjava/lang/Object;)Lcom/marcusprado02/commons/adapters/messaging/kafka/RetryPolicy;
+	public final fun delayFor (I)J
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getInitialDelayMs ()J
+	public final fun getMaxDelayMs ()J
+	public final fun getMultiplier ()D
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+

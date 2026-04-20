@@ -1,0 +1,46 @@
+public abstract interface class com/marcusprado02/commons/kernel/time/ClockProvider {
+	public abstract fun clock ()Ljava/time/Clock;
+	public abstract fun now ()Ljava/time/Instant;
+}
+
+public final class com/marcusprado02/commons/kernel/time/ClockProvider$DefaultImpls {
+	public static fun now (Lcom/marcusprado02/commons/kernel/time/ClockProvider;)Ljava/time/Instant;
+}
+
+public final class com/marcusprado02/commons/kernel/time/FixedClockProvider : com/marcusprado02/commons/kernel/time/ClockProvider {
+	public fun <init> ()V
+	public fun <init> (Ljava/time/Instant;)V
+	public synthetic fun <init> (Ljava/time/Instant;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun advance (Ljava/time/Duration;)Lcom/marcusprado02/commons/kernel/time/FixedClockProvider;
+	public fun clock ()Ljava/time/Clock;
+	public fun now ()Ljava/time/Instant;
+}
+
+public final class com/marcusprado02/commons/kernel/time/SystemClockProvider : com/marcusprado02/commons/kernel/time/ClockProvider {
+	public static final field INSTANCE Lcom/marcusprado02/commons/kernel/time/SystemClockProvider;
+	public fun clock ()Ljava/time/Clock;
+	public fun now ()Ljava/time/Instant;
+}
+
+public final class com/marcusprado02/commons/kernel/time/TimeWindow {
+	public static final field Companion Lcom/marcusprado02/commons/kernel/time/TimeWindow$Companion;
+	public fun <init> (Ljava/time/Instant;Ljava/time/Instant;)V
+	public final fun component1 ()Ljava/time/Instant;
+	public final fun component2 ()Ljava/time/Instant;
+	public final fun contains (Ljava/time/Instant;)Z
+	public final fun copy (Ljava/time/Instant;Ljava/time/Instant;)Lcom/marcusprado02/commons/kernel/time/TimeWindow;
+	public static synthetic fun copy$default (Lcom/marcusprado02/commons/kernel/time/TimeWindow;Ljava/time/Instant;Ljava/time/Instant;ILjava/lang/Object;)Lcom/marcusprado02/commons/kernel/time/TimeWindow;
+	public final fun duration ()Ljava/time/Duration;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getEnd ()Ljava/time/Instant;
+	public final fun getStart ()Ljava/time/Instant;
+	public fun hashCode ()I
+	public final fun merge (Lcom/marcusprado02/commons/kernel/time/TimeWindow;)Lcom/marcusprado02/commons/kernel/time/TimeWindow;
+	public final fun overlaps (Lcom/marcusprado02/commons/kernel/time/TimeWindow;)Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/marcusprado02/commons/kernel/time/TimeWindow$Companion {
+	public final fun of (Ljava/time/Instant;Ljava/time/Duration;)Lcom/marcusprado02/commons/kernel/time/TimeWindow;
+}
+

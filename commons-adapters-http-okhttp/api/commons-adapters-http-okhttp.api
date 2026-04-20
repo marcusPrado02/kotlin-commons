@@ -1,0 +1,29 @@
+public final class com/marcusprado02/commons/adapters/http/okhttp/LoggingInterceptor : okhttp3/Interceptor {
+	public fun <init> ()V
+	public fun intercept (Lokhttp3/Interceptor$Chain;)Lokhttp3/Response;
+}
+
+public final class com/marcusprado02/commons/adapters/http/okhttp/OkHttpClientAdapter : com/marcusprado02/commons/ports/http/HttpClientPort {
+	public fun <init> (Lokhttp3/OkHttpClient;)V
+	public fun execute (Lcom/marcusprado02/commons/ports/http/HttpRequest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun execute (Lcom/marcusprado02/commons/ports/http/HttpRequest;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class com/marcusprado02/commons/adapters/http/okhttp/OkHttpClientBuilder {
+	public fun <init> ()V
+	public final fun addInterceptor (Lokhttp3/Interceptor;)Lcom/marcusprado02/commons/adapters/http/okhttp/OkHttpClientBuilder;
+	public final fun build ()Lokhttp3/OkHttpClient;
+	public final fun connectTimeout (Ljava/time/Duration;)Lcom/marcusprado02/commons/adapters/http/okhttp/OkHttpClientBuilder;
+	public final fun keepAliveDuration (Ljava/time/Duration;)Lcom/marcusprado02/commons/adapters/http/okhttp/OkHttpClientBuilder;
+	public final fun maxIdleConnections (I)Lcom/marcusprado02/commons/adapters/http/okhttp/OkHttpClientBuilder;
+	public final fun readTimeout (Ljava/time/Duration;)Lcom/marcusprado02/commons/adapters/http/okhttp/OkHttpClientBuilder;
+	public final fun writeTimeout (Ljava/time/Duration;)Lcom/marcusprado02/commons/adapters/http/okhttp/OkHttpClientBuilder;
+}
+
+public final class com/marcusprado02/commons/adapters/http/okhttp/RetryInterceptor : okhttp3/Interceptor {
+	public fun <init> ()V
+	public fun <init> (IJ)V
+	public synthetic fun <init> (IJILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun intercept (Lokhttp3/Interceptor$Chain;)Lokhttp3/Response;
+}
+

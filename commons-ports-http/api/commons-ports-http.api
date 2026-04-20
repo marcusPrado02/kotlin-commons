@@ -1,0 +1,127 @@
+public abstract class com/marcusprado02/commons/ports/http/HttpBody {
+}
+
+public final class com/marcusprado02/commons/ports/http/HttpBody$Bytes : com/marcusprado02/commons/ports/http/HttpBody {
+	public fun <init> ([BLjava/lang/String;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getContent ()[B
+	public final fun getContentType ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/marcusprado02/commons/ports/http/HttpBody$FormUrlEncoded : com/marcusprado02/commons/ports/http/HttpBody {
+	public fun <init> (Ljava/util/Map;)V
+	public final fun component1 ()Ljava/util/Map;
+	public final fun copy (Ljava/util/Map;)Lcom/marcusprado02/commons/ports/http/HttpBody$FormUrlEncoded;
+	public static synthetic fun copy$default (Lcom/marcusprado02/commons/ports/http/HttpBody$FormUrlEncoded;Ljava/util/Map;ILjava/lang/Object;)Lcom/marcusprado02/commons/ports/http/HttpBody$FormUrlEncoded;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getParams ()Ljava/util/Map;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/marcusprado02/commons/ports/http/HttpBody$Json : com/marcusprado02/commons/ports/http/HttpBody {
+	public fun <init> (Ljava/lang/Object;Lkotlinx/serialization/KSerializer;Lkotlinx/serialization/json/Json;)V
+	public synthetic fun <init> (Ljava/lang/Object;Lkotlinx/serialization/KSerializer;Lkotlinx/serialization/json/Json;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getFormat ()Lkotlinx/serialization/json/Json;
+	public final fun getSerializer ()Lkotlinx/serialization/KSerializer;
+	public final fun getValue ()Ljava/lang/Object;
+	public fun hashCode ()I
+	public final fun toBytes ()[B
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/marcusprado02/commons/ports/http/HttpBody$Multipart : com/marcusprado02/commons/ports/http/HttpBody {
+	public fun <init> (Ljava/util/List;)V
+	public final fun component1 ()Ljava/util/List;
+	public final fun copy (Ljava/util/List;)Lcom/marcusprado02/commons/ports/http/HttpBody$Multipart;
+	public static synthetic fun copy$default (Lcom/marcusprado02/commons/ports/http/HttpBody$Multipart;Ljava/util/List;ILjava/lang/Object;)Lcom/marcusprado02/commons/ports/http/HttpBody$Multipart;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getParts ()Ljava/util/List;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class com/marcusprado02/commons/ports/http/HttpClientPort {
+	public abstract fun execute (Lcom/marcusprado02/commons/ports/http/HttpRequest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun execute (Lcom/marcusprado02/commons/ports/http/HttpRequest;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class com/marcusprado02/commons/ports/http/HttpClientPortKt {
+	public static final fun delete (Lcom/marcusprado02/commons/ports/http/HttpClientPort;Ljava/net/URI;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun get (Lcom/marcusprado02/commons/ports/http/HttpClientPort;Ljava/net/URI;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun post (Lcom/marcusprado02/commons/ports/http/HttpClientPort;Ljava/net/URI;Lcom/marcusprado02/commons/ports/http/HttpBody;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun put (Lcom/marcusprado02/commons/ports/http/HttpClientPort;Ljava/net/URI;Lcom/marcusprado02/commons/ports/http/HttpBody;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class com/marcusprado02/commons/ports/http/HttpMethod : java/lang/Enum {
+	public static final field DELETE Lcom/marcusprado02/commons/ports/http/HttpMethod;
+	public static final field GET Lcom/marcusprado02/commons/ports/http/HttpMethod;
+	public static final field HEAD Lcom/marcusprado02/commons/ports/http/HttpMethod;
+	public static final field OPTIONS Lcom/marcusprado02/commons/ports/http/HttpMethod;
+	public static final field PATCH Lcom/marcusprado02/commons/ports/http/HttpMethod;
+	public static final field POST Lcom/marcusprado02/commons/ports/http/HttpMethod;
+	public static final field PUT Lcom/marcusprado02/commons/ports/http/HttpMethod;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/marcusprado02/commons/ports/http/HttpMethod;
+	public static fun values ()[Lcom/marcusprado02/commons/ports/http/HttpMethod;
+}
+
+public final class com/marcusprado02/commons/ports/http/HttpRequest {
+	public fun <init> (Ljava/net/URI;Lcom/marcusprado02/commons/ports/http/HttpMethod;Ljava/util/Map;Lcom/marcusprado02/commons/ports/http/HttpBody;Ljava/time/Duration;Ljava/lang/String;)V
+	public synthetic fun <init> (Ljava/net/URI;Lcom/marcusprado02/commons/ports/http/HttpMethod;Ljava/util/Map;Lcom/marcusprado02/commons/ports/http/HttpBody;Ljava/time/Duration;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/net/URI;
+	public final fun component2 ()Lcom/marcusprado02/commons/ports/http/HttpMethod;
+	public final fun component3 ()Ljava/util/Map;
+	public final fun component4 ()Lcom/marcusprado02/commons/ports/http/HttpBody;
+	public final fun component5 ()Ljava/time/Duration;
+	public final fun component6 ()Ljava/lang/String;
+	public final fun copy (Ljava/net/URI;Lcom/marcusprado02/commons/ports/http/HttpMethod;Ljava/util/Map;Lcom/marcusprado02/commons/ports/http/HttpBody;Ljava/time/Duration;Ljava/lang/String;)Lcom/marcusprado02/commons/ports/http/HttpRequest;
+	public static synthetic fun copy$default (Lcom/marcusprado02/commons/ports/http/HttpRequest;Ljava/net/URI;Lcom/marcusprado02/commons/ports/http/HttpMethod;Ljava/util/Map;Lcom/marcusprado02/commons/ports/http/HttpBody;Ljava/time/Duration;Ljava/lang/String;ILjava/lang/Object;)Lcom/marcusprado02/commons/ports/http/HttpRequest;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getBody ()Lcom/marcusprado02/commons/ports/http/HttpBody;
+	public final fun getHeaders ()Ljava/util/Map;
+	public final fun getMethod ()Lcom/marcusprado02/commons/ports/http/HttpMethod;
+	public final fun getName ()Ljava/lang/String;
+	public final fun getTimeout ()Ljava/time/Duration;
+	public final fun getUri ()Ljava/net/URI;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/marcusprado02/commons/ports/http/HttpResponse {
+	public static final field Companion Lcom/marcusprado02/commons/ports/http/HttpResponse$Companion;
+	public fun <init> (ILjava/util/Map;Ljava/lang/Object;)V
+	public final fun component1 ()I
+	public final fun component2 ()Ljava/util/Map;
+	public final fun component3 ()Ljava/lang/Object;
+	public final fun copy (ILjava/util/Map;Ljava/lang/Object;)Lcom/marcusprado02/commons/ports/http/HttpResponse;
+	public static synthetic fun copy$default (Lcom/marcusprado02/commons/ports/http/HttpResponse;ILjava/util/Map;Ljava/lang/Object;ILjava/lang/Object;)Lcom/marcusprado02/commons/ports/http/HttpResponse;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getBody ()Ljava/lang/Object;
+	public final fun getHeaders ()Ljava/util/Map;
+	public final fun getStatusCode ()I
+	public fun hashCode ()I
+	public final fun isClientError ()Z
+	public final fun isServerError ()Z
+	public final fun isSuccessful ()Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/marcusprado02/commons/ports/http/HttpResponse$Companion {
+}
+
+public final class com/marcusprado02/commons/ports/http/MultipartPart {
+	public fun <init> (Ljava/lang/String;[BLjava/lang/String;Ljava/lang/String;)V
+	public synthetic fun <init> (Ljava/lang/String;[BLjava/lang/String;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getContent ()[B
+	public final fun getContentType ()Ljava/lang/String;
+	public final fun getFilename ()Ljava/lang/String;
+	public final fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+

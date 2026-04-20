@@ -1,0 +1,304 @@
+public abstract class com/marcusprado02/commons/kernel/ddd/aggregate/AggregateRoot : com/marcusprado02/commons/kernel/ddd/entity/Entity {
+	public synthetic fun <init> (Ljava/lang/Object;Ljava/lang/String;JLcom/marcusprado02/commons/kernel/ddd/audit/AuditTrail;ZLcom/marcusprado02/commons/kernel/ddd/audit/DeletionStamp;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Ljava/lang/Object;Ljava/lang/String;JLcom/marcusprado02/commons/kernel/ddd/audit/AuditTrail;ZLcom/marcusprado02/commons/kernel/ddd/audit/DeletionStamp;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun peekDomainEvents ()Ljava/util/List;
+	public final fun pullDomainEvents ()Ljava/util/List;
+	protected final fun recordChange (Lcom/marcusprado02/commons/kernel/ddd/audit/AuditStamp;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;)V
+	protected final fun recordRestore (Lcom/marcusprado02/commons/kernel/ddd/audit/AuditStamp;Lkotlin/jvm/functions/Function1;)V
+	protected final fun recordSoftDelete (Lcom/marcusprado02/commons/kernel/ddd/audit/DeletionStamp;Lcom/marcusprado02/commons/kernel/ddd/audit/AuditStamp;Lkotlin/jvm/functions/Function1;)V
+	public final fun snapshot ()Lcom/marcusprado02/commons/kernel/ddd/aggregate/AggregateSnapshot;
+}
+
+public final class com/marcusprado02/commons/kernel/ddd/aggregate/AggregateSnapshot {
+	public synthetic fun <init> (Ljava/lang/Object;Ljava/lang/String;JLjava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/lang/Object;
+	public final fun component2-EAwwTNU ()Ljava/lang/String;
+	public final fun component3-aPEMimg ()J
+	public final fun component4 ()Ljava/lang/String;
+	public final fun copy-loHjIJQ (Ljava/lang/Object;Ljava/lang/String;JLjava/lang/String;)Lcom/marcusprado02/commons/kernel/ddd/aggregate/AggregateSnapshot;
+	public static synthetic fun copy-loHjIJQ$default (Lcom/marcusprado02/commons/kernel/ddd/aggregate/AggregateSnapshot;Ljava/lang/Object;Ljava/lang/String;JLjava/lang/String;ILjava/lang/Object;)Lcom/marcusprado02/commons/kernel/ddd/aggregate/AggregateSnapshot;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAggregateId ()Ljava/lang/Object;
+	public final fun getAggregateType ()Ljava/lang/String;
+	public final fun getTenantId-EAwwTNU ()Ljava/lang/String;
+	public final fun getVersion-aPEMimg ()J
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/marcusprado02/commons/kernel/ddd/audit/AuditStamp {
+	public synthetic fun <init> (Ljava/lang/String;Ljava/time/Instant;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1-BNxnUC4 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/time/Instant;
+	public final fun copy-3xVvEpo (Ljava/lang/String;Ljava/time/Instant;)Lcom/marcusprado02/commons/kernel/ddd/audit/AuditStamp;
+	public static synthetic fun copy-3xVvEpo$default (Lcom/marcusprado02/commons/kernel/ddd/audit/AuditStamp;Ljava/lang/String;Ljava/time/Instant;ILjava/lang/Object;)Lcom/marcusprado02/commons/kernel/ddd/audit/AuditStamp;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getActorId-BNxnUC4 ()Ljava/lang/String;
+	public final fun getAt ()Ljava/time/Instant;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/marcusprado02/commons/kernel/ddd/audit/AuditTrail {
+	public fun <init> (Lcom/marcusprado02/commons/kernel/ddd/audit/AuditStamp;Lcom/marcusprado02/commons/kernel/ddd/audit/AuditStamp;)V
+	public final fun component1 ()Lcom/marcusprado02/commons/kernel/ddd/audit/AuditStamp;
+	public final fun component2 ()Lcom/marcusprado02/commons/kernel/ddd/audit/AuditStamp;
+	public final fun copy (Lcom/marcusprado02/commons/kernel/ddd/audit/AuditStamp;Lcom/marcusprado02/commons/kernel/ddd/audit/AuditStamp;)Lcom/marcusprado02/commons/kernel/ddd/audit/AuditTrail;
+	public static synthetic fun copy$default (Lcom/marcusprado02/commons/kernel/ddd/audit/AuditTrail;Lcom/marcusprado02/commons/kernel/ddd/audit/AuditStamp;Lcom/marcusprado02/commons/kernel/ddd/audit/AuditStamp;ILjava/lang/Object;)Lcom/marcusprado02/commons/kernel/ddd/audit/AuditTrail;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getCreated ()Lcom/marcusprado02/commons/kernel/ddd/audit/AuditStamp;
+	public final fun getUpdated ()Lcom/marcusprado02/commons/kernel/ddd/audit/AuditStamp;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/marcusprado02/commons/kernel/ddd/audit/DeletionStamp {
+	public synthetic fun <init> (Ljava/lang/String;Ljava/time/Instant;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/time/Instant;Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1-BNxnUC4 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/time/Instant;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun copy-7kn_It0 (Ljava/lang/String;Ljava/time/Instant;Ljava/lang/String;)Lcom/marcusprado02/commons/kernel/ddd/audit/DeletionStamp;
+	public static synthetic fun copy-7kn_It0$default (Lcom/marcusprado02/commons/kernel/ddd/audit/DeletionStamp;Ljava/lang/String;Ljava/time/Instant;Ljava/lang/String;ILjava/lang/Object;)Lcom/marcusprado02/commons/kernel/ddd/audit/DeletionStamp;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getActorId-BNxnUC4 ()Ljava/lang/String;
+	public final fun getAt ()Ljava/time/Instant;
+	public final fun getReason ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class com/marcusprado02/commons/kernel/ddd/command/Command {
+}
+
+public abstract interface class com/marcusprado02/commons/kernel/ddd/command/CommandHandler {
+	public abstract fun handle (Lcom/marcusprado02/commons/kernel/ddd/command/Command;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract interface class com/marcusprado02/commons/kernel/ddd/context/ActorProvider {
+	public abstract fun currentActor-BNxnUC4 ()Ljava/lang/String;
+}
+
+public abstract interface class com/marcusprado02/commons/kernel/ddd/context/CorrelationProvider {
+	public abstract fun currentCorrelation-2oG0GT4 ()Ljava/lang/String;
+}
+
+public final class com/marcusprado02/commons/kernel/ddd/context/FixedActorProvider : com/marcusprado02/commons/kernel/ddd/context/ActorProvider {
+	public synthetic fun <init> (Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun currentActor-BNxnUC4 ()Ljava/lang/String;
+}
+
+public final class com/marcusprado02/commons/kernel/ddd/context/FixedCorrelationProvider : com/marcusprado02/commons/kernel/ddd/context/CorrelationProvider {
+	public synthetic fun <init> (Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun currentCorrelation-2oG0GT4 ()Ljava/lang/String;
+}
+
+public final class com/marcusprado02/commons/kernel/ddd/context/FixedTenantProvider : com/marcusprado02/commons/kernel/ddd/context/TenantProvider {
+	public synthetic fun <init> (Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun currentTenant-EAwwTNU ()Ljava/lang/String;
+}
+
+public abstract interface class com/marcusprado02/commons/kernel/ddd/context/TenantProvider {
+	public abstract fun currentTenant-EAwwTNU ()Ljava/lang/String;
+}
+
+public abstract class com/marcusprado02/commons/kernel/ddd/entity/Entity {
+	public synthetic fun <init> (Ljava/lang/Object;Ljava/lang/String;JLcom/marcusprado02/commons/kernel/ddd/audit/AuditTrail;ZLcom/marcusprado02/commons/kernel/ddd/audit/DeletionStamp;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Ljava/lang/Object;Ljava/lang/String;JLcom/marcusprado02/commons/kernel/ddd/audit/AuditTrail;ZLcom/marcusprado02/commons/kernel/ddd/audit/DeletionStamp;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAudit ()Lcom/marcusprado02/commons/kernel/ddd/audit/AuditTrail;
+	public final fun getDeletion ()Lcom/marcusprado02/commons/kernel/ddd/audit/DeletionStamp;
+	public final fun getId ()Ljava/lang/Object;
+	public final fun getTenantId-EAwwTNU ()Ljava/lang/String;
+	public final fun getVersion-aPEMimg ()J
+	public fun hashCode ()I
+	public final fun isDeleted ()Z
+	protected final fun restore (Lcom/marcusprado02/commons/kernel/ddd/audit/AuditStamp;)V
+	protected final fun softDelete (Lcom/marcusprado02/commons/kernel/ddd/audit/DeletionStamp;Lcom/marcusprado02/commons/kernel/ddd/audit/AuditStamp;)V
+	public fun toString ()Ljava/lang/String;
+	protected final fun touch (Lcom/marcusprado02/commons/kernel/ddd/audit/AuditStamp;)V
+}
+
+public final class com/marcusprado02/commons/kernel/ddd/entity/EntityVersion {
+	public static final field Companion Lcom/marcusprado02/commons/kernel/ddd/entity/EntityVersion$Companion;
+	public static final synthetic fun box-impl (J)Lcom/marcusprado02/commons/kernel/ddd/entity/EntityVersion;
+	public static fun constructor-impl (J)J
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (JLjava/lang/Object;)Z
+	public static final fun equals-impl0 (JJ)Z
+	public final fun getValue ()J
+	public fun hashCode ()I
+	public static fun hashCode-impl (J)I
+	public static final fun increment-aPEMimg (J)J
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (J)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()J
+}
+
+public final class com/marcusprado02/commons/kernel/ddd/entity/EntityVersion$Companion {
+	public final fun getINITIAL-aPEMimg ()J
+}
+
+public abstract interface class com/marcusprado02/commons/kernel/ddd/event/DomainEvent {
+	public abstract fun getAggregateId ()Ljava/lang/String;
+	public abstract fun getAggregateType ()Ljava/lang/String;
+	public abstract fun getAggregateVersion-aPEMimg ()J
+	public abstract fun getEventId-SdR9qS0 ()Ljava/lang/String;
+	public abstract fun getMetadata ()Lcom/marcusprado02/commons/kernel/ddd/event/EventMetadata;
+	public abstract fun getOccurredAt ()Ljava/time/Instant;
+}
+
+public final class com/marcusprado02/commons/kernel/ddd/event/EventId {
+	public static final field Companion Lcom/marcusprado02/commons/kernel/ddd/event/EventId$Companion;
+	public static final synthetic fun box-impl (Ljava/lang/String;)Lcom/marcusprado02/commons/kernel/ddd/event/EventId;
+	public static fun constructor-impl (Ljava/lang/String;)Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (Ljava/lang/String;Ljava/lang/Object;)Z
+	public static final fun equals-impl0 (Ljava/lang/String;Ljava/lang/String;)Z
+	public final fun getValue ()Ljava/lang/String;
+	public fun hashCode ()I
+	public static fun hashCode-impl (Ljava/lang/String;)I
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (Ljava/lang/String;)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()Ljava/lang/String;
+}
+
+public final class com/marcusprado02/commons/kernel/ddd/event/EventId$Companion {
+	public final fun generate-SdR9qS0 ()Ljava/lang/String;
+}
+
+public final class com/marcusprado02/commons/kernel/ddd/event/EventMetadata {
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1-2oG0GT4 ()Ljava/lang/String;
+	public final fun component2-EAwwTNU ()Ljava/lang/String;
+	public final fun component3-AYfalME ()Ljava/lang/String;
+	public final fun component4 ()Ljava/util/Map;
+	public final fun copy-5TeY3hA (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;)Lcom/marcusprado02/commons/kernel/ddd/event/EventMetadata;
+	public static synthetic fun copy-5TeY3hA$default (Lcom/marcusprado02/commons/kernel/ddd/event/EventMetadata;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;ILjava/lang/Object;)Lcom/marcusprado02/commons/kernel/ddd/event/EventMetadata;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getActorId-AYfalME ()Ljava/lang/String;
+	public final fun getCorrelationId-2oG0GT4 ()Ljava/lang/String;
+	public final fun getExtra ()Ljava/util/Map;
+	public final fun getTenantId-EAwwTNU ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/marcusprado02/commons/kernel/ddd/identity/ActorId {
+	public static final synthetic fun box-impl (Ljava/lang/String;)Lcom/marcusprado02/commons/kernel/ddd/identity/ActorId;
+	public static fun constructor-impl (Ljava/lang/String;)Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (Ljava/lang/String;Ljava/lang/Object;)Z
+	public static final fun equals-impl0 (Ljava/lang/String;Ljava/lang/String;)Z
+	public final fun getValue ()Ljava/lang/String;
+	public fun hashCode ()I
+	public static fun hashCode-impl (Ljava/lang/String;)I
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (Ljava/lang/String;)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()Ljava/lang/String;
+}
+
+public final class com/marcusprado02/commons/kernel/ddd/identity/CorrelationId {
+	public static final field Companion Lcom/marcusprado02/commons/kernel/ddd/identity/CorrelationId$Companion;
+	public static final synthetic fun box-impl (Ljava/lang/String;)Lcom/marcusprado02/commons/kernel/ddd/identity/CorrelationId;
+	public static fun constructor-impl (Ljava/lang/String;)Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (Ljava/lang/String;Ljava/lang/Object;)Z
+	public static final fun equals-impl0 (Ljava/lang/String;Ljava/lang/String;)Z
+	public final fun getValue ()Ljava/lang/String;
+	public fun hashCode ()I
+	public static fun hashCode-impl (Ljava/lang/String;)I
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (Ljava/lang/String;)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()Ljava/lang/String;
+}
+
+public final class com/marcusprado02/commons/kernel/ddd/identity/CorrelationId$Companion {
+	public final fun generate-2oG0GT4 ()Ljava/lang/String;
+}
+
+public final class com/marcusprado02/commons/kernel/ddd/identity/TenantId {
+	public static final synthetic fun box-impl (Ljava/lang/String;)Lcom/marcusprado02/commons/kernel/ddd/identity/TenantId;
+	public static fun constructor-impl (Ljava/lang/String;)Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (Ljava/lang/String;Ljava/lang/Object;)Z
+	public static final fun equals-impl0 (Ljava/lang/String;Ljava/lang/String;)Z
+	public final fun getValue ()Ljava/lang/String;
+	public fun hashCode ()I
+	public static fun hashCode-impl (Ljava/lang/String;)I
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (Ljava/lang/String;)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()Ljava/lang/String;
+}
+
+public final class com/marcusprado02/commons/kernel/ddd/identity/UuidIdentifier {
+	public static final field Companion Lcom/marcusprado02/commons/kernel/ddd/identity/UuidIdentifier$Companion;
+	public static final synthetic fun box-impl (Ljava/util/UUID;)Lcom/marcusprado02/commons/kernel/ddd/identity/UuidIdentifier;
+	public static fun constructor-impl (Ljava/util/UUID;)Ljava/util/UUID;
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (Ljava/util/UUID;Ljava/lang/Object;)Z
+	public static final fun equals-impl0 (Ljava/util/UUID;Ljava/util/UUID;)Z
+	public final fun getValue ()Ljava/util/UUID;
+	public fun hashCode ()I
+	public static fun hashCode-impl (Ljava/util/UUID;)I
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (Ljava/util/UUID;)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()Ljava/util/UUID;
+}
+
+public final class com/marcusprado02/commons/kernel/ddd/identity/UuidIdentifier$Companion {
+	public final fun generate-5ikRr3Q ()Ljava/util/UUID;
+	public final fun of-x5fcQkE (Ljava/lang/String;)Ljava/util/UUID;
+}
+
+public final class com/marcusprado02/commons/kernel/ddd/invariant/Invariant {
+	public static final field INSTANCE Lcom/marcusprado02/commons/kernel/ddd/invariant/Invariant;
+	public final fun check (ZLkotlin/jvm/functions/Function0;)V
+}
+
+public abstract interface class com/marcusprado02/commons/kernel/ddd/policy/Policy {
+	public abstract fun handle (Lcom/marcusprado02/commons/kernel/ddd/event/DomainEvent;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract interface class com/marcusprado02/commons/kernel/ddd/query/Query {
+}
+
+public abstract interface class com/marcusprado02/commons/kernel/ddd/query/QueryHandler {
+	public abstract fun handle (Lcom/marcusprado02/commons/kernel/ddd/query/Query;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract interface class com/marcusprado02/commons/kernel/ddd/saga/Saga {
+	public abstract fun compensate (Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun step (Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract interface class com/marcusprado02/commons/kernel/ddd/saga/SagaStep {
+	public abstract fun compensate (Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun execute (Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun getName ()Ljava/lang/String;
+}
+
+public abstract interface class com/marcusprado02/commons/kernel/ddd/service/DomainService {
+}
+
+public abstract interface class com/marcusprado02/commons/kernel/ddd/specification/Specification {
+	public abstract fun and (Lcom/marcusprado02/commons/kernel/ddd/specification/Specification;)Lcom/marcusprado02/commons/kernel/ddd/specification/Specification;
+	public abstract fun isSatisfiedBy (Ljava/lang/Object;)Z
+	public abstract fun not ()Lcom/marcusprado02/commons/kernel/ddd/specification/Specification;
+	public abstract fun or (Lcom/marcusprado02/commons/kernel/ddd/specification/Specification;)Lcom/marcusprado02/commons/kernel/ddd/specification/Specification;
+}
+
+public final class com/marcusprado02/commons/kernel/ddd/specification/Specification$DefaultImpls {
+	public static fun and (Lcom/marcusprado02/commons/kernel/ddd/specification/Specification;Lcom/marcusprado02/commons/kernel/ddd/specification/Specification;)Lcom/marcusprado02/commons/kernel/ddd/specification/Specification;
+	public static fun not (Lcom/marcusprado02/commons/kernel/ddd/specification/Specification;)Lcom/marcusprado02/commons/kernel/ddd/specification/Specification;
+	public static fun or (Lcom/marcusprado02/commons/kernel/ddd/specification/Specification;Lcom/marcusprado02/commons/kernel/ddd/specification/Specification;)Lcom/marcusprado02/commons/kernel/ddd/specification/Specification;
+}
+
+public final class com/marcusprado02/commons/kernel/ddd/specification/SpecificationKt {
+	public static final fun Specification (Lkotlin/jvm/functions/Function1;)Lcom/marcusprado02/commons/kernel/ddd/specification/Specification;
+}
+
+public abstract interface class com/marcusprado02/commons/kernel/ddd/valueobject/ValueObject {
+}
+

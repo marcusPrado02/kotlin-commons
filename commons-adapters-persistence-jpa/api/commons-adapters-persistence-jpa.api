@@ -1,0 +1,17 @@
+public abstract class com/marcusprado02/commons/adapters/persistence/jpa/JpaPageableRepositoryAdapter : com/marcusprado02/commons/adapters/persistence/jpa/JpaRepositoryAdapter, com/marcusprado02/commons/ports/persistence/PageableRepository {
+	public fun <init> (Lorg/springframework/data/jpa/repository/JpaRepository;)V
+	public fun count (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun findAll (Lcom/marcusprado02/commons/ports/persistence/PageRequest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract class com/marcusprado02/commons/adapters/persistence/jpa/JpaRepositoryAdapter : com/marcusprado02/commons/ports/persistence/Repository {
+	public fun <init> (Lorg/springframework/data/jpa/repository/JpaRepository;)V
+	public fun delete (Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun deleteById (Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun existsById (Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun findById (Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	protected final fun getJpa ()Lorg/springframework/data/jpa/repository/JpaRepository;
+	public fun save (Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun saveAll (Ljava/util/Collection;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+

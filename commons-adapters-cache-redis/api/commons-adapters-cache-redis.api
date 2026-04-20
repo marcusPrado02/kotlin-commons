@@ -1,0 +1,45 @@
+public abstract interface class com/marcusprado02/commons/adapters/cache/redis/CacheSerializer {
+	public abstract fun deserialize ([BLjava/lang/Class;)Ljava/lang/Object;
+	public abstract fun serialize (Ljava/lang/Object;)[B
+}
+
+public final class com/marcusprado02/commons/adapters/cache/redis/JacksonCacheSerializer : com/marcusprado02/commons/adapters/cache/redis/CacheSerializer {
+	public fun <init> (Lcom/fasterxml/jackson/databind/ObjectMapper;)V
+	public fun deserialize ([BLjava/lang/Class;)Ljava/lang/Object;
+	public fun serialize (Ljava/lang/Object;)[B
+}
+
+public final class com/marcusprado02/commons/adapters/cache/redis/RedisCacheAdapter : com/marcusprado02/commons/ports/cache/CachePort {
+	public fun <init> (Lorg/springframework/data/redis/core/RedisTemplate;Lcom/fasterxml/jackson/databind/ObjectMapper;)V
+	public fun <init> (Lorg/springframework/data/redis/core/RedisTemplate;Lcom/fasterxml/jackson/databind/ObjectMapper;Lcom/marcusprado02/commons/adapters/cache/redis/RedisPoolConfig;)V
+	public fun <init> (Lorg/springframework/data/redis/core/RedisTemplate;Lcom/marcusprado02/commons/adapters/cache/redis/CacheSerializer;Lcom/marcusprado02/commons/adapters/cache/redis/RedisPoolConfig;)V
+	public synthetic fun <init> (Lorg/springframework/data/redis/core/RedisTemplate;Lcom/marcusprado02/commons/adapters/cache/redis/CacheSerializer;Lcom/marcusprado02/commons/adapters/cache/redis/RedisPoolConfig;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun clear (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun exists-7djrlkA (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun get-nsuoKCM (Ljava/lang/String;Ljava/lang/Class;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun getPoolConfig ()Lcom/marcusprado02/commons/adapters/cache/redis/RedisPoolConfig;
+	public fun put-DS508Zo (Ljava/lang/String;Ljava/lang/Object;Ljava/time/Duration;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun remove-7djrlkA (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class com/marcusprado02/commons/adapters/cache/redis/RedisPoolConfig {
+	public fun <init> ()V
+	public fun <init> (IIIJJ)V
+	public synthetic fun <init> (IIIJJILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()I
+	public final fun component2 ()I
+	public final fun component3 ()I
+	public final fun component4 ()J
+	public final fun component5 ()J
+	public final fun copy (IIIJJ)Lcom/marcusprado02/commons/adapters/cache/redis/RedisPoolConfig;
+	public static synthetic fun copy$default (Lcom/marcusprado02/commons/adapters/cache/redis/RedisPoolConfig;IIIJJILjava/lang/Object;)Lcom/marcusprado02/commons/adapters/cache/redis/RedisPoolConfig;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getConnectTimeoutMs ()J
+	public final fun getMaxConnections ()I
+	public final fun getMaxIdle ()I
+	public final fun getMinIdle ()I
+	public final fun getReadTimeoutMs ()J
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+

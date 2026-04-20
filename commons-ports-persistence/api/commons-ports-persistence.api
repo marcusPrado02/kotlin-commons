@@ -1,0 +1,104 @@
+public final class com/marcusprado02/commons/ports/persistence/EntityNotFoundException : com/marcusprado02/commons/ports/persistence/PersistenceException {
+	public fun <init> (Ljava/lang/String;)V
+}
+
+public final class com/marcusprado02/commons/ports/persistence/OptimisticLockException : com/marcusprado02/commons/ports/persistence/PersistenceException {
+	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/Throwable;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+}
+
+public final class com/marcusprado02/commons/ports/persistence/PageRequest {
+	public fun <init> ()V
+	public fun <init> (IILjava/util/List;)V
+	public synthetic fun <init> (IILjava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()I
+	public final fun component2 ()I
+	public final fun component3 ()Ljava/util/List;
+	public final fun copy (IILjava/util/List;)Lcom/marcusprado02/commons/ports/persistence/PageRequest;
+	public static synthetic fun copy$default (Lcom/marcusprado02/commons/ports/persistence/PageRequest;IILjava/util/List;ILjava/lang/Object;)Lcom/marcusprado02/commons/ports/persistence/PageRequest;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getPage ()I
+	public final fun getSize ()I
+	public final fun getSort ()Ljava/util/List;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/marcusprado02/commons/ports/persistence/PageResult {
+	public fun <init> (Ljava/util/List;IIJ)V
+	public final fun component1 ()Ljava/util/List;
+	public final fun component2 ()I
+	public final fun component3 ()I
+	public final fun component4 ()J
+	public final fun copy (Ljava/util/List;IIJ)Lcom/marcusprado02/commons/ports/persistence/PageResult;
+	public static synthetic fun copy$default (Lcom/marcusprado02/commons/ports/persistence/PageResult;Ljava/util/List;IIJILjava/lang/Object;)Lcom/marcusprado02/commons/ports/persistence/PageResult;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getContent ()Ljava/util/List;
+	public final fun getPage ()I
+	public final fun getSize ()I
+	public final fun getTotalElements ()J
+	public final fun getTotalPages ()I
+	public fun hashCode ()I
+	public final fun isEmpty ()Z
+	public final fun isFirst ()Z
+	public final fun isLast ()Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class com/marcusprado02/commons/ports/persistence/PageableRepository : com/marcusprado02/commons/ports/persistence/Repository {
+	public abstract fun count (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun findAll (Lcom/marcusprado02/commons/ports/persistence/PageRequest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class com/marcusprado02/commons/ports/persistence/PageableRepository$DefaultImpls {
+	public static fun saveAll (Lcom/marcusprado02/commons/ports/persistence/PageableRepository;Ljava/util/Collection;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public class com/marcusprado02/commons/ports/persistence/PersistenceException : java/lang/RuntimeException {
+	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/Throwable;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+}
+
+public abstract interface class com/marcusprado02/commons/ports/persistence/ProjectionRepository {
+	public abstract fun findAll (Lcom/marcusprado02/commons/ports/persistence/PageRequest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun findById (Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract interface class com/marcusprado02/commons/ports/persistence/QuerySpecification {
+}
+
+public abstract interface class com/marcusprado02/commons/ports/persistence/Repository {
+	public abstract fun delete (Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun deleteById (Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun existsById (Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun findById (Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun save (Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun saveAll (Ljava/util/Collection;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class com/marcusprado02/commons/ports/persistence/Repository$DefaultImpls {
+	public static fun saveAll (Lcom/marcusprado02/commons/ports/persistence/Repository;Ljava/util/Collection;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class com/marcusprado02/commons/ports/persistence/SortDirection : java/lang/Enum {
+	public static final field ASC Lcom/marcusprado02/commons/ports/persistence/SortDirection;
+	public static final field DESC Lcom/marcusprado02/commons/ports/persistence/SortDirection;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/marcusprado02/commons/ports/persistence/SortDirection;
+	public static fun values ()[Lcom/marcusprado02/commons/ports/persistence/SortDirection;
+}
+
+public final class com/marcusprado02/commons/ports/persistence/SortField {
+	public fun <init> (Ljava/lang/String;Lcom/marcusprado02/commons/ports/persistence/SortDirection;)V
+	public synthetic fun <init> (Ljava/lang/String;Lcom/marcusprado02/commons/ports/persistence/SortDirection;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Lcom/marcusprado02/commons/ports/persistence/SortDirection;
+	public final fun copy (Ljava/lang/String;Lcom/marcusprado02/commons/ports/persistence/SortDirection;)Lcom/marcusprado02/commons/ports/persistence/SortField;
+	public static synthetic fun copy$default (Lcom/marcusprado02/commons/ports/persistence/SortField;Ljava/lang/String;Lcom/marcusprado02/commons/ports/persistence/SortDirection;ILjava/lang/Object;)Lcom/marcusprado02/commons/ports/persistence/SortField;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDirection ()Lcom/marcusprado02/commons/ports/persistence/SortDirection;
+	public final fun getField ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
