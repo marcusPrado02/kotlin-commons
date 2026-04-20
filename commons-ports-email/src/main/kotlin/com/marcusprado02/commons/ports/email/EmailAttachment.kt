@@ -1,5 +1,12 @@
 package com.marcusprado02.commons.ports.email
 
+/**
+ * A file attachment to include in an [Email].
+ *
+ * @property filename the name of the file as it appears to the recipient.
+ * @property content raw byte content of the attachment.
+ * @property mimeType MIME type of the content (e.g. `"application/pdf"`).
+ */
 public data class EmailAttachment(
     val filename: String,
     val content: ByteArray,

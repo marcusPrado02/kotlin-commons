@@ -1,6 +1,13 @@
 package com.marcusprado02.commons.ports.http
 
+/** Sealed hierarchy representing the body of an HTTP request. */
 public sealed class HttpBody {
+    /**
+     * Raw byte body with an explicit MIME type.
+     *
+     * @property content the raw bytes.
+     * @property contentType MIME type of the content (e.g. `"application/octet-stream"`).
+     */
     public class Bytes(
         public val content: ByteArray,
         public val contentType: String,
@@ -16,19 +23,29 @@ public sealed class HttpBody {
         override fun toString(): String = "Bytes(contentType='$contentType', size=${content.size})"
     }
 
+    /** URL-encoded form body (`application/x-www-form-urlencoded`). */
     public data class FormUrlEncoded(
         val params: Map<String, String>,
     ) : HttpBody()
 
+    /** Multipart form body composed of one or more [MultipartPart]s. */
     public data class Multipart(
         val parts: List<MultipartPart>,
     ) : HttpBody()
 
+    /**
+     * JSON body serialized using kotlinx.serialization.
+     *
+     * @property value the object to serialize.
+     * @property serializer the serializer for [value].
+     * @property format the JSON format to use; defaults to [kotlinx.serialization.json.Json].
+     */
     public class Json<T>(
         public val value: T,
         public val serializer: kotlinx.serialization.KSerializer<T>,
         public val format: kotlinx.serialization.json.Json = kotlinx.serialization.json.Json,
     ) : HttpBody() {
+        /** Serializes [value] to a UTF-8 encoded JSON byte array. */
         public fun toBytes(): ByteArray = format.encodeToString(serializer, value).toByteArray(Charsets.UTF_8)
 
         override fun equals(other: Any?): Boolean {
@@ -43,6 +60,14 @@ public sealed class HttpBody {
     }
 }
 
+/**
+ * A single part in a multipart HTTP body.
+ *
+ * @property name form field name.
+ * @property content raw bytes of this part.
+ * @property contentType MIME type of this part.
+ * @property filename optional filename hint for file-upload parts.
+ */
 public class MultipartPart(
     public val name: String,
     public val content: ByteArray,

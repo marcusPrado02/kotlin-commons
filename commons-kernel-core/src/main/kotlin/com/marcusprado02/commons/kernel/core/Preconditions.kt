@@ -1,5 +1,12 @@
 package com.marcusprado02.commons.kernel.core
 
+/**
+ * Checks that [value] is not blank and returns it.
+ *
+ * @param value the string to validate.
+ * @param lazyMessage message supplier invoked on failure.
+ * @throws IllegalArgumentException if [value] is blank.
+ */
 public fun requireNotBlank(
     value: String,
     lazyMessage: () -> String = { "Value must not be blank" },
@@ -8,6 +15,13 @@ public fun requireNotBlank(
     return value
 }
 
+/**
+ * Checks that [value] is strictly positive and returns it.
+ *
+ * @param value the integer to validate.
+ * @param lazyMessage message supplier invoked on failure.
+ * @throws IllegalArgumentException if [value] is not positive.
+ */
 public fun requirePositive(
     value: Int,
     lazyMessage: () -> String = { "Value must be positive, was $value" },
@@ -16,6 +30,13 @@ public fun requirePositive(
     return value
 }
 
+/**
+ * Checks that [value] is strictly positive and returns it.
+ *
+ * @param value the long to validate.
+ * @param lazyMessage message supplier invoked on failure.
+ * @throws IllegalArgumentException if [value] is not positive.
+ */
 public fun requirePositive(
     value: Long,
     lazyMessage: () -> String = { "Value must be positive, was $value" },

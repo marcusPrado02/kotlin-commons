@@ -2,6 +2,10 @@ package com.marcusprado02.commons.kernel.errors
 
 import kotlinx.serialization.Serializable
 
+/**
+ * Unique, machine-readable identifier for an error condition.
+ * Must be a non-blank string (e.g. `"USER_NOT_FOUND"`).
+ */
 @Serializable
 @JvmInline
 public value class ErrorCode(

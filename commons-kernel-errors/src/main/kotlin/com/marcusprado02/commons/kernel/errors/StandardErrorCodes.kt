@@ -1,5 +1,6 @@
 package com.marcusprado02.commons.kernel.errors
 
+/** Pre-defined [ErrorCode] constants for generic error conditions shared across all domains. */
 public object StandardErrorCodes {
     public val VALIDATION_ERROR: ErrorCode = ErrorCode("VALIDATION_ERROR")
     public val BUSINESS_ERROR: ErrorCode = ErrorCode("BUSINESS_ERROR")
