@@ -9,16 +9,16 @@ implementado em qualquer ordem.
 
 ## Build & Infraestrutura
 
-- [ ] **T-01** Adicionar workflow de CI no GitHub Actions (build + test + detekt + ktlint em cada PR)
+- [x] **T-01** Adicionar workflow de CI no GitHub Actions (build + test + detekt + ktlint em cada PR)
 - [ ] **T-02** Configurar publicação no Maven Central com `maven-publish` + plugin de assinatura GPG
-- [ ] **T-03** Integrar o plugin `org.jetbrains.kotlinx.binary-compatibility-validator` para gerar e verificar dumps de API pública, impedindo regressões de ABI em releases
-- [ ] **T-04** Habilitar o Gradle Build Cache (`org.gradle.caching=true`) e publicar cache remoto para acelerar builds em CI
+- [ ] **T-03** Integrar o plugin `org.jetbrains.kotlinx.binary-compatibility-validator`
+- [x] **T-04** Habilitar o Gradle Build Cache (`org.gradle.caching=true`)
 - [ ] **T-05** Adicionar `Renovate` (ou Dependabot) para atualização automática de dependências via PR
-- [ ] **T-06** Criar tarefa Gradle `checkAll` que agrupe lint + testes + compatibility-check em um único comando
+- [x] **T-06** Criar tarefa Gradle `checkAll` que agrupe lint + testes + compatibility-check em um único comando
 - [ ] **T-07** Configurar `gradle/wrapper-validation-action` no CI para garantir integridade do `gradlew`
 - [ ] **T-08** Separar `commons-bom` em artefato publicável independente com POM de tipo `pom`
 - [ ] **T-09** Habilitar relatórios de cobertura com JaCoCo e publicar no Codecov
-- [ ] **T-10** Adicionar `settings.gradle.kts` com `enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")` para substituir strings de projeto por acessores tipados
+- [x] **T-10** Adicionar `settings.gradle.kts` com `enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")`
 
 ---
 
@@ -39,7 +39,7 @@ implementado em qualquer ordem.
 - [x] **T-18** Adicionar `StandardErrorCodes.CONFLICT`, `UNPROCESSABLE_ENTITY`, `TOO_MANY_REQUESTS` _(CONFLICT já existia)_
 - [x] **T-19** Criar `ErrorCatalog` — interface marcadora para agrupar códigos de erro por domínio
 - [x] **T-20** Adicionar `Problems.fromException(e: Throwable): Problem`
-- [ ] **T-21** Adicionar serialização JSON para `ProblemDetail` via `kotlinx.serialization` (sem depender de Jackson)
+- [x] **T-21** Adicionar serialização JSON para `ProblemDetail` via `kotlinx.serialization` (sem depender de Jackson)
 - [x] **T-22** Adicionar `Problem.withContext(key: String, value: Any): Problem`
 
 ---
@@ -63,7 +63,7 @@ implementado em qualquer ordem.
 - [x] **T-32** Adicionar `Query<R>` e `QueryHandler<Q : Query<R>, R>`
 - [x] **T-33** Adicionar `DomainService` — interface marcadora
 - [x] **T-34** Adicionar `Policy<E : DomainEvent>`
-- [ ] **T-35** Adicionar `Saga` — interface para processos de longa duração com compensação
+- [x] **T-35** Adicionar `Saga` — interface para processos de longa duração com compensação
 - [ ] **T-36** Adicionar `ValueObject.validate(): Result<Unit>`
 - [x] **T-37** Adicionar `AggregateRoot.clearEvents(): List<DomainEvent>` _(já existia como `pullDomainEvents()`)_
 - [x] **T-38** Adicionar `EntityVersion.next(): EntityVersion` _(já existia como `increment()`)_
@@ -105,7 +105,7 @@ implementado em qualquer ordem.
 
 - [x] **T-55** Adicionar `HttpRequest.withHeader(name, value): HttpRequest` _(timeout já existia; headers no construtor)_
 - [x] **T-56** Adicionar `HttpRequest.timeout: Duration?` _(já existia)_
-- [ ] **T-57** Adicionar `HttpBody.Json<T>(value: T, serializer: KSerializer<T>)` com `kotlinx.serialization`
+- [x] **T-57** Adicionar `HttpBody.Json<T>(value: T, serializer: KSerializer<T>)` com `kotlinx.serialization`
 - [x] **T-58** Adicionar extensões de conveniência: `get(uri)`, `post(uri, body)`, `put(uri, body)`, `delete(uri)`
 
 ---
@@ -129,17 +129,17 @@ implementado em qualquer ordem.
 ## commons-adapters-persistence-jpa
 
 - [x] **T-65** Implementar `JpaRepositoryAdapter.saveAll(entities)` com `CrudRepository.saveAll`
-- [ ] **T-66** Adicionar suporte a optimistic locking: detectar `ObjectOptimisticLockingFailureException`
+- [x] **T-66** Adicionar suporte a optimistic locking: detectar `ObjectOptimisticLockingFailureException`
 - [x] **T-67** Adicionar `JpaRepositoryAdapter.existsById(id)` _(já existia)_
 
 ---
 
 ## commons-adapters-cache-redis
 
-- [ ] **T-68** Expor configuração de pool de conexão via construtor ou builder
+- [x] **T-68** Expor configuração de pool de conexão via construtor ou builder
 - [ ] **T-69** Adicionar suporte a Redis Cluster com `RedisClusterClient` do Lettuce
-- [ ] **T-70** Adicionar logging estruturado de cache hits/misses com SLF4J
-- [ ] **T-71** Permitir escolha de serializer via estratégia injetada no construtor
+- [x] **T-70** Adicionar logging estruturado de cache hits/misses com SLF4J
+- [x] **T-71** Permitir escolha de serializer via estratégia injetada no construtor
 
 ---
 
@@ -147,9 +147,9 @@ implementado em qualquer ordem.
 
 - [x] **T-72** `KafkaMessagePublisherAdapter.publishBatch` _(já existia com coroutines)_
 - [x] **T-73** Adicionar propagação de `CorrelationId` como header Kafka no publisher e extração no consumer
-- [ ] **T-74** Adicionar dead-letter routing no consumer após N nacks consecutivos
+- [x] **T-74** Adicionar dead-letter routing no consumer após N nacks consecutivos
 - [x] **T-75** Expor `KafkaMessageConsumerAdapter.close()`
-- [ ] **T-76** Adicionar política de retry configurável (backoff exponencial) entre `nack` e próximo `receive`
+- [x] **T-76** Adicionar política de retry configurável (backoff exponencial) entre `nack` e próximo `receive`
 
 ---
 
@@ -159,7 +159,7 @@ implementado em qualquer ordem.
 - [x] **T-78** Adicionar `LoggingInterceptor`
 - [ ] **T-79** Integrar Resilience4j `CircuitBreaker` como interceptor OkHttp opcional
 - [x] **T-80** Adicionar `RetryInterceptor` com backoff configurável
-- [ ] **T-81** Expor configuração de `ConnectionPool` e timeouts via builder dedicado
+- [x] **T-81** Expor configuração de `ConnectionPool` e timeouts via builder dedicado
 
 ---
 
@@ -175,9 +175,9 @@ implementado em qualquer ordem.
 
 - [x] **T-85** Adicionar `MongoContainers`
 - [x] **T-86** Adicionar `MySqlContainers`
-- [ ] **T-87** Adicionar `LocalStackContainers` para emular serviços AWS (S3, SQS, SNS)
+- [x] **T-87** Adicionar `LocalStackContainers` para emular serviços AWS (S3, SQS, SNS)
 - [x] **T-88** Adicionar `WireMockContainers`
-- [ ] **T-89** Adicionar `KafkaContainers.withSchemaRegistry()`
+- [x] **T-89** Adicionar `KafkaContainers.schemaRegistry`
 
 ---
 
@@ -185,7 +185,7 @@ implementado em qualquer ordem.
 
 - [ ] **T-90** Adicionar KDoc a todas as classes e funções de API pública
 - [ ] **T-91** Configurar `dokka` para gerar site HTML e publicar no GitHub Pages
-- [ ] **T-92** Adicionar badges no `README.md`: build status, cobertura, versão Maven Central
-- [ ] **T-93** Criar `CHANGELOG.md` seguindo o formato [Keep a Changelog](https://keepachangelog.com)
-- [ ] **T-94** Criar `CONTRIBUTING.md` com guia de setup local e convenções de commit
-- [ ] **T-95** Adicionar exemplos de uso no `README.md` para cada módulo
+- [x] **T-92** Adicionar badges no `README.md`: build status, cobertura, versão Maven Central
+- [x] **T-93** Criar `CHANGELOG.md` seguindo o formato [Keep a Changelog](https://keepachangelog.com)
+- [x] **T-94** Criar `CONTRIBUTING.md` com guia de setup local e convenções de commit
+- [x] **T-95** Adicionar exemplos de uso no `README.md` para cada módulo
