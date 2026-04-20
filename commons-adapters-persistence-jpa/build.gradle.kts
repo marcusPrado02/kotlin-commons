@@ -22,5 +22,6 @@ dependencies {
     testImplementation(libs.kotest.assertions.core)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(kotlin("test"))
+    testImplementation(libs.mockk)
     runtimeOnly("org.postgresql:postgresql")
 }

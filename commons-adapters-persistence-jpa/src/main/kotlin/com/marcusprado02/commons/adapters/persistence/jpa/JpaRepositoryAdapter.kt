@@ -6,6 +6,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.springframework.dao.DataAccessException
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.orm.ObjectOptimisticLockingFailureException
 
 public abstract class JpaRepositoryAdapter<E : Any, I : Any>(
     protected val jpa: JpaRepository<E, I>,
@@ -23,6 +24,8 @@ public abstract class JpaRepositoryAdapter<E : Any, I : Any>(
         withContext(Dispatchers.IO) {
             try {
                 jpa.save(entity)
+            } catch (ex: ObjectOptimisticLockingFailureException) {
+                throw PersistenceException("Optimistic locking failure: entity was modified concurrently", ex)
             } catch (ex: DataAccessException) {
                 throw PersistenceException("save failed", ex)
             }
@@ -59,6 +62,8 @@ public abstract class JpaRepositoryAdapter<E : Any, I : Any>(
         withContext(Dispatchers.IO) {
             try {
                 jpa.saveAll(entities)
+            } catch (ex: ObjectOptimisticLockingFailureException) {
+                throw PersistenceException("Optimistic locking failure: entity was modified concurrently", ex)
             } catch (ex: DataAccessException) {
                 throw PersistenceException("saveAll failed", ex)
             }
