@@ -5,6 +5,7 @@ plugins {
 dependencies {
     api(project(":commons-ports-http"))
     api(libs.okhttp)
+    api(libs.resilience4j.circuitbreaker)
     api(libs.kotlinx.coroutines.core)
     implementation("org.slf4j:slf4j-api:2.0.13")
     testImplementation(libs.okhttp.mockwebserver)

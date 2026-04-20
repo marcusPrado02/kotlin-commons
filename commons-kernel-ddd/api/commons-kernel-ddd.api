@@ -40,15 +40,20 @@ public final class com/marcusprado02/commons/kernel/ddd/audit/AuditStamp {
 }
 
 public final class com/marcusprado02/commons/kernel/ddd/audit/AuditTrail {
-	public fun <init> (Lcom/marcusprado02/commons/kernel/ddd/audit/AuditStamp;Lcom/marcusprado02/commons/kernel/ddd/audit/AuditStamp;)V
+	public fun <init> (Lcom/marcusprado02/commons/kernel/ddd/audit/AuditStamp;Lcom/marcusprado02/commons/kernel/ddd/audit/AuditStamp;Lcom/marcusprado02/commons/kernel/ddd/audit/DeletionStamp;)V
+	public synthetic fun <init> (Lcom/marcusprado02/commons/kernel/ddd/audit/AuditStamp;Lcom/marcusprado02/commons/kernel/ddd/audit/AuditStamp;Lcom/marcusprado02/commons/kernel/ddd/audit/DeletionStamp;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1 ()Lcom/marcusprado02/commons/kernel/ddd/audit/AuditStamp;
 	public final fun component2 ()Lcom/marcusprado02/commons/kernel/ddd/audit/AuditStamp;
-	public final fun copy (Lcom/marcusprado02/commons/kernel/ddd/audit/AuditStamp;Lcom/marcusprado02/commons/kernel/ddd/audit/AuditStamp;)Lcom/marcusprado02/commons/kernel/ddd/audit/AuditTrail;
-	public static synthetic fun copy$default (Lcom/marcusprado02/commons/kernel/ddd/audit/AuditTrail;Lcom/marcusprado02/commons/kernel/ddd/audit/AuditStamp;Lcom/marcusprado02/commons/kernel/ddd/audit/AuditStamp;ILjava/lang/Object;)Lcom/marcusprado02/commons/kernel/ddd/audit/AuditTrail;
+	public final fun component3 ()Lcom/marcusprado02/commons/kernel/ddd/audit/DeletionStamp;
+	public final fun copy (Lcom/marcusprado02/commons/kernel/ddd/audit/AuditStamp;Lcom/marcusprado02/commons/kernel/ddd/audit/AuditStamp;Lcom/marcusprado02/commons/kernel/ddd/audit/DeletionStamp;)Lcom/marcusprado02/commons/kernel/ddd/audit/AuditTrail;
+	public static synthetic fun copy$default (Lcom/marcusprado02/commons/kernel/ddd/audit/AuditTrail;Lcom/marcusprado02/commons/kernel/ddd/audit/AuditStamp;Lcom/marcusprado02/commons/kernel/ddd/audit/AuditStamp;Lcom/marcusprado02/commons/kernel/ddd/audit/DeletionStamp;ILjava/lang/Object;)Lcom/marcusprado02/commons/kernel/ddd/audit/AuditTrail;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getCreated ()Lcom/marcusprado02/commons/kernel/ddd/audit/AuditStamp;
+	public final fun getDeleted ()Lcom/marcusprado02/commons/kernel/ddd/audit/DeletionStamp;
 	public final fun getUpdated ()Lcom/marcusprado02/commons/kernel/ddd/audit/AuditStamp;
 	public fun hashCode ()I
+	public final fun markDeleted-7kn_It0 (Ljava/lang/String;Ljava/time/Clock;Ljava/lang/String;)Lcom/marcusprado02/commons/kernel/ddd/audit/AuditTrail;
+	public static synthetic fun markDeleted-7kn_It0$default (Lcom/marcusprado02/commons/kernel/ddd/audit/AuditTrail;Ljava/lang/String;Ljava/time/Clock;Ljava/lang/String;ILjava/lang/Object;)Lcom/marcusprado02/commons/kernel/ddd/audit/AuditTrail;
 	public fun toString ()Ljava/lang/String;
 }
 
@@ -300,5 +305,10 @@ public final class com/marcusprado02/commons/kernel/ddd/specification/Specificat
 }
 
 public abstract interface class com/marcusprado02/commons/kernel/ddd/valueobject/ValueObject {
+	public abstract fun validate ()Lcom/marcusprado02/commons/kernel/result/Result;
+}
+
+public final class com/marcusprado02/commons/kernel/ddd/valueobject/ValueObject$DefaultImpls {
+	public static fun validate (Lcom/marcusprado02/commons/kernel/ddd/valueobject/ValueObject;)Lcom/marcusprado02/commons/kernel/result/Result;
 }
 

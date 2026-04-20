@@ -79,5 +79,10 @@ public final class com/marcusprado02/commons/ports/email/EmailContent$Companion 
 public abstract interface class com/marcusprado02/commons/ports/email/EmailPort {
 	public abstract fun send (Lcom/marcusprado02/commons/ports/email/Email;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun sendBatch (Ljava/util/List;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun sendTemplate (Ljava/lang/String;Ljava/util/Map;Lcom/marcusprado02/commons/ports/email/EmailAddress;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class com/marcusprado02/commons/ports/email/EmailPort$DefaultImpls {
+	public static fun sendTemplate (Lcom/marcusprado02/commons/ports/email/EmailPort;Ljava/lang/String;Ljava/util/Map;Lcom/marcusprado02/commons/ports/email/EmailAddress;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 

@@ -11,13 +11,13 @@ implementado em qualquer ordem.
 
 - [x] **T-01** Adicionar workflow de CI no GitHub Actions (build + test + detekt + ktlint em cada PR)
 - [ ] **T-02** Configurar publicação no Maven Central com `maven-publish` + plugin de assinatura GPG
-- [ ] **T-03** Integrar o plugin `org.jetbrains.kotlinx.binary-compatibility-validator`
+- [x] **T-03** Integrar o plugin `org.jetbrains.kotlinx.binary-compatibility-validator`
 - [x] **T-04** Habilitar o Gradle Build Cache (`org.gradle.caching=true`)
-- [ ] **T-05** Adicionar `Renovate` (ou Dependabot) para atualização automática de dependências via PR
+- [x] **T-05** Adicionar `Renovate` (ou Dependabot) para atualização automática de dependências via PR
 - [x] **T-06** Criar tarefa Gradle `checkAll` que agrupe lint + testes + compatibility-check em um único comando
-- [ ] **T-07** Configurar `gradle/wrapper-validation-action` no CI para garantir integridade do `gradlew`
-- [ ] **T-08** Separar `commons-bom` em artefato publicável independente com POM de tipo `pom`
-- [ ] **T-09** Habilitar relatórios de cobertura com JaCoCo e publicar no Codecov
+- [x] **T-07** Configurar `gradle/wrapper-validation-action` no CI para garantir integridade do `gradlew`
+- [x] **T-08** Separar `commons-bom` em artefato publicável independente com POM de tipo `pom`
+- [x] **T-09** Habilitar relatórios de cobertura com JaCoCo e publicar no Codecov
 - [x] **T-10** Adicionar `settings.gradle.kts` com `enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")`
 
 ---
@@ -64,10 +64,10 @@ implementado em qualquer ordem.
 - [x] **T-33** Adicionar `DomainService` — interface marcadora
 - [x] **T-34** Adicionar `Policy<E : DomainEvent>`
 - [x] **T-35** Adicionar `Saga` — interface para processos de longa duração com compensação
-- [ ] **T-36** Adicionar `ValueObject.validate(): Result<Unit>`
+- [x] **T-36** Adicionar `ValueObject.validate(): Result<Unit>`
 - [x] **T-37** Adicionar `AggregateRoot.clearEvents(): List<DomainEvent>` _(já existia como `pullDomainEvents()`)_
 - [x] **T-38** Adicionar `EntityVersion.next(): EntityVersion` _(já existia como `increment()`)_
-- [ ] **T-39** Adicionar `AuditTrail.markDeleted(actor, clock)` retornando novo `AuditTrail` com `DeletionStamp` preenchido
+- [x] **T-39** Adicionar `AuditTrail.markDeleted(actor, clock)` retornando novo `AuditTrail` com `DeletionStamp` preenchido
 - [x] **T-40** Adicionar suporte a `TenantId` em `AggregateRoot` _(já existia)_
 
 ---
@@ -122,7 +122,7 @@ implementado em qualquer ordem.
 
 - [x] **T-62** Adicionar `EmailContent.withBoth(plain, html)`
 - [x] **T-63** Adicionar `Email.withHeader(name, value)`
-- [ ] **T-64** Adicionar `EmailPort.sendTemplate(templateId, context, to)` com Thymeleaf/Freemarker
+- [x] **T-64** Adicionar `EmailPort.sendTemplate(templateId, context, to)` com Thymeleaf/Freemarker
 
 ---
 
@@ -157,7 +157,7 @@ implementado em qualquer ordem.
 
 - [x] **T-77** Suporte a `HttpBody.Multipart` _(já existia no port e no adapter via `RequestConverters`)_
 - [x] **T-78** Adicionar `LoggingInterceptor`
-- [ ] **T-79** Integrar Resilience4j `CircuitBreaker` como interceptor OkHttp opcional
+- [x] **T-79** Integrar Resilience4j `CircuitBreaker` como interceptor OkHttp opcional
 - [x] **T-80** Adicionar `RetryInterceptor` com backoff configurável
 - [x] **T-81** Expor configuração de `ConnectionPool` e timeouts via builder dedicado
 
