@@ -2,6 +2,7 @@ public final class com/marcusprado02/commons/adapters/email/smtp/SmtpEmailAdapte
 	public fun <init> (Ljakarta/mail/Session;)V
 	public fun send (Lcom/marcusprado02/commons/ports/email/Email;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun sendBatch (Ljava/util/List;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun sendTemplate (Ljava/lang/String;Ljava/util/Map;Lcom/marcusprado02/commons/ports/email/EmailAddress;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class com/marcusprado02/commons/adapters/email/smtp/SmtpSessionBuilder {
