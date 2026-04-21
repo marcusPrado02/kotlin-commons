@@ -10,7 +10,7 @@ Gracias por contribuir a kotlin-commons.
 git clone https://github.com/marcusPrado02/kotlin-commons.git
 cd kotlin-commons
 
-# Requires: JDK 21+, Docker (for integration tests)
+# Requiere: JDK 21+, Docker (para pruebas de integración)
 ./gradlew build
 ```
 
@@ -19,12 +19,12 @@ cd kotlin-commons
 ## Ejecutar verificaciones
 
 ```bash
-./gradlew checkAll          # all checks: compile + lint + detekt + test + kover
-./gradlew ktlintCheck       # Kotlin code style
-./gradlew detekt            # static analysis
-./gradlew test              # unit + integration tests (starts Testcontainers)
-./gradlew koverVerify       # coverage thresholds: 60% line / 55% branch
-./gradlew koverHtmlReport   # HTML coverage report at build/reports/kover/html/
+./gradlew checkAll          # todas las verificaciones: compilar + lint + detekt + test + kover
+./gradlew ktlintCheck       # estilo de código Kotlin
+./gradlew detekt            # análisis estático
+./gradlew test              # pruebas unitarias y de integración (inicia Testcontainers)
+./gradlew koverVerify       # umbrales de cobertura: 60% línea / 55% branch
+./gradlew koverHtmlReport   # reporte HTML de cobertura en build/reports/kover/html/
 ```
 
 **El CI ejecuta `checkAll` en cada push.** Los PRs deben pasar el CI antes del merge.
@@ -35,10 +35,10 @@ cd kotlin-commons
 
 ```
 commons-bom/                        Bill of Materials
-commons-kernel-*/                   Pure Kotlin, no framework deps
-commons-ports-*/                    Interface contracts only
-commons-adapters-*/                 Implementations (depend on a port + a library)
-commons-testkit-testcontainers/     Test helper — Testcontainers singletons
+commons-kernel-*/                   Kotlin puro, sin dependencias de framework
+commons-ports-*/                    Solo contratos de interfaz
+commons-adapters-*/                 Implementaciones (dependen de un port + una biblioteca)
+commons-testkit-testcontainers/     Helper de prueba — singletons Testcontainers
 ```
 
 ### Agregar un nuevo port
@@ -48,7 +48,7 @@ commons-testkit-testcontainers/     Test helper — Testcontainers singletons
 3. Crear `commons-ports-<nombre>/build.gradle.kts`:
    ```kotlin
    plugins { id("kotlin-commons") }
-   // no extra dependencies for pure interface modules
+   // sin dependencias adicionales para módulos de interfaz pura
    ```
 4. Crear la interfaz en `src/main/kotlin/com/marcusprado02/commons/ports/<nombre>/`.
 5. Aplicar `explicitApi()` — todas las declaraciones públicas necesitan modificadores de visibilidad explícitos.

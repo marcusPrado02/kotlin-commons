@@ -95,6 +95,7 @@ fun kafkaConsumer(deadLetter: DeadLetterPort): MessageConsumerPort {
         groupId        = "meu-servico-grupo",
         maxNacks       = 3,
         deadLetterPort = deadLetter,
+        retryPolicy    = RetryPolicy(initialDelayMs = 100, multiplier = 2.0, maxDelayMs = 10_000),
     )
 }
 ```
