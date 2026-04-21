@@ -96,7 +96,7 @@ fun handleRequest(id: String): String {
     val service = UserService(InMemoryUserRepository())
     return service.getUser(UserId(id)).fold(
         onFail = { problem -> "Error ${problem.category}: ${problem.message}" },
-        onOk   = { user    -> "Encontrado: ${user.email}" }
+        onOk   = { user    -> "Found: ${user.email}" }
     )
 }
 ```

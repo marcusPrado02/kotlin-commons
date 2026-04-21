@@ -209,7 +209,7 @@ class CreateUserHandler(
 ) : CommandHandler<CreateUserCommand, Result<CreateUserResult>> {
     override suspend fun handle(command: CreateUserCommand): Result<CreateUserResult> {
         requireNotBlank(command.email)
-        // ... lógica de dominio
+        // ... domain logic
         return Result.ok(CreateUserResult(id = "generated-id"))
     }
 }
@@ -236,7 +236,7 @@ class Order(id: OrderId) : AggregateRoot<OrderId>(id) {
         return this
     }
 }
-// order.domainEvents contiene todos los eventos registrados después de place()
+// order.domainEvents contains all registered events after place()
 ```
 
 **Decisión de diseño:** `CommandHandler` y `QueryHandler` son interfaces (no clases abstractas) para que una sola clase pueda implementar múltiples manejadores cuando la co-ubicación hace el código más claro. `AggregateRoot` almacena eventos de dominio en una lista y expone `domainEvents` para que la capa de aplicación los despache tras un commit exitoso — esto mantiene la publicación de eventos fuera del modelo de dominio, evitando el acoplamiento transaccional.

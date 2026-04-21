@@ -80,7 +80,7 @@ kotlin-commons usa [Conventional Commits](https://www.conventionalcommits.org/):
 ```
 feat(kernel-result): add zipWith operator for combining two Results
 fix(adapters-kafka): handle null correlationId header gracefully
-docs(es): update getting-started installation snippet
+docs(en): update getting-started installation snippet
 test(kernel-errors): cover nullable cause branches
 chore: bump testcontainers to 1.20.0
 ```

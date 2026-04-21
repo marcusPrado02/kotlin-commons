@@ -25,7 +25,7 @@ class CacheConfig(private val redis: RedisTemplate<String, ByteArray>) {
     @Bean
     fun cachePort(): CachePort = RedisCacheAdapter(redis)
 
-    // ObjectMapper personalizado (opcional)
+    // Custom ObjectMapper (optional)
     @Bean
     fun cachePortCustom(redis: RedisTemplate<String, ByteArray>, mapper: ObjectMapper): CachePort =
         RedisCacheAdapter(redis, objectMapper = mapper)
@@ -35,7 +35,7 @@ class CacheConfig(private val redis: RedisTemplate<String, ByteArray>) {
 **Ejemplo de uso completo:**
 
 ```kotlin
-// Código de aplicación — depende del port, no del adapter
+// Application code — depends on port, not adapter
 class SessionService(private val cache: CachePort) {
     suspend fun getSession(token: String): Session? =
         cache.get<Session>(CacheKey("session:$token"))
@@ -66,12 +66,12 @@ implementation("io.github.marcusprado02.commons:commons-adapters-persistence-jpa
 **Configuración:**
 
 ```kotlin
-// Extiende JpaPageableRepositoryAdapter para agregados que necesitan paginación
+// Extend JpaPageableRepositoryAdapter for aggregates that need pagination
 @Repository
 class UserJpaAdapter(jpa: JpaRepository<UserEntity, String>) :
     JpaPageableRepositoryAdapter<UserEntity, String>(jpa)
 
-// Extiende JpaRepositoryAdapter para agregados que no necesitan paginación
+// Extend JpaRepositoryAdapter for aggregates that don't need pagination
 @Repository
 class AuditLogJpaAdapter(jpa: JpaRepository<AuditLogEntity, Long>) :
     JpaRepositoryAdapter<AuditLogEntity, Long>(jpa)
@@ -80,7 +80,7 @@ class AuditLogJpaAdapter(jpa: JpaRepository<AuditLogEntity, Long>) :
 **Ejemplo de uso completo:**
 
 ```kotlin
-// Servicio de dominio — depende de PageableRepository<User, UserId>
+// Domain service — depends on PageableRepository<User, UserId>
 class UserService(private val repo: PageableRepository<UserEntity, String>) {
     suspend fun createUser(entity: UserEntity): UserEntity = repo.save(entity)
 
@@ -164,7 +164,7 @@ val envelope = MessageEnvelope(
 )
 publisher.publish(envelope)
 
-// Lado consumidor
+// Consumer side
 val received = consumer.receive(TopicName("orders.created"), ConsumerGroup("my-group"))
 if (received != null) {
     processOrder(received)
@@ -316,7 +316,7 @@ import com.marcusprado02.commons.testkit.testcontainers.*
 import io.kotest.core.spec.style.FunSpec
 
 class KafkaIntegrationTest : FunSpec({
-    // Singleton — el contenedor se inicia una sola vez para toda la ejecución de pruebas
+    // Singleton — container starts once for the entire test run
     val bootstrap = KafkaContainers.instance.bootstrapServers
 
     test("can publish and receive a message") {
@@ -325,7 +325,7 @@ class KafkaIntegrationTest : FunSpec({
             ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG to StringSerializer::class.java.name,
             ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG to ByteArraySerializer::class.java.name,
         ))
-        // lógica de prueba
+        // test logic
         producer.close()
     }
 })
@@ -335,7 +335,7 @@ class RedisIntegrationTest : FunSpec({
     val redisHost = RedisContainers.instance.host
 
     test("can store and retrieve a value") {
-        // configurar RedisCacheAdapter usando redisHost:redisPort
+        // wire RedisCacheAdapter using redisHost:redisPort
     }
 })
 ```

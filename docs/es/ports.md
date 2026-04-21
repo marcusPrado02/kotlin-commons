@@ -79,7 +79,7 @@ interface PageableRepository<E : Any, I : Any> : Repository<E, I> {
 }
 
 data class PageRequest(
-    val page: Int = 0,       // base cero
+    val page: Int = 0,       // zero-based
     val size: Int = 20,
     val sort: List<SortField> = emptyList(),
 )
@@ -92,7 +92,7 @@ data class PageResult<E>(
     val size: Int,
     val totalElements: Long,
 ) {
-    val totalPages: Int      // calculado
+    val totalPages: Int      // computed
     val isFirst: Boolean
     val isLast: Boolean
     val isEmpty: Boolean
