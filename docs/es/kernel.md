@@ -15,17 +15,17 @@ La capa kernel contiene módulos Kotlin puros sin dependencias de framework o in
 ```kotlin
 import com.marcusprado02.commons.kernel.core.*
 
-// Colecciones
+// Collections
 listOf(1, 2, 3).secondOrNull()              // 2
 listOf(1, 2, 3).updated(1) { it * 10 }     // [1, 20, 3]
 mapOf("a" to 1).mergeWith(mapOf("b" to 2)) // {"a":1,"b":2}
 listOf(1, 2, 3, 1, 2).splitWhen { it == 1 } // [[1,2,3],[1,2]]
 
-// Precondiciones — lanzan IllegalArgumentException si se viola
-requireNotBlank("hello")   // retorna "hello"
-requireNotBlank("  ")      // lanza IllegalArgumentException("must not be blank")
-requirePositive(5)         // retorna 5
-requirePositive(-1)        // lanza IllegalArgumentException("must be positive")
+// Preconditions — throw IllegalArgumentException on violation
+requireNotBlank("hello")   // returns "hello"
+requireNotBlank("  ")      // throws IllegalArgumentException("must not be blank")
+requirePositive(5)         // returns 5
+requirePositive(-1)        // throws IllegalArgumentException("must be positive")
 ```
 
 **Decisión de diseño:** `requireNotBlank` y `requirePositive` se prefieren sobre el `require` integrado de Kotlin porque producen mensajes de error consistentes y legibles sin que el llamador tenga que escribir el texto del mensaje. Validan en los puntos de entrada del sistema (controladores, manejadores de comandos) y permiten que el resto del código asuma datos válidos.
@@ -43,33 +43,33 @@ requirePositive(-1)        // lanza IllegalArgumentException("must be positive")
 ```kotlin
 import com.marcusprado02.commons.kernel.result.*
 
-// Construcción
+// Construction
 val ok: Result<Int>  = Result.ok(42)
 val err: Result<Int> = Result.fail(Problems.notFound(ErrorCode("X"), "not found"))
 
-// Transformación — solo se aplica cuando es Ok
+// Transformation — only applies when Ok
 ok.map { it * 2 }             // Result.ok(84)
-err.map { it * 2 }            // Result.fail(...) sin cambios
+err.map { it * 2 }            // Result.fail(...) unchanged
 
-// Encadenamiento — flatMap para operaciones que también retornan Result
+// Chaining — flatMap for operations that also return Result
 ok.flatMap { n ->
     if (n > 0) Result.ok(n)
     else Result.fail(Problems.validation(ErrorCode("NEG"), "must be positive"))
 }
 
-// Combinar dos Results — ambos deben tener éxito
+// Combining two Results — both must succeed
 val a = Result.ok(1)
 val b = Result.ok(2)
 a.zipWith(b) { x, y -> x + y }  // Result.ok(3)
 
-// Recolectar una lista — falla en el primer error
+// Collecting a list — fails on first error
 val results = listOf(Result.ok(1), Result.ok(2), Result.ok(3))
 Result.sequence(results)          // Result.ok([1, 2, 3])
 
-// Recuperarse de un error
+// Recovering from error
 err.recover { problem -> 0 }      // Result.ok(0)
 
-// Consumir ambos lados
+// Consuming both sides
 ok.fold(
     onFail = { problem -> "error: ${problem.message}" },
     onOk   = { value   -> "value: $value" }
@@ -79,7 +79,7 @@ ok.fold(
 **API pública principal — Either<L, R>:**
 
 ```kotlin
-// Construcción
+// Construction
 val left:  Either<String, Int> = Either.left("error message")
 val right: Either<String, Int> = Either.right(42)
 
@@ -89,37 +89,37 @@ right.fold(
     onRight = { value -> "ok: $value" }
 )
 
-// Mapeo — mapRight se aplica a Right, mapLeft se aplica a Left
+// Mapping — mapRight applies to Right, mapLeft applies to Left
 right.mapRight { it * 2 }          // Either.right(84)
 left.mapLeft  { it.uppercase() }   // Either.left("ERROR MESSAGE")
 
-// Interoperabilidad con Result
-val result: Result<Int> = right.toResult() // donde right es Either<Problem, Int>
+// Interop with Result
+val result: Result<Int> = right.toResult() // where right is Either<Problem, Int>
 ```
 
 **API pública principal — Option<T>:**
 
 ```kotlin
-// Construcción
+// Construction
 val some: Option<String> = Option.some("hello")
 val none: Option<String> = Option.none()
 val fromNullable: Option<String> = "hello".toOption() // Some("hello")
 val fromNull: Option<String> = null.toOption()        // None
 
-// Extracción
+// Extracting
 some.getOrElse("default")   // "hello"
 none.getOrElse("default")   // "default"
 some.getOrNull()             // "hello"
 none.getOrNull()             // null
 
-// Transformación
+// Transforming
 some.map { it.uppercase() }  // Some("HELLO")
 none.map { it.uppercase() }  // None
 
 some.filter { it.length > 3 }  // Some("hello")
 some.filter { it.length > 10 } // None
 
-// Conversión a Result
+// Converting to Result
 some.toResult(Problems.notFound(ErrorCode("MISSING"), "not found")) // Result.ok("hello")
 none.toResult(Problems.notFound(ErrorCode("MISSING"), "not found")) // Result.fail(problem)
 ```
@@ -139,7 +139,7 @@ none.toResult(Problems.notFound(ErrorCode("MISSING"), "not found")) // Result.fa
 ```kotlin
 import com.marcusprado02.commons.kernel.errors.*
 
-// Crear problemas vía factory
+// Creating problems via factory
 val p1 = Problems.notFound(ErrorCode("USER_NOT_FOUND"), "User 42 not found")
 val p2 = Problems.validation(ErrorCode("INVALID_EMAIL"), "Invalid email",
              ProblemDetail("email", "must be valid"))
@@ -149,24 +149,24 @@ val p5 = Problems.forbidden(ErrorCode("ACCESS_DENIED"), "Insufficient permission
 val p6 = Problems.business(ErrorCode("ORDER_LIMIT"), "Order limit exceeded")
 val p7 = Problems.technical(ErrorCode("DB_UNAVAILABLE"), "Database unavailable")
 
-// Agregar metadatos de contexto
+// Adding context metadata
 val traced = p1.withContext("requestId", "abc-123")
                 .withContext("userId", "42")
 
-// Convertir excepciones a problemas
+// Converting exceptions to problems
 val p = Problems.fromException(IllegalArgumentException("bad input"))
 // p.category == ErrorCategory.VALIDATION
 
-// ErrorCode rechaza cadenas vacías
-ErrorCode("")    // lanza IllegalArgumentException
-ErrorCode("   ") // lanza IllegalArgumentException
+// ErrorCode rejects blank strings
+ErrorCode("")    // throws IllegalArgumentException
+ErrorCode("   ") // throws IllegalArgumentException
 
-// Subclases de DomainException — lanzar solo en límites con frameworks
+// DomainException subclasses — throw only at framework boundaries
 throw NotFoundException(p1)
 throw ValidationException(p2)
 throw BusinessException(p6, cause = originalException)
 
-// Problem es @Serializable — seguro para retornar sobre HTTP
+// Problem is @Serializable — safe to return over HTTP
 val json = Json.encodeToString(p1)
 val decoded = Json.decodeFromString<Problem>(json)
 ```
@@ -200,7 +200,7 @@ import com.marcusprado02.commons.kernel.ddd.*
 import com.marcusprado02.commons.kernel.errors.*
 import com.marcusprado02.commons.kernel.result.*
 
-// Comandos y manejadores
+// Commands and handlers
 data class CreateUserCommand(val email: String, val name: String) : Command
 data class CreateUserResult(val id: String)
 
@@ -214,20 +214,20 @@ class CreateUserHandler(
     }
 }
 
-// Queries y manejadores
+// Queries and handlers
 data class GetUserQuery(val id: String) : Query
 class GetUserHandler(private val repo: UserRepository) : QueryHandler<GetUserQuery, Result<User>> {
     override suspend fun handle(query: GetUserQuery): Result<User> =
         repo.findById(UserId(query.id))
 }
 
-// Objetos de valor
+// Value objects
 @JvmInline
 value class UserId(val value: String) : ValueObject {
     init { requireNotBlank(value) }
 }
 
-// Agregados y eventos de dominio
+// Aggregates and domain events
 class OrderCreatedEvent(val orderId: String) : DomainEvent
 
 class Order(id: OrderId) : AggregateRoot<OrderId>(id) {
@@ -254,15 +254,15 @@ class Order(id: OrderId) : AggregateRoot<OrderId>(id) {
 ```kotlin
 import com.marcusprado02.commons.kernel.time.*
 
-// Configuración para producción
+// Production wiring
 val clock: ClockProvider = SystemClockProvider()
 val now: Instant = clock.now()
 
-// Configuración para pruebas — tiempo determinista
+// Test wiring — deterministic time
 val fixed: ClockProvider = FixedClockProvider(Instant.parse("2024-01-01T00:00:00Z"))
-fixed.now() // siempre retorna 2024-01-01T00:00:00Z
+fixed.now() // always returns 2024-01-01T00:00:00Z
 
-// Ventanas de tiempo
+// Time windows
 val window = TimeWindow(
     start = Instant.parse("2024-01-01T00:00:00Z"),
     end   = Instant.parse("2024-01-31T23:59:59Z")

@@ -23,13 +23,13 @@ La biblioteca existe porque las preocupaciones transversales comunes — manejo 
 dependencies {
     implementation(platform("io.github.marcusprado02.commons:commons-bom:VERSION"))
 
-    // elige solo los módulos que necesitas
+    // pick only the modules you need
     implementation("io.github.marcusprado02.commons:commons-kernel-result")
     implementation("io.github.marcusprado02.commons:commons-kernel-errors")
     implementation("io.github.marcusprado02.commons:commons-ports-cache")
     implementation("io.github.marcusprado02.commons:commons-adapters-cache-redis")
 
-    // helpers de prueba
+    // test helpers
     testImplementation("io.github.marcusprado02.commons:commons-testkit-testcontainers")
 }
 ```
@@ -73,16 +73,16 @@ Este ejemplo crea una búsqueda de usuario simple que combina `Result` para la p
 import com.marcusprado02.commons.kernel.errors.*
 import com.marcusprado02.commons.kernel.result.*
 
-// Modelo de dominio
+// Domain model
 data class UserId(val value: String)
 data class User(val id: UserId, val email: String)
 
-// El repositorio retorna Result en lugar de lanzar excepciones
+// Repository returns Result instead of throwing
 interface UserRepository {
     fun findById(id: UserId): Result<User>
 }
 
-// Capa de servicio — los errores fluyen como valores, sin try/catch
+// Service layer — errors flow as values, no try/catch
 class UserService(private val repo: UserRepository) {
     fun getUser(id: UserId): Result<User> =
         repo.findById(id)
@@ -91,7 +91,7 @@ class UserService(private val repo: UserRepository) {
         getUser(id).map { it.email }
 }
 
-// Uso — fold en el límite
+// Usage — fold at the boundary
 fun handleRequest(id: String): String {
     val service = UserService(InMemoryUserRepository())
     return service.getUser(UserId(id)).fold(

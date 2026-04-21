@@ -22,10 +22,10 @@ interface CachePort {
     suspend fun exists(key: CacheKey): Boolean
 }
 
-// Helper reificado — infiere el tipo desde el parámetro de tipo
+// Reified helper — infers type from type parameter
 suspend inline fun <reified T : Any> CachePort.get(key: CacheKey): T?
 
-// Obtener o calcular y almacenar
+// Get or compute and store
 suspend inline fun <reified T : Any> CachePort.getOrPut(
     key: CacheKey,
     ttl: Duration? = null,
@@ -184,7 +184,7 @@ interface HttpClientPort {
     suspend fun <T> execute(request: HttpRequest, mapper: (ByteArray) -> T): HttpResponse<T>
 }
 
-// Extensiones de conveniencia
+// Convenience extensions
 suspend fun HttpClientPort.get(uri: URI): HttpResponse<ByteArray>
 suspend fun HttpClientPort.post(uri: URI, body: HttpBody): HttpResponse<ByteArray>
 suspend fun HttpClientPort.put(uri: URI, body: HttpBody): HttpResponse<ByteArray>
@@ -247,8 +247,8 @@ interface EmailPort {
 
 data class Email(
     val from: EmailAddress,
-    val to: List<EmailAddress>,       // no debe estar vacío
-    val subject: String,               // no debe estar en blanco
+    val to: List<EmailAddress>,       // must not be empty
+    val subject: String,               // must not be blank
     val content: EmailContent,
     val cc: List<EmailAddress> = emptyList(),
     val bcc: List<EmailAddress> = emptyList(),
@@ -258,12 +258,12 @@ data class Email(
 )
 
 data class EmailContent(
-    val html: String? = null,  // al menos uno de html/plain debe ser no nulo
+    val html: String? = null,  // at least one of html/plain must be non-null
     val plain: String? = null,
 )
 
 data class EmailAddress(
-    val address: String,           // debe contener @
+    val address: String,           // must contain @
     val displayName: String? = null,
 )
 ```
