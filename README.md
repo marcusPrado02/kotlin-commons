@@ -1,7 +1,7 @@
 # kotlin-commons
 
 [![CI](https://github.com/marcusPrado02/kotlin-commons/actions/workflows/ci.yml/badge.svg)](https://github.com/marcusPrado02/kotlin-commons/actions/workflows/ci.yml)
-[![Maven Central](https://img.shields.io/maven-central/v/com.marcusprado02/commons-bom)](https://central.sonatype.com/artifact/com.marcusprado02/commons-bom)
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.marcusprado02.commons/commons-bom)](https://central.sonatype.com/artifact/io.github.marcusprado02.commons/commons-bom)
 [![Kotlin](https://img.shields.io/badge/kotlin-2.1.0%2B-blue)](https://kotlinlang.org)
 [![JVM](https://img.shields.io/badge/JVM-21%2B-orange)](https://openjdk.org)
 [![License](https://img.shields.io/badge/license-Apache%202.0-green)](LICENSE)
