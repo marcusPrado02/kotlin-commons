@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.0] — 2026-04-20
+
 ### Added
 - `Collections.splitWhen` — splits a list into sublists at predicate boundaries (T-14)
 - `Numbers.clamp` — clamps Int/Long/Double to a [min, max] range (T-15)
@@ -53,3 +55,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Gradle Build Cache, parallel builds, configuration cache (T-04)
 - `checkAll` verification task aggregating lint + tests (T-06)
 - `TYPESAFE_PROJECT_ACCESSORS` feature preview (T-10)
+
+[0.1.0]: https://github.com/marcusPrado02/kotlin-commons/releases/tag/v0.1.0
