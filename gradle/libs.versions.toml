@@ -1,9 +1,9 @@
 [versions]
 kotlin = "2.1.0"
-coroutines = "1.9.0"
+coroutines = "1.10.2"
 kotest = "5.9.1"
 mockk = "1.13.12"
-kover = "0.9.0"
+kover = "0.9.8"
 detekt = "1.23.7"
 ktlint-gradle = "14.2.0"
 spring-boot = "3.5.0"
@@ -14,7 +14,7 @@ greenmail = "2.1.2"
 okhttp = "4.12.0"
 kafka-clients = "3.9.0"
 angus-mail = "2.0.1"
-kotlinx-serialization = "1.7.3"
+kotlinx-serialization = "1.11.0"
 resilience4j = "2.2.0"
 
 [libraries]
