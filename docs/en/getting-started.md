@@ -79,15 +79,15 @@ data class User(val id: UserId, val email: String)
 
 // Repository returns Result instead of throwing
 interface UserRepository {
-    fun findById(id: UserId): Result<Problem, User>
+    fun findById(id: UserId): Result<User>
 }
 
 // Service layer — errors flow as values, no try/catch
 class UserService(private val repo: UserRepository) {
-    fun getUser(id: UserId): Result<Problem, User> =
+    fun getUser(id: UserId): Result<User> =
         repo.findById(id)
 
-    fun getUserEmail(id: UserId): Result<Problem, String> =
+    fun getUserEmail(id: UserId): Result<String> =
         getUser(id).map { it.email }
 }
 
@@ -95,13 +95,13 @@ class UserService(private val repo: UserRepository) {
 fun handleRequest(id: String): String {
     val service = UserService(InMemoryUserRepository())
     return service.getUser(UserId(id)).fold(
-        onLeft  = { problem -> "Error ${problem.category}: ${problem.message}" },
-        onRight = { user    -> "Found: ${user.email}" }
+        onFail = { problem -> "Error ${problem.category}: ${problem.message}" },
+        onOk   = { user    -> "Found: ${user.email}" }
     )
 }
 ```
 
-`Result<E, A>` is `Left<E>` (error) or `Right<A>` (success). `fold` forces you to handle both cases at the call site.
+`Result<T>` is either `Ok<T>` (success) or `Fail` (carries a `Problem`). `fold` forces you to handle both cases at the call site.
 
 ---
 
