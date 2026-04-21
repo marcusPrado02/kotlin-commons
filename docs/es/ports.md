@@ -22,10 +22,10 @@ interface CachePort {
     suspend fun exists(key: CacheKey): Boolean
 }
 
-// Reified helper — infers type from type parameter
+// Helper reificado — infiere el tipo del parámetro de tipo
 suspend inline fun <reified T : Any> CachePort.get(key: CacheKey): T?
 
-// Get or compute and store
+// Obtener o calcular y almacenar
 suspend inline fun <reified T : Any> CachePort.getOrPut(
     key: CacheKey,
     ttl: Duration? = null,
@@ -79,7 +79,7 @@ interface PageableRepository<E : Any, I : Any> : Repository<E, I> {
 }
 
 data class PageRequest(
-    val page: Int = 0,       // zero-based
+    val page: Int = 0,       // base cero
     val size: Int = 20,
     val sort: List<SortField> = emptyList(),
 )
@@ -92,7 +92,7 @@ data class PageResult<E>(
     val size: Int,
     val totalElements: Long,
 ) {
-    val totalPages: Int      // computed
+    val totalPages: Int      // calculado
     val isFirst: Boolean
     val isLast: Boolean
     val isEmpty: Boolean
@@ -184,7 +184,7 @@ interface HttpClientPort {
     suspend fun <T> execute(request: HttpRequest, mapper: (ByteArray) -> T): HttpResponse<T>
 }
 
-// Convenience extensions
+// Extensiones de conveniencia
 suspend fun HttpClientPort.get(uri: URI): HttpResponse<ByteArray>
 suspend fun HttpClientPort.post(uri: URI, body: HttpBody): HttpResponse<ByteArray>
 suspend fun HttpClientPort.put(uri: URI, body: HttpBody): HttpResponse<ByteArray>
@@ -247,8 +247,8 @@ interface EmailPort {
 
 data class Email(
     val from: EmailAddress,
-    val to: List<EmailAddress>,       // must not be empty
-    val subject: String,               // must not be blank
+    val to: List<EmailAddress>,       // no debe estar vacío
+    val subject: String,               // no debe estar en blanco
     val content: EmailContent,
     val cc: List<EmailAddress> = emptyList(),
     val bcc: List<EmailAddress> = emptyList(),
@@ -258,12 +258,12 @@ data class Email(
 )
 
 data class EmailContent(
-    val html: String? = null,  // at least one of html/plain must be non-null
+    val html: String? = null,  // al menos uno de html/plain debe ser no nulo
     val plain: String? = null,
 )
 
 data class EmailAddress(
-    val address: String,           // must contain @
+    val address: String,           // debe contener @
     val displayName: String? = null,
 )
 ```
