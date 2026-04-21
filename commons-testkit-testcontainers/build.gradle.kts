@@ -2,6 +2,12 @@ plugins {
     id("kotlin-commons")
 }
 
+// This module is a test-helper library with no test sources of its own.
+// Kover coverage thresholds cannot be satisfied for a module with 0 tests.
+kover {
+    disable()
+}
+
 dependencies {
     api(platform(libs.testcontainers.bom))
     api(libs.testcontainers.core)
