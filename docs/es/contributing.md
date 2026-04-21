@@ -60,7 +60,7 @@ commons-testkit-testcontainers/     Test helper — Testcontainers singletons
 1. Seguir los mismos pasos que para un nuevo port, usando la nomenclatura `commons-adapters-<tecnología>-<port>`.
 2. En `build.gradle.kts`, agregar `implementation(project(":commons-ports-<nombre>"))` más la dependencia de la biblioteca.
 3. Implementar la interfaz del port y agregar pruebas de integración usando `commons-testkit-testcontainers`.
-4. Desactiva Kover solo si el módulo no tiene fuentes de prueba (`kover { disable() }`) — los adapters deben tener pruebas de integración.
+4. Desactivar Kover solo si el módulo no tiene fuentes de prueba (`kover { disable() }`) — los adapters deben tener pruebas de integración.
 
 ---
 

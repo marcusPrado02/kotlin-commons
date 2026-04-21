@@ -167,7 +167,7 @@ class OrderEventPublisher(private val publisher: MessagePublisherPort) {
 
 **Cuándo usarlo frente a alternativas:** Usa `MessagePublisherPort` y `MessageConsumerPort` cuando tu lógica de aplicación deba ser comprobable sin un broker en ejecución. Si necesitas características específicas de Kafka (transacciones, compactación, procesamiento de streams), usa el cliente Kafka directamente junto con el port para publicar/consumir simple.
 
-**Decisión de diseño:** `MessageEnvelope` es genérico sobre `T` porque diferentes adapters soportan diferentes tipos de cuerpo (`ByteArray` para Kafka). `DeadLetterPort` es una interfaz separada para que el manejo de dead-letter pueda intercambiarse de forma independiente (por ejemplo, registrar en base de datos vs. publicar en un tópico DLQ). La interfaz recibe el `envelope` completo (no solo un ID) para que el manejador de dead-letter tenga disponible el payload del mensaje original.
+**Decisión de diseño:** `MessageEnvelope` es genérico sobre `T` porque diferentes adapters soportan diferentes tipos de cuerpo (`ByteArray` para Kafka). `DeadLetterPort` es una interfaz separada para que el manejo de dead-letter pueda intercambiarse de forma independiente (por ejemplo, registrar en base de datos vs. publicar en un tópico DLQ). La interfaz recibe el `envelope` completo (no solo un ID) para que el manejador de dead-letter pueda acceder al payload original del mensaje.
 
 ---
 

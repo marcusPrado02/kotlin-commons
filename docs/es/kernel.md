@@ -239,7 +239,7 @@ class Order(id: OrderId) : AggregateRoot<OrderId>(id) {
 // order.domainEvents contains all registered events after place()
 ```
 
-**Decisión de diseño:** `CommandHandler` y `QueryHandler` son interfaces (no clases abstractas) para que una sola clase pueda implementar múltiples manejadores cuando la co-ubicación hace el código más claro. `AggregateRoot` almacena eventos de dominio en una lista y expone `domainEvents` para que la capa de aplicación los despache tras un commit exitoso — esto mantiene la publicación de eventos fuera del modelo de dominio, evitando el acoplamiento transaccional.
+**Decisión de diseño:** `CommandHandler` y `QueryHandler` son interfaces (no clases abstractas) para que una sola clase pueda implementar múltiples manejadores cuando agruparlos hace que el código sea más claro. `AggregateRoot` almacena eventos de dominio en una lista y expone `domainEvents` para que la capa de aplicación los despache tras un commit exitoso — esto mantiene la publicación de eventos fuera del modelo de dominio, evitando el acoplamiento transaccional.
 
 ---
 
