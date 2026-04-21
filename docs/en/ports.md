@@ -36,7 +36,10 @@ suspend inline fun <reified T : Any> CachePort.getOrPut(
 **Consumer-side usage:**
 
 ```kotlin
-class ProductService(private val cache: CachePort) {
+class ProductService(
+    private val cache: CachePort,
+    private val productRepository: Repository<Product, ProductId>,
+) {
     suspend fun findProduct(id: ProductId): Product? =
         cache.getOrPut(CacheKey("product:${id.value}"), ttl = Duration.ofMinutes(10)) {
             productRepository.findById(id)
