@@ -59,6 +59,7 @@ class SessionService(private val cache: CachePort) {
 **Dependency:**
 
 ```kotlin
+implementation(platform("io.github.marcusprado02.commons:commons-bom:VERSION"))
 implementation("io.github.marcusprado02.commons:commons-adapters-persistence-jpa")
 ```
 
@@ -107,6 +108,7 @@ class UserService(private val repo: PageableRepository<UserEntity, String>) {
 **Dependency:**
 
 ```kotlin
+implementation(platform("io.github.marcusprado02.commons:commons-bom:VERSION"))
 implementation("io.github.marcusprado02.commons:commons-adapters-messaging-kafka")
 ```
 
@@ -181,6 +183,7 @@ if (received != null) {
 **Dependency:**
 
 ```kotlin
+implementation(platform("io.github.marcusprado02.commons:commons-bom:VERSION"))
 implementation("io.github.marcusprado02.commons:commons-adapters-http-okhttp")
 ```
 
@@ -207,7 +210,8 @@ class ExternalApiClient(private val http: HttpClientPort) {
     suspend fun fetchData(id: String): DataResponse {
         val response = http.get(URI.create("https://api.example.com/data/$id"))
         check(response.isSuccessful) { "API returned ${response.statusCode}" }
-        return Json.decodeFromString(response.body!!.toString(Charsets.UTF_8))
+        val bytes = response.body ?: error("no response body")
+        return Json.decodeFromString(String(bytes, Charsets.UTF_8))
     }
 
     suspend fun postData(payload: DataPayload): HttpResponse<ByteArray> =
@@ -234,6 +238,7 @@ Available interceptors in this module:
 **Dependency:**
 
 ```kotlin
+implementation(platform("io.github.marcusprado02.commons:commons-bom:VERSION"))
 implementation("io.github.marcusprado02.commons:commons-adapters-email-smtp")
 ```
 
