@@ -1,68 +1,48 @@
 # kotlin-commons
 
-![CI](https://github.com/marcusprado02/kotlin-commons/actions/workflows/ci.yml/badge.svg)
-![Kotlin](https://img.shields.io/badge/kotlin-2.1.0-blue.svg)
-![JVM](https://img.shields.io/badge/JVM-21-orange.svg)
-![License](https://img.shields.io/badge/license-Apache%202.0-green.svg)
+[![CI](https://github.com/marcusPrado02/kotlin-commons/actions/workflows/ci.yml/badge.svg)](https://github.com/marcusPrado02/kotlin-commons/actions/workflows/ci.yml)
+[![Maven Central](https://img.shields.io/maven-central/v/com.marcusprado02/commons-bom)](https://central.sonatype.com/artifact/com.marcusprado02/commons-bom)
+[![Kotlin](https://img.shields.io/badge/kotlin-2.1.0%2B-blue)](https://kotlinlang.org)
+[![JVM](https://img.shields.io/badge/JVM-21%2B-orange)](https://openjdk.org)
+[![License](https://img.shields.io/badge/license-Apache%202.0-green)](LICENSE)
 
-## Usage Examples
+A set of opinionated Kotlin libraries for building production-grade backend services on the JVM. Provides kernel primitives (Result, Problem, DDD building blocks, time), port interfaces (cache, persistence, messaging, HTTP, email), and ready-to-use adapter implementations backed by Redis, PostgreSQL/JPA, Kafka, OkHttp, and SMTP.
 
-### commons-kernel-result — Result composition
+**Language / Idioma / Idioma:** &nbsp; 🇺🇸 [English](docs/en/getting-started.md) &nbsp;|&nbsp; 🇧🇷 [Português](docs/pt/getting-started.md) &nbsp;|&nbsp; 🇪🇸 [Español](docs/es/getting-started.md)
 
-```kotlin
-val a: Result<Problem, Int> = Result.success(10)
-val b: Result<Problem, Int> = Result.success(32)
+---
 
-// Combine two results into a pair
-val sum: Result<Problem, Int> = a.zip(b) { x, y -> x + y }
+## Quick taste
 
-// Collect a list of results, failing on the first error
-val all: Result<Problem, List<Int>> = Result.sequence(listOf(a, b))
-```
-
-### commons-kernel-errors — Problem construction
+### Kernel — typed errors without exceptions
 
 ```kotlin
-// Map a JVM exception to a domain Problem
-val problem: Problem = Problems.fromException(illegalArgumentException)
+val result: Result<Problem, User> = userRepository.findById(id)
+    .toResult { Problems.notFound(StandardErrorCodes.NOT_FOUND, "User $id not found") }
 
-// Immutably enrich a problem with contextual metadata
-val detailed: Problem = problem.withContext("orderId", "ORD-42")
-    .withContext("customerId", "CUST-7")
-```
-
-### commons-kernel-ddd — CQRS Command/CommandHandler
-
-```kotlin
-data class PlaceOrderCommand(val orderId: String, val amount: BigDecimal) : Command
-
-class PlaceOrderHandler : CommandHandler<PlaceOrderCommand, Result<Problem, Order>> {
-    override fun handle(command: PlaceOrderCommand): Result<Problem, Order> {
-        // domain logic here
-        return Result.success(Order(command.orderId))
-    }
-}
-```
-
-### commons-ports-cache — CachePort.getOrPut
-
-```kotlin
-val cache: CachePort<String, UserProfile> = // injected
-
-val profile: UserProfile = cache.getOrPut(key = "user:42", ttl = 5.minutes) {
-    userRepository.findById("42") ?: error("User not found")
-}
-```
-
-### commons-ports-http — HttpClientPort convenience extensions
-
-```kotlin
-val client: HttpClientPort = // injected
-
-val response: HttpResponse = client.get("https://api.example.com/v1/products")
-
-val created: HttpResponse = client.post(
-    uri = "https://api.example.com/v1/orders",
-    body = HttpBody.Json(newOrder),
+result.fold(
+    onLeft  = { problem -> ResponseEntity.status(problem.category.httpStatus).body(problem) },
+    onRight = { user    -> ResponseEntity.ok(user) }
 )
 ```
+
+### Ports — depend on interfaces, not libraries
+
+```kotlin
+class UserService(private val cache: CachePort) {
+    suspend fun findCached(id: UserId): User? =
+        cache.getOrPut("user:${id.value}", ttl = 5.minutes) { fetchFromDb(id) }
+}
+```
+
+### Adapters — wire in one line
+
+```kotlin
+@Bean
+fun cachePort(redis: RedisTemplate<String, ByteArray>): CachePort =
+    RedisCacheAdapter(redis)
+```
+
+---
+
+See the [getting started guide](docs/en/getting-started.md) for installation and a full end-to-end example.
